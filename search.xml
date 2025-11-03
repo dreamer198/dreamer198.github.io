@@ -1,21 +1,371 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Hello World</title>
-    <url>/2025/11/01/hello-world/</url>
-    <content><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick StartCreate a new post$ hexo new &quot;My New Post&quot;
+    <title>多智能体强化学习在无人机集群中的应用综述</title>
+    <url>/2025/11/03/marl-drone-swarm-survey/</url>
+    <content><![CDATA[研究背景最近在整理无人机集群协调控制的相关文献，发现多智能体强化学习（Multi-Agent Reinforcement Learning, MARL）在这个领域的应用越来越广泛。
+🎯 核心问题无人机集群面临的主要挑战：
 
-More info: Writing
-Run server$ hexo server
+协调性：如何让多个智能体协同工作
+通信限制：实际环境中的通信延迟和丢包
+环境动态性：复杂多变的飞行环境
+可扩展性：算法能否适应不同规模的集群
 
-More info: Server
-Generate static files$ hexo generate
 
-More info: Generating
-Deploy to remote sites$ hexo deploy
 
-More info: Deployment
+📚 主要研究方向1. 集中式训练分布式执行 (CTDE)代表算法：
+
+MADDPG (Multi-Agent DDPG)
+QMIX
+COMA (Counterfactual Multi-Agent)
+
+优势：
+
+训练时可以利用全局信息
+执行时只需要局部观测
+
+2. 通信学习核心思想：智能体学习何时、如何、与谁通信
+挑战：
+
+通信带宽限制
+通信内容的有效性
+动态网络拓扑
+
+3. 层次化多智能体学习应用场景：
+
+领导者-跟随者模式
+任务分解与分配
+不同层级的决策
+
+🔬 最新进展Transformer在MARL中的应用最近看到几篇将Transformer架构引入多智能体学习的论文，主要解决：
+
+智能体数量可变的问题
+注意力机制帮助建模智能体间关系
+更好的泛化能力
+
+元学习与快速适应
+如何快速适应新的任务和环境
+Few-shot learning在多智能体场景下的应用
+迁移学习的挑战
+
+💡 个人思考理论与实践的gap
+仿真到现实的转移
+
+仿真环境往往过于理想化
+硬件限制在论文中考虑不足
+安全性约束的建模
+
+
+算法复杂度
+
+很多算法计算复杂度过高
+实时性要求与算法性能的平衡
+边缘计算的限制
+
+
+
+未来研究方向
+鲁棒性：如何应对智能体故障
+可解释性：让决策过程更透明
+安全学习：在学习过程中保证安全约束
+
+📖 推荐阅读
+综述论文：
+
+“Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms”
+“Challenges and Countermeasures for Adversarial Attacks on Deep Reinforcement Learning”
+
+
+经典算法：
+
+MADDPG: Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments
+QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning
+
+
+最新工作：
+
+Multi-Agent Transformer for Drone Swarm Control
+Safe Multi-Agent Reinforcement Learning with Natural Language Constraints
+
+
+
+🤔 下一步计划
+深入研究通信学习的相关算法
+搭建无人机集群的仿真环境
+尝试复现几个经典算法
+
+感觉这个领域还有很多有趣的问题等着被解决，继续加油！ 🚁
 ]]></content>
+      <categories>
+        <category>学术研究</category>
+      </categories>
+      <tags>
+        <tag>多智能体强化学习</tag>
+        <tag>无人机集群</tag>
+        <tag>论文阅读</tag>
+        <tag>MARL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>强化学习基础理论总结</title>
+    <url>/2025/11/03/reinforcement-learning-fundamentals/</url>
+    <content><![CDATA[强化学习概述强化学习（Reinforcement Learning, RL）是机器学习的一个重要分支，通过智能体与环境的交互来学习最优策略。
+🎯 核心概念基本要素：
+
+智能体（Agent）：学习和决策的主体
+环境（Environment）：智能体所处的外部世界
+状态（State）：环境的当前情况
+动作（Action）：智能体可以执行的操作
+奖励（Reward）：环境对智能体动作的反馈
+
+
+
+📊 马尔可夫决策过程（MDP）强化学习问题通常建模为马尔可夫决策过程：
+定义： MDP &#x3D; (S, A, P, R, γ)
+
+S: 状态空间
+A: 动作空间  
+P: 状态转移概率 P(s’|s,a)
+R: 奖励函数 R(s,a,s’)
+γ: 折扣因子 (0 ≤ γ ≤ 1)
+
+马尔可夫性质：
+P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a, S_&#123;t-1&#125;, A_&#123;t-1&#125;, ..., S_0, A_0) = P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a)
+
+🎲 价值函数状态价值函数V^π(s) = E_π[G_t | S_t = s] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s]
+
+动作价值函数（Q函数）Q^π(s,a) = E_π[G_t | S_t = s, A_t = a] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s, A_t = a]
+
+贝尔曼方程状态价值函数的贝尔曼方程：
+V^π(s) = ∑_a π(a|s) ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γV^π(s&#x27;)]
+
+Q函数的贝尔曼方程：
+Q^π(s,a) = ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γ ∑_&#123;a&#x27;&#125; π(a&#x27;|s&#x27;)Q^π(s&#x27;,a&#x27;)]
+
+🧮 经典算法1. 动态规划策略评估（Policy Evaluation）def policy_evaluation(policy, env, theta=1e-6, gamma=0.9):    V = np.zeros(env.nS)    while True:        delta = 0        for s in range(env.nS):            v = V[s]            V[s] = sum([policy[s][a] * sum([p * (r + gamma * V[s_])                        for p, s_, r, _ in env.P[s][a]])                        for a in range(env.nA)])            delta = max(delta, abs(v - V[s]))        if delta &lt; theta:            break    return V
+
+策略改进（Policy Improvement）def policy_improvement(V, env, gamma=0.9):    policy = np.zeros([env.nS, env.nA]) / env.nA    for s in range(env.nS):        action_values = np.zeros(env.nA)        for a in range(env.nA):            action_values[a] = sum([p * (r + gamma * V[s_])                                   for p, s_, r, _ in env.P[s][a]])        best_action = np.argmax(action_values)        policy[s] = np.eye(env.nA)[best_action]    return policy
+
+2. 蒙特卡洛方法First-Visit MCdef first_visit_mc_prediction(policy, env, num_episodes, gamma=0.9):    V = defaultdict(float)    returns = defaultdict(list)        for episode in range(num_episodes):        states, actions, rewards = generate_episode(policy, env)        G = 0        visited = set()                for t in reversed(range(len(states))):            G = gamma * G + rewards[t]            if states[t] not in visited:                returns[states[t]].append(G)                V[states[t]] = np.mean(returns[states[t]])                visited.add(states[t])        return V
+
+3. 时序差分学习TD(0)def td_prediction(policy, env, num_episodes, alpha=0.1, gamma=0.9):    V = defaultdict(float)        for episode in range(num_episodes):        state = env.reset()        while True:            action = choose_action(policy, state)            next_state, reward, done, _ = env.step(action)                        # TD更新            V[state] += alpha * (reward + gamma * V[next_state] - V[state])                        if done:                break            state = next_state        return V
+
+Q-Learningdef q_learning(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        while True:            # ε-贪心策略            if random.random() &lt; epsilon:                action = env.action_space.sample()            else:                action = np.argmax(Q[state])                        next_state, reward, done, _ = env.step(action)                        # Q-Learning更新            Q[state][action] += alpha * (                reward + gamma * np.max(Q[next_state]) - Q[state][action]            )                        if done:                break            state = next_state        return Q
+
+SARSAdef sarsa(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        action = epsilon_greedy_action(Q, state, epsilon)                while True:            next_state, reward, done, _ = env.step(action)            next_action = epsilon_greedy_action(Q, next_state, epsilon)                        # SARSA更新            Q[state][action] += alpha * (                reward + gamma * Q[next_state][next_action] - Q[state][action]            )                        if done:                break            state, action = next_state, next_action        return Q
+
+🚀 深度强化学习DQN核心思想经验回放（Experience Replay）：
+class ReplayBuffer:    def __init__(self, capacity):        self.buffer = deque(maxlen=capacity)        def add(self, state, action, reward, next_state, done):        self.buffer.append((state, action, reward, next_state, done))        def sample(self, batch_size):        return random.sample(self.buffer, batch_size)
+
+目标网络（Target Network）：
+# 主网络q_network = DQN(state_size, action_size)# 目标网络target_network = DQN(state_size, action_size)# 定期更新目标网络if step % update_target == 0:    target_network.load_state_dict(q_network.state_dict())
+
+Policy Gradient基础REINFORCE算法：
+def reinforce(policy_net, optimizer, episode):    log_probs = []    rewards = []        # 收集一个episode的数据    state = env.reset()    while True:        action_probs = policy_net(state)        action = torch.multinomial(action_probs, 1)        log_prob = torch.log(action_probs[action])                next_state, reward, done, _ = env.step(action.item())        log_probs.append(log_prob)        rewards.append(reward)                if done:            break        state = next_state        # 计算累积奖励    discounted_rewards = []    G = 0    for r in reversed(rewards):        G = r + gamma * G        discounted_rewards.insert(0, G)        # 策略梯度更新    policy_loss = []    for log_prob, G in zip(log_probs, discounted_rewards):        policy_loss.append(-log_prob * G)        optimizer.zero_grad()    loss = torch.stack(policy_loss).sum()    loss.backward()    optimizer.step()
+
+📝 学习要点总结理论基础
+MDP框架：理解状态、动作、奖励、转移概率
+贝尔曼方程：价值函数的递推关系
+最优性原理：最优策略的性质
+
+算法对比
+
+
+算法
+类型
+学习方式
+适用场景
+
+
+
+动态规划
+Model-based
+精确计算
+小状态空间，已知模型
+
+
+蒙特卡洛
+Model-free
+完整回合
+回合制任务
+
+
+TD学习
+Model-free
+单步更新
+连续任务
+
+
+Q-Learning
+Off-policy
+异策略
+探索要求高
+
+
+SARSA
+On-policy
+同策略
+安全性要求高
+
+
+实践建议
+调参技巧：
+
+学习率α：影响收敛速度和稳定性
+折扣因子γ：平衡短期和长期奖励
+探索率ε：平衡探索和利用
+
+
+算法选择：
+
+状态空间小：表格型方法
+状态空间大：函数近似方法
+连续控制：Actor-Critic方法
+
+
+
+强化学习是一个理论性很强但应用广泛的领域，需要理论学习和实践相结合！ 🎯
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>机器学习</tag>
+        <tag>理论基础</tag>
+        <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>解决PyTorch在多GPU环境下的常见问题</title>
+    <url>/2025/11/03/pytorch-multi-gpu-solutions/</url>
+    <content><![CDATA[问题背景最近在搭建多智能体强化学习的训练环境时，遇到了各种PyTorch多GPU的问题。经过一番折腾，总结了一些常见问题和解决方案。
+😅 我踩过的坑刚开始天真地以为只要有多张GPU，PyTorch就会自动利用，结果发现事情远没有那么简单…
+
+
+🔧 常见问题及解决方案1. CUDA版本不匹配问题描述：
+RuntimeError: CUDA error: no kernel image is available for execution on the device
+
+解决方案：
+# 查看CUDA版本nvidia-sminvcc --version# 卸载现有PyTorchpip uninstall torch torchvision torchaudio# 安装对应CUDA版本的PyTorch# 对于CUDA 11.8pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118# 对于CUDA 12.1pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+验证安装：
+import torchprint(f&quot;CUDA available: &#123;torch.cuda.is_available()&#125;&quot;)print(f&quot;CUDA version: &#123;torch.version.cuda&#125;&quot;)print(f&quot;GPU count: &#123;torch.cuda.device_count()&#125;&quot;)
+
+2. 内存不足问题问题描述：
+RuntimeError: CUDA out of memory
+
+解决方案：
+方法1：减小batch size# 之前batch_size = 64# 修改后batch_size = 32  # 或者更小
+
+方法2：梯度累积accumulation_steps = 4optimizer.zero_grad()for i, (inputs, labels) in enumerate(dataloader):    outputs = model(inputs)    loss = criterion(outputs, labels)    loss = loss / accumulation_steps  # 归一化损失    loss.backward()        if (i + 1) % accumulation_steps == 0:        optimizer.step()        optimizer.zero_grad()
+
+方法3：清理GPU缓存import torchimport gc# 在训练循环中定期清理if batch_idx % 100 == 0:    torch.cuda.empty_cache()    gc.collect()
+
+3. DataParallel vs DistributedDataParallel**问题：**选择哪种并行方式？
+DataParallel（简单但效率低）：
+if torch.cuda.device_count() &gt; 1:    model = torch.nn.DataParallel(model)model.to(device)
+
+DistributedDataParallel（推荐）：
+import torch.distributed as distfrom torch.nn.parallel import DistributedDataParallel as DDP# 初始化进程组def setup(rank, world_size):    os.environ[&#x27;MASTER_ADDR&#x27;] = &#x27;localhost&#x27;    os.environ[&#x27;MASTER_PORT&#x27;] = &#x27;12355&#x27;    dist.init_process_group(&quot;nccl&quot;, rank=rank, world_size=world_size)# 包装模型model = model.to(rank)model = DDP(model, device_ids=[rank])
+
+4. 混合精度训练**问题：**训练速度慢，GPU利用率不高
+解决方案：
+from torch.cuda.amp import autocast, GradScalermodel = model.to(device)scaler = GradScaler()for inputs, labels in dataloader:    optimizer.zero_grad()        with autocast():        outputs = model(inputs)        loss = criterion(outputs, labels)        scaler.scale(loss).backward()    scaler.step(optimizer)    scaler.update()
+
+5. 环境变量配置常用的CUDA环境变量：
+# 控制可见GPUexport CUDA_VISIBLE_DEVICES=0,1,2,3# 内存增长策略export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128# 调试信息export CUDA_LAUNCH_BLOCKING=1
+
+🛠️ 调试技巧1. 监控GPU使用情况# 实时监控watch -n 1 nvidia-smi# 或者使用Pythonimport GPUtilGPUtil.showUtilization()
+
+2. 检查内存泄漏import torchdef check_memory():    if torch.cuda.is_available():        print(f&quot;Allocated: &#123;torch.cuda.memory_allocated() / 1024**3:.2f&#125; GB&quot;)        print(f&quot;Reserved: &#123;torch.cuda.memory_reserved() / 1024**3:.2f&#125; GB&quot;)# 在训练循环中定期调用check_memory()
+
+3. 性能分析import torch.profiler as profilerwith profiler.profile(    activities=[profiler.ProfilerActivity.CPU, profiler.ProfilerActivity.CUDA],    record_shapes=True,    profile_memory=True,    with_stack=True) as prof:    # 你的训练代码    passprint(prof.key_averages().table(sort_by=&quot;cuda_time_total&quot;, row_limit=10))
+
+📝 最佳实践总结
+环境配置：
+
+确保CUDA、PyTorch版本匹配
+使用conda管理环境更稳定
+
+
+内存管理：
+
+适当的batch size
+定期清理GPU缓存
+使用混合精度训练
+
+
+并行策略：
+
+小规模实验用DataParallel
+大规模训练用DistributedDataParallel
+
+
+调试习惯：
+
+先在单GPU上验证代码
+使用小数据集测试并行效果
+监控GPU利用率和内存使用
+
+
+
+希望这些经验能帮大家少踩一些坑！ 😄
+🔗 参考资源
+PyTorch官方文档
+分布式训练教程
+性能调优指南
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>PyTorch</tag>
+        <tag>GPU</tag>
+        <tag>深度学习</tag>
+        <tag>环境配置</tag>
+        <tag>踩坑记录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开启新的学术之旅</title>
+    <url>/2025/11/03/start-new-journey/</url>
+    <content><![CDATA[新的开始时间过得真快，转眼间已经步入了研究生阶段。无人机集群这个领域充满了挑战和机遇，每天都能感受到知识的广袤和自己的渺小。
+🤔 最近的思考做研究真的是一个痛并快乐着的过程：
+
+📚 看论文时经常被各种数学公式搞得头大
+💡 但偶尔的灵光一现又让人兴奋不已
+🚁 看着仿真中的无人机群协调飞行，有种说不出的成就感
+😅 当然，更多时候是在调试代码中度过…
+
+
+
+💭 关于未来有时候会想，做学术研究到底意味着什么？是为了发论文刷简历，还是真的想为这个世界贡献点什么？
+说实话，刚开始可能更多的是前者，但随着深入了解，越来越觉得无人机集群的研究确实很有意义：
+
+🌍 环境监测、救灾救援
+🏗️ 基础设施检查
+🎬 甚至是创意表演
+
+每当想到自己的研究可能会在某个场景下发挥作用，就觉得熬夜调代码也值得了。
+🎯 小目标
+坚持每周至少读2篇相关论文
+把强化学习的基础打牢
+学会享受研究过程，而不只是结果
+保持好奇心和耐心
+
+希望这个博客能记录下我在学术路上的点点滴滴，包括那些让人头疼的bug和偶尔的小突破。
+毕竟，成长的过程总是充满惊喜的，不是吗？ 😊
+]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>研究生生活</tag>
+        <tag>学术</tag>
+        <tag>思考</tag>
+        <tag>成长</tag>
+      </tags>
   </entry>
 </search>
