@@ -624,7 +624,6 @@ ssh -T git@github.com
 关键在于：先本地初始化并提交 → 创建“空”的远程仓库 → 添加远程 → 首次推送。
 建议优先使用 SSH，减少认证麻烦；.gitignore 要尽早设置，避免把无关文件带上去。
 
-如果你希望，我也可以写一篇“把 Hexo 博客代码推到 GitHub Pages 并自动部署”的实战文章，包含 Actions&#x2F;CDN 优化等进阶内容。
 ]]></content>
       <categories>
         <category>技术分享</category>
