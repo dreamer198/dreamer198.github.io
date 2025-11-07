@@ -255,6 +255,83 @@ ssh -T git@github.com
 
 # 先修改 .gitignore# 然后清除索引并重新提交git rm -r --cached .git add .git commit -m &quot;chore: apply .gitignore&quot;
 
+六、提交信息规范（推荐）为了让提交历史更清晰、可搜索，推荐遵循 Conventional Commits 规范：
+基本格式：
+&lt;type&gt;(&lt;scope&gt;): &lt;简要说明&gt;&lt;可选正文，多行&gt;&lt;可选页脚，例如 Closes #123 或 BREAKING CHANGE&gt;
+
+常用类型一览：
+
+
+
+类型
+用途
+示例
+
+
+
+feat
+新功能（feature）
+feat(bt): add new takeoff behavior
+
+
+fix
+修复 bug
+fix(mavros): correct FCU URL parsing
+
+
+chore
+非功能改动（构建脚本、依赖、初次提交）
+chore: initial commit
+
+
+docs
+文档修改
+docs: update README with usage example
+
+
+style
+代码格式（不影响功能）
+style: reformat indentation in ListenCommand.cpp
+
+
+refactor
+重构（非修复非新增）
+refactor(bt): simplify tick logic
+
+
+test
+测试相关改动
+test: add unit test for JSON parser
+
+
+perf
+性能优化
+perf(nav): improve GPS update rate
+
+
+build
+构建系统或依赖更改
+build: switch to CMake 3.22
+
+
+ci
+CI 配置更改
+ci: add GitHub Actions workflow
+
+
+小贴士：
+
+scope 可选，用于指明影响范围（例如模块名：bt、mavros、nav、planner 等）。
+提示性提交可以在正文描述动机、做法与影响面，便于 Code Review 与后续排查。
+关联问题单：在页脚使用 Closes #123 &#x2F; Refs #123，平台会自动联动。
+破坏性变更：页脚使用 BREAKING CHANGE: 说明迁移指南。
+
+示例：
+git commit -m &quot;feat(bt): add new takeoff behavior&quot;git commit -m &quot;fix(mavros): correct FCU URL parsing&quot;git commit -m &quot;refactor(nav): simplify tick logic&quot;git commit -m &quot;docs: update README with usage example&quot;git commit -m &quot;chore: initial commit&quot;
+
+结合上文流程，建议首次提交使用：
+git commit -m &quot;chore: initial commit&quot;
+
 小结
 关键在于：先本地初始化并提交 → 创建“空”的远程仓库 → 添加远程 → 首次推送。
 建议优先使用 SSH，减少认证麻烦；.gitignore 要尽早设置，避免把无关文件带上去。
@@ -360,136 +437,6 @@ PyTorch官方文档
         <tag>深度学习</tag>
         <tag>环境配置</tag>
         <tag>踩坑记录</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>强化学习基础理论总结</title>
-    <url>/2025/11/03/reinforcement-learning-fundamentals/</url>
-    <content><![CDATA[强化学习概述强化学习（Reinforcement Learning, RL）是机器学习的一个重要分支，通过智能体与环境的交互来学习最优策略。
-🎯 核心概念基本要素：
-
-智能体（Agent）：学习和决策的主体
-环境（Environment）：智能体所处的外部世界
-状态（State）：环境的当前情况
-动作（Action）：智能体可以执行的操作
-奖励（Reward）：环境对智能体动作的反馈
-
-
-
-📊 马尔可夫决策过程（MDP）强化学习问题通常建模为马尔可夫决策过程：
-定义： MDP &#x3D; (S, A, P, R, γ)
-
-S: 状态空间
-A: 动作空间  
-P: 状态转移概率 P(s’|s,a)
-R: 奖励函数 R(s,a,s’)
-γ: 折扣因子 (0 ≤ γ ≤ 1)
-
-马尔可夫性质：
-P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a, S_&#123;t-1&#125;, A_&#123;t-1&#125;, ..., S_0, A_0) = P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a)
-
-🎲 价值函数状态价值函数V^π(s) = E_π[G_t | S_t = s] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s]
-
-动作价值函数（Q函数）Q^π(s,a) = E_π[G_t | S_t = s, A_t = a] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s, A_t = a]
-
-贝尔曼方程状态价值函数的贝尔曼方程：
-V^π(s) = ∑_a π(a|s) ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γV^π(s&#x27;)]
-
-Q函数的贝尔曼方程：
-Q^π(s,a) = ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γ ∑_&#123;a&#x27;&#125; π(a&#x27;|s&#x27;)Q^π(s&#x27;,a&#x27;)]
-
-🧮 经典算法1. 动态规划策略评估（Policy Evaluation）def policy_evaluation(policy, env, theta=1e-6, gamma=0.9):    V = np.zeros(env.nS)    while True:        delta = 0        for s in range(env.nS):            v = V[s]            V[s] = sum([policy[s][a] * sum([p * (r + gamma * V[s_])                        for p, s_, r, _ in env.P[s][a]])                        for a in range(env.nA)])            delta = max(delta, abs(v - V[s]))        if delta &lt; theta:            break    return V
-
-策略改进（Policy Improvement）def policy_improvement(V, env, gamma=0.9):    policy = np.zeros([env.nS, env.nA]) / env.nA    for s in range(env.nS):        action_values = np.zeros(env.nA)        for a in range(env.nA):            action_values[a] = sum([p * (r + gamma * V[s_])                                   for p, s_, r, _ in env.P[s][a]])        best_action = np.argmax(action_values)        policy[s] = np.eye(env.nA)[best_action]    return policy
-
-2. 蒙特卡洛方法First-Visit MCdef first_visit_mc_prediction(policy, env, num_episodes, gamma=0.9):    V = defaultdict(float)    returns = defaultdict(list)        for episode in range(num_episodes):        states, actions, rewards = generate_episode(policy, env)        G = 0        visited = set()                for t in reversed(range(len(states))):            G = gamma * G + rewards[t]            if states[t] not in visited:                returns[states[t]].append(G)                V[states[t]] = np.mean(returns[states[t]])                visited.add(states[t])        return V
-
-3. 时序差分学习TD(0)def td_prediction(policy, env, num_episodes, alpha=0.1, gamma=0.9):    V = defaultdict(float)        for episode in range(num_episodes):        state = env.reset()        while True:            action = choose_action(policy, state)            next_state, reward, done, _ = env.step(action)                        # TD更新            V[state] += alpha * (reward + gamma * V[next_state] - V[state])                        if done:                break            state = next_state        return V
-
-Q-Learningdef q_learning(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        while True:            # ε-贪心策略            if random.random() &lt; epsilon:                action = env.action_space.sample()            else:                action = np.argmax(Q[state])                        next_state, reward, done, _ = env.step(action)                        # Q-Learning更新            Q[state][action] += alpha * (                reward + gamma * np.max(Q[next_state]) - Q[state][action]            )                        if done:                break            state = next_state        return Q
-
-SARSAdef sarsa(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        action = epsilon_greedy_action(Q, state, epsilon)                while True:            next_state, reward, done, _ = env.step(action)            next_action = epsilon_greedy_action(Q, next_state, epsilon)                        # SARSA更新            Q[state][action] += alpha * (                reward + gamma * Q[next_state][next_action] - Q[state][action]            )                        if done:                break            state, action = next_state, next_action        return Q
-
-🚀 深度强化学习DQN核心思想经验回放（Experience Replay）：
-class ReplayBuffer:    def __init__(self, capacity):        self.buffer = deque(maxlen=capacity)        def add(self, state, action, reward, next_state, done):        self.buffer.append((state, action, reward, next_state, done))        def sample(self, batch_size):        return random.sample(self.buffer, batch_size)
-
-目标网络（Target Network）：
-# 主网络q_network = DQN(state_size, action_size)# 目标网络target_network = DQN(state_size, action_size)# 定期更新目标网络if step % update_target == 0:    target_network.load_state_dict(q_network.state_dict())
-
-Policy Gradient基础REINFORCE算法：
-def reinforce(policy_net, optimizer, episode):    log_probs = []    rewards = []        # 收集一个episode的数据    state = env.reset()    while True:        action_probs = policy_net(state)        action = torch.multinomial(action_probs, 1)        log_prob = torch.log(action_probs[action])                next_state, reward, done, _ = env.step(action.item())        log_probs.append(log_prob)        rewards.append(reward)                if done:            break        state = next_state        # 计算累积奖励    discounted_rewards = []    G = 0    for r in reversed(rewards):        G = r + gamma * G        discounted_rewards.insert(0, G)        # 策略梯度更新    policy_loss = []    for log_prob, G in zip(log_probs, discounted_rewards):        policy_loss.append(-log_prob * G)        optimizer.zero_grad()    loss = torch.stack(policy_loss).sum()    loss.backward()    optimizer.step()
-
-📝 学习要点总结理论基础
-MDP框架：理解状态、动作、奖励、转移概率
-贝尔曼方程：价值函数的递推关系
-最优性原理：最优策略的性质
-
-算法对比
-
-
-算法
-类型
-学习方式
-适用场景
-
-
-
-动态规划
-Model-based
-精确计算
-小状态空间，已知模型
-
-
-蒙特卡洛
-Model-free
-完整回合
-回合制任务
-
-
-TD学习
-Model-free
-单步更新
-连续任务
-
-
-Q-Learning
-Off-policy
-异策略
-探索要求高
-
-
-SARSA
-On-policy
-同策略
-安全性要求高
-
-
-实践建议
-调参技巧：
-
-学习率α：影响收敛速度和稳定性
-折扣因子γ：平衡短期和长期奖励
-探索率ε：平衡探索和利用
-
-
-算法选择：
-
-状态空间小：表格型方法
-状态空间大：函数近似方法
-连续控制：Actor-Critic方法
-
-
-
-强化学习是一个理论性很强但应用广泛的领域，需要理论学习和实践相结合！ 🎯
-]]></content>
-      <categories>
-        <category>学习笔记</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-        <tag>机器学习</tag>
-        <tag>理论基础</tag>
-        <tag>算法</tag>
       </tags>
   </entry>
   <entry>
@@ -633,6 +580,136 @@ Tutorials: https://docs.ros2.org
         <tag>学术</tag>
         <tag>思考</tag>
         <tag>成长</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>强化学习基础理论总结</title>
+    <url>/2025/11/03/reinforcement-learning-fundamentals/</url>
+    <content><![CDATA[强化学习概述强化学习（Reinforcement Learning, RL）是机器学习的一个重要分支，通过智能体与环境的交互来学习最优策略。
+🎯 核心概念基本要素：
+
+智能体（Agent）：学习和决策的主体
+环境（Environment）：智能体所处的外部世界
+状态（State）：环境的当前情况
+动作（Action）：智能体可以执行的操作
+奖励（Reward）：环境对智能体动作的反馈
+
+
+
+📊 马尔可夫决策过程（MDP）强化学习问题通常建模为马尔可夫决策过程：
+定义： MDP &#x3D; (S, A, P, R, γ)
+
+S: 状态空间
+A: 动作空间  
+P: 状态转移概率 P(s’|s,a)
+R: 奖励函数 R(s,a,s’)
+γ: 折扣因子 (0 ≤ γ ≤ 1)
+
+马尔可夫性质：
+P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a, S_&#123;t-1&#125;, A_&#123;t-1&#125;, ..., S_0, A_0) = P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a)
+
+🎲 价值函数状态价值函数V^π(s) = E_π[G_t | S_t = s] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s]
+
+动作价值函数（Q函数）Q^π(s,a) = E_π[G_t | S_t = s, A_t = a] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s, A_t = a]
+
+贝尔曼方程状态价值函数的贝尔曼方程：
+V^π(s) = ∑_a π(a|s) ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γV^π(s&#x27;)]
+
+Q函数的贝尔曼方程：
+Q^π(s,a) = ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γ ∑_&#123;a&#x27;&#125; π(a&#x27;|s&#x27;)Q^π(s&#x27;,a&#x27;)]
+
+🧮 经典算法1. 动态规划策略评估（Policy Evaluation）def policy_evaluation(policy, env, theta=1e-6, gamma=0.9):    V = np.zeros(env.nS)    while True:        delta = 0        for s in range(env.nS):            v = V[s]            V[s] = sum([policy[s][a] * sum([p * (r + gamma * V[s_])                        for p, s_, r, _ in env.P[s][a]])                        for a in range(env.nA)])            delta = max(delta, abs(v - V[s]))        if delta &lt; theta:            break    return V
+
+策略改进（Policy Improvement）def policy_improvement(V, env, gamma=0.9):    policy = np.zeros([env.nS, env.nA]) / env.nA    for s in range(env.nS):        action_values = np.zeros(env.nA)        for a in range(env.nA):            action_values[a] = sum([p * (r + gamma * V[s_])                                   for p, s_, r, _ in env.P[s][a]])        best_action = np.argmax(action_values)        policy[s] = np.eye(env.nA)[best_action]    return policy
+
+2. 蒙特卡洛方法First-Visit MCdef first_visit_mc_prediction(policy, env, num_episodes, gamma=0.9):    V = defaultdict(float)    returns = defaultdict(list)        for episode in range(num_episodes):        states, actions, rewards = generate_episode(policy, env)        G = 0        visited = set()                for t in reversed(range(len(states))):            G = gamma * G + rewards[t]            if states[t] not in visited:                returns[states[t]].append(G)                V[states[t]] = np.mean(returns[states[t]])                visited.add(states[t])        return V
+
+3. 时序差分学习TD(0)def td_prediction(policy, env, num_episodes, alpha=0.1, gamma=0.9):    V = defaultdict(float)        for episode in range(num_episodes):        state = env.reset()        while True:            action = choose_action(policy, state)            next_state, reward, done, _ = env.step(action)                        # TD更新            V[state] += alpha * (reward + gamma * V[next_state] - V[state])                        if done:                break            state = next_state        return V
+
+Q-Learningdef q_learning(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        while True:            # ε-贪心策略            if random.random() &lt; epsilon:                action = env.action_space.sample()            else:                action = np.argmax(Q[state])                        next_state, reward, done, _ = env.step(action)                        # Q-Learning更新            Q[state][action] += alpha * (                reward + gamma * np.max(Q[next_state]) - Q[state][action]            )                        if done:                break            state = next_state        return Q
+
+SARSAdef sarsa(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        action = epsilon_greedy_action(Q, state, epsilon)                while True:            next_state, reward, done, _ = env.step(action)            next_action = epsilon_greedy_action(Q, next_state, epsilon)                        # SARSA更新            Q[state][action] += alpha * (                reward + gamma * Q[next_state][next_action] - Q[state][action]            )                        if done:                break            state, action = next_state, next_action        return Q
+
+🚀 深度强化学习DQN核心思想经验回放（Experience Replay）：
+class ReplayBuffer:    def __init__(self, capacity):        self.buffer = deque(maxlen=capacity)        def add(self, state, action, reward, next_state, done):        self.buffer.append((state, action, reward, next_state, done))        def sample(self, batch_size):        return random.sample(self.buffer, batch_size)
+
+目标网络（Target Network）：
+# 主网络q_network = DQN(state_size, action_size)# 目标网络target_network = DQN(state_size, action_size)# 定期更新目标网络if step % update_target == 0:    target_network.load_state_dict(q_network.state_dict())
+
+Policy Gradient基础REINFORCE算法：
+def reinforce(policy_net, optimizer, episode):    log_probs = []    rewards = []        # 收集一个episode的数据    state = env.reset()    while True:        action_probs = policy_net(state)        action = torch.multinomial(action_probs, 1)        log_prob = torch.log(action_probs[action])                next_state, reward, done, _ = env.step(action.item())        log_probs.append(log_prob)        rewards.append(reward)                if done:            break        state = next_state        # 计算累积奖励    discounted_rewards = []    G = 0    for r in reversed(rewards):        G = r + gamma * G        discounted_rewards.insert(0, G)        # 策略梯度更新    policy_loss = []    for log_prob, G in zip(log_probs, discounted_rewards):        policy_loss.append(-log_prob * G)        optimizer.zero_grad()    loss = torch.stack(policy_loss).sum()    loss.backward()    optimizer.step()
+
+📝 学习要点总结理论基础
+MDP框架：理解状态、动作、奖励、转移概率
+贝尔曼方程：价值函数的递推关系
+最优性原理：最优策略的性质
+
+算法对比
+
+
+算法
+类型
+学习方式
+适用场景
+
+
+
+动态规划
+Model-based
+精确计算
+小状态空间，已知模型
+
+
+蒙特卡洛
+Model-free
+完整回合
+回合制任务
+
+
+TD学习
+Model-free
+单步更新
+连续任务
+
+
+Q-Learning
+Off-policy
+异策略
+探索要求高
+
+
+SARSA
+On-policy
+同策略
+安全性要求高
+
+
+实践建议
+调参技巧：
+
+学习率α：影响收敛速度和稳定性
+折扣因子γ：平衡短期和长期奖励
+探索率ε：平衡探索和利用
+
+
+算法选择：
+
+状态空间小：表格型方法
+状态空间大：函数近似方法
+连续控制：Actor-Critic方法
+
+
+
+强化学习是一个理论性很强但应用广泛的领域，需要理论学习和实践相结合！ 🎯
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>机器学习</tag>
+        <tag>理论基础</tag>
+        <tag>算法</tag>
       </tags>
   </entry>
 </search>
