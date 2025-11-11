@@ -27,7 +27,7 @@ Clash Verge（代理工具，导入订阅后提升下载速度）：
 
 小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
 
-🚀 安装 ROS 2 Humble（Deb 包）官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+🚀 安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
 
 配置本地化并准备源
 
@@ -540,109 +540,6 @@ PyTorch官方文档
       </tags>
   </entry>
   <entry>
-    <title>ROS2 自定义消息接口</title>
-    <url>/2025/11/05/ros2-custom-interfaces/</url>
-    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始带你完成 ROS2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终你将得到一个接口包 onboard_interfaces，内含三类消息：SwarmCommand、SwarmParam、SwarmState。
-适用环境（示例命令为 Linux + bash）：
-
-ROS 2 Humble
-已创建工作空间 ~/ros2_ws 并包含 src 目录
-构建工具：colcon；构建类型：ament_cmake
-
-
-五步法总览
-创建接口包（ament_cmake + rosidl）
-在 msg/ 目录编写消息（.msg）
-配置 CMakeLists.txt
-配置 package.xml
-编译并验证接口
-
-
-1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_interfaces \  --build-type ament_cmake \  --dependencies rosidl_default_generators std_msgs geometry_msgs \  --license Apache-2.0
-
-进入包目录并创建接口文件夹：
-cd onboard_interfacesmkdir -p msg
-
-
-2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。
-msg/SwarmParam.msg
-# 参数名string key# 参数类型（枚举）uint8  typeuint8  TYPE_FLOAT=1uint8  TYPE_INT=2uint8  TYPE_BOOL=3uint8  TYPE_STRING=4# 各类型对应的取值槽（仅取其一）float64 fint64   ibool    bstring  s
-
-msg/SwarmCommand.msg
-# 寻址：点名单机；0=广播uint16 target_id# 命令名：如 &#x27;goto&#x27; | &#x27;takeoff&#x27; | &#x27;land&#x27; | &#x27;arm&#x27; | &#x27;set_mode&#x27; ...string name# 参数表：按命令名取用所需键SwarmParam[] params
-
-msg/SwarmState.msg
-# 时间戳与坐标系std_msgs/Header header    # stamp=状态时间, frame_id 可设为 &quot;map&quot;# 本机ID（=PX4 SYSID 或业务定义）uint16 uav_id# 关键状态geometry_msgs/PoseStamped posebool   armeduint8  flight_mode        # 简易枚举（见下常量）bool   reached            # 到点事件：到达当帧=true，之后恢复falsestring reach_reason       # &quot;ok&quot; | &quot;timeout&quot; | &quot;preempted&quot; | &quot;&quot;（可选说明）# flight_mode 建议常量（枚举）uint8 MODE_MANUAL=0uint8 MODE_POSCTL=1uint8 MODE_OFFBOARD=2uint8 MODE_AUTO_MISSION=3uint8 MODE_AUTO_LOITER=4uint8 MODE_RTL=5uint8 MODE_LAND=6
-
-小贴士：
-
-数组使用 [] 表示动态长度，例如 SwarmParam[]。
-可以复用标准消息，如 std_msgs/Header、geometry_msgs/PoseStamped。
-字段注释用 #，用于生成文档时也很有帮助。
-
-
-3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
-cmake_minimum_required(VERSION 3.8)project(onboard_interfaces)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)find_package(std_msgs REQUIRED)find_package(geometry_msgs REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/SwarmParam.msg&quot;  &quot;msg/SwarmCommand.msg&quot;  &quot;msg/SwarmState.msg&quot;  DEPENDENCIES std_msgs geometry_msgs)ament_package()
-
-
-4) 配置 package.xml确保依赖与接口生成组声明完整：
-&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_interfaces&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;UAV swarm custom message interfaces&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;depend&gt;std_msgs&lt;/depend&gt;  &lt;depend&gt;geometry_msgs&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
-
-
-5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
-cd ~/ros2_wscolcon build --packages-select onboard_interfacessource install/setup.bash
-
-验证接口是否可见：
-ros2 interface list | grep onboard_interfaces
-
-查看具体定义：
-ros2 interface show onboard_interfaces/msg/SwarmCommandros2 interface show onboard_interfaces/msg/SwarmParamros2 interface show onboard_interfaces/msg/SwarmState
-
-
-最佳实践与设计建议
-文件命名使用 CamelCase，如 SwarmCommand.msg。
-为状态类消息加上 std_msgs/Header（时间戳与坐标系一致）。
-用常量模拟枚举，避免魔法数字，并在文档中收敛取值范围。
-参数容器（如 SwarmParam）要约定唯一取值通道，避免同时赋多种类型。
-接口发布后尽量保持兼容：新增字段放末尾，保留旧字段语义。
-
-
-常见问题与排查
-构建通过但找不到接口：没有加载环境。
-解决：source ~/ros2_ws/install/setup.bash（每个新终端都需要）。
-
-
-生成失败：缺少依赖或写错包名。
-解决：检查 CMakeLists.txt&#x2F;package.xml 的 std_msgs、geometry_msgs、rosidl_* 依赖是否齐全。
-
-
-发布&#x2F;回显报字段错误：YAML 字段名或类型不匹配。
-解决：使用 ros2 interface show onboard_interfaces/msg/SwarmCommand 对照校验。
-
-
-旧构建缓存导致异常：
-解决：清理并重建：rm -rf build/ install/ log/ &amp;&amp; colcon build。
-
-
-
-
-参考
-ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
-Tutorials: https://docs.ros2.org
-
-]]></content>
-      <categories>
-        <category>ROS2</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>无人机</tag>
-        <tag>接口</tag>
-        <tag>自定义消息</tag>
-        <tag>集群通信</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>强化学习基础理论总结</title>
     <url>/2025/11/03/reinforcement-learning-fundamentals/</url>
     <content><![CDATA[强化学习概述强化学习（Reinforcement Learning, RL）是机器学习的一个重要分支，通过智能体与环境的交互来学习最优策略。
@@ -770,6 +667,109 @@ On-policy
         <tag>机器学习</tag>
         <tag>理论基础</tag>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS2 自定义消息接口</title>
+    <url>/2025/11/05/ros2-custom-interfaces/</url>
+    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始带你完成 ROS2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终你将得到一个接口包 onboard_interfaces，内含三类消息：SwarmCommand、SwarmParam、SwarmState。
+适用环境（示例命令为 Linux + bash）：
+
+ROS 2 Humble
+已创建工作空间 ~/ros2_ws 并包含 src 目录
+构建工具：colcon；构建类型：ament_cmake
+
+
+五步法总览
+创建接口包（ament_cmake + rosidl）
+在 msg/ 目录编写消息（.msg）
+配置 CMakeLists.txt
+配置 package.xml
+编译并验证接口
+
+
+1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_interfaces \  --build-type ament_cmake \  --dependencies rosidl_default_generators std_msgs geometry_msgs \  --license Apache-2.0
+
+进入包目录并创建接口文件夹：
+cd onboard_interfacesmkdir -p msg
+
+
+2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。
+msg/SwarmParam.msg
+# 参数名string key# 参数类型（枚举）uint8  typeuint8  TYPE_FLOAT=1uint8  TYPE_INT=2uint8  TYPE_BOOL=3uint8  TYPE_STRING=4# 各类型对应的取值槽（仅取其一）float64 fint64   ibool    bstring  s
+
+msg/SwarmCommand.msg
+# 寻址：点名单机；0=广播uint16 target_id# 命令名：如 &#x27;goto&#x27; | &#x27;takeoff&#x27; | &#x27;land&#x27; | &#x27;arm&#x27; | &#x27;set_mode&#x27; ...string name# 参数表：按命令名取用所需键SwarmParam[] params
+
+msg/SwarmState.msg
+# 时间戳与坐标系std_msgs/Header header    # stamp=状态时间, frame_id 可设为 &quot;map&quot;# 本机ID（=PX4 SYSID 或业务定义）uint16 uav_id# 关键状态geometry_msgs/PoseStamped posebool   armeduint8  flight_mode        # 简易枚举（见下常量）bool   reached            # 到点事件：到达当帧=true，之后恢复falsestring reach_reason       # &quot;ok&quot; | &quot;timeout&quot; | &quot;preempted&quot; | &quot;&quot;（可选说明）# flight_mode 建议常量（枚举）uint8 MODE_MANUAL=0uint8 MODE_POSCTL=1uint8 MODE_OFFBOARD=2uint8 MODE_AUTO_MISSION=3uint8 MODE_AUTO_LOITER=4uint8 MODE_RTL=5uint8 MODE_LAND=6
+
+小贴士：
+
+数组使用 [] 表示动态长度，例如 SwarmParam[]。
+可以复用标准消息，如 std_msgs/Header、geometry_msgs/PoseStamped。
+字段注释用 #，用于生成文档时也很有帮助。
+
+
+3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
+cmake_minimum_required(VERSION 3.8)project(onboard_interfaces)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)find_package(std_msgs REQUIRED)find_package(geometry_msgs REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/SwarmParam.msg&quot;  &quot;msg/SwarmCommand.msg&quot;  &quot;msg/SwarmState.msg&quot;  DEPENDENCIES std_msgs geometry_msgs)ament_package()
+
+
+4) 配置 package.xml确保依赖与接口生成组声明完整：
+&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_interfaces&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;UAV swarm custom message interfaces&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;depend&gt;std_msgs&lt;/depend&gt;  &lt;depend&gt;geometry_msgs&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
+
+
+5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
+cd ~/ros2_wscolcon build --packages-select onboard_interfacessource install/setup.bash
+
+验证接口是否可见：
+ros2 interface list | grep onboard_interfaces
+
+查看具体定义：
+ros2 interface show onboard_interfaces/msg/SwarmCommandros2 interface show onboard_interfaces/msg/SwarmParamros2 interface show onboard_interfaces/msg/SwarmState
+
+
+最佳实践与设计建议
+文件命名使用 CamelCase，如 SwarmCommand.msg。
+为状态类消息加上 std_msgs/Header（时间戳与坐标系一致）。
+用常量模拟枚举，避免魔法数字，并在文档中收敛取值范围。
+参数容器（如 SwarmParam）要约定唯一取值通道，避免同时赋多种类型。
+接口发布后尽量保持兼容：新增字段放末尾，保留旧字段语义。
+
+
+常见问题与排查
+构建通过但找不到接口：没有加载环境。
+解决：source ~/ros2_ws/install/setup.bash（每个新终端都需要）。
+
+
+生成失败：缺少依赖或写错包名。
+解决：检查 CMakeLists.txt&#x2F;package.xml 的 std_msgs、geometry_msgs、rosidl_* 依赖是否齐全。
+
+
+发布&#x2F;回显报字段错误：YAML 字段名或类型不匹配。
+解决：使用 ros2 interface show onboard_interfaces/msg/SwarmCommand 对照校验。
+
+
+旧构建缓存导致异常：
+解决：清理并重建：rm -rf build/ install/ log/ &amp;&amp; colcon build。
+
+
+
+
+参考
+ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
+Tutorials: https://docs.ros2.org
+
+]]></content>
+      <categories>
+        <category>ROS2</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>无人机</tag>
+        <tag>接口</tag>
+        <tag>自定义消息</tag>
+        <tag>集群通信</tag>
       </tags>
   </entry>
   <entry>
