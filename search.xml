@@ -1,6 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Jetson Orin NX 从零到一：ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+    <url>/2025/11/11/jetson-orin-nx-ros2-px4-mavros-setup/</url>
+    <content><![CDATA[本文记录在 Jetson Orin NX 上从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建过程，并给出可复制的命令与常见问题提示。
+
+
+🧩 环境信息
+硬件：Jetson Orin NX 开发板
+系统：Ubuntu 22.04（JetPack 对应版本）
+
+🧰 准备工具（推荐）
+Firefox（ARM 设备上更稳定）：
+下载地址：https://github.com/dreamer198/firefox
+
+
+ToDesk（远程桌面）：
+下载地址：https://www.todesk.com/download.html
+
+
+Clash Verge（代理工具，导入订阅后提升下载速度）：
+下载地址：https://clash-verge.org/zh-CN/download
+
+
+
+
+小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
+
+🚀 安装 ROS 2 Humble（Deb 包）官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+
+配置本地化并准备源
+
+locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
+
+
+安装 ROS 2 与开发工具，并写入环境
+
+sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+✈️ 安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
+
+
+如果启动后出现提示：Preflight Fail: No connection to the GCS，可在 MAVLink 控制台中执行：
+param set NAV_DLL_ACT 0
+
+以绕过对地面站的要求。
+
+🔗 安装 MAVROS
+源码仓库：https://github.com/mavlink/mavros
+教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
+
+sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
+
+🧱 创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+
+📦 拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
+
+2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行：
+git clone https://&lt;token&gt;@github.com//dreamer198/onboard.git
+
+安装 JSON 依赖：
+sudo apt-get install -y nlohmann-json3-dev
+
+🛠️ 编译与环境在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 依赖）：
+cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+✅ 运行与测试1) 启动 PX4-Gazebo 仿真cd ~/PX4-Autopilotmake px4_sitl gz_x500
+
+2) 设置环境变量# 无人机编号（用于区分集群中的无人机）echo &quot;export UAV_ID=1&quot; &gt;&gt; ~/.bashrc# 飞控与机载电脑的连接方式（仿真环境）echo &quot;export FCU_URL=\&quot;udp://:14540@127.0.0.1:14557\&quot;&quot; &gt;&gt; ~/.bashrc# 真实飞行中常用串口连接举例（按实际设备名/波特率修改）# FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;source ~/.bashrc
+
+
+说明：集群场景通常不需要设置 ROS_DOMAIN_ID，默认值为 0 即可实现全网通信。
+
+3) 启动机载控制与通信# 启动主控制ros2 launch onboard_control mainTree.launch.py# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
+
+4) 成功判定当状态接收器能够正确显示集群中所有无人机的状态，并按规范在命令发布器中发布指令后，仿真中的无人机能执行相应动作，则表示环境搭建成功。
+🧭 常见问题与备注
+PX4 提示 “Preflight Fail: No connection to the GCS” 时，可设置 NAV_DLL_ACT=0 绕过；正式飞行前请恢复为安全配置。
+onboard 仓库为私有库，需先从作者处获取有效 token 才能 clone。
+若网络下载缓慢，建议先配置代理工具（如 Clash Verge）。
+
+🔗 参考链接
+ROS 2 Humble 官方安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+PX4 官方仓库：https://github.com/PX4/PX4-Autopilot
+MAVROS 官方仓库：https://github.com/mavlink/mavros
+GeographicLib 数据集安装脚本（镜像）：https://gitee.com/tyx6/mytools
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+        <tag>Jetson</tag>
+        <tag>无人机</tag>
+        <tag>环境配置</tag>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>多智能体强化学习在无人机集群中的应用综述</title>
     <url>/2025/11/03/marl-drone-swarm-survey/</url>
     <content><![CDATA[研究背景最近在整理无人机集群协调控制的相关文献，发现多智能体强化学习（Multi-Agent Reinforcement Learning, MARL）在这个领域的应用越来越广泛。
@@ -341,10 +441,10 @@ git commit -m &quot;chore: initial commit&quot;
         <category>技术分享</category>
       </categories>
       <tags>
+        <tag>教程</tag>
         <tag>Git</tag>
         <tag>GitHub</tag>
         <tag>版本控制</tag>
-        <tag>教程</tag>
       </tags>
   </entry>
   <entry>
@@ -432,10 +532,10 @@ PyTorch官方文档
         <category>技术分享</category>
       </categories>
       <tags>
+        <tag>环境配置</tag>
         <tag>PyTorch</tag>
         <tag>GPU</tag>
         <tag>深度学习</tag>
-        <tag>环境配置</tag>
         <tag>踩坑记录</tag>
       </tags>
   </entry>
@@ -536,50 +636,10 @@ Tutorials: https://docs.ros2.org
       </categories>
       <tags>
         <tag>ROS2</tag>
+        <tag>无人机</tag>
         <tag>接口</tag>
         <tag>自定义消息</tag>
-        <tag>无人机</tag>
         <tag>集群通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>开启新的学术之旅</title>
-    <url>/2025/11/03/start-new-journey/</url>
-    <content><![CDATA[新的开始时间过得真快，转眼间已经步入了研究生阶段。无人机集群这个领域充满了挑战和机遇，每天都能感受到知识的广袤和自己的渺小。
-🤔 最近的思考做研究真的是一个痛并快乐着的过程：
-
-📚 看论文时经常被各种数学公式搞得头大
-💡 但偶尔的灵光一现又让人兴奋不已
-🚁 看着仿真中的无人机群协调飞行，有种说不出的成就感
-😅 当然，更多时候是在调试代码中度过…
-
-
-
-💭 关于未来有时候会想，做学术研究到底意味着什么？是为了发论文刷简历，还是真的想为这个世界贡献点什么？
-说实话，刚开始可能更多的是前者，但随着深入了解，越来越觉得无人机集群的研究确实很有意义：
-
-🌍 环境监测、救灾救援
-🏗️ 基础设施检查
-🎬 甚至是创意表演
-
-每当想到自己的研究可能会在某个场景下发挥作用，就觉得熬夜调代码也值得了。
-🎯 小目标
-坚持每周至少读2篇相关论文
-把强化学习的基础打牢
-学会享受研究过程，而不只是结果
-保持好奇心和耐心
-
-希望这个博客能记录下我在学术路上的点点滴滴，包括那些让人头疼的bug和偶尔的小突破。
-毕竟，成长的过程总是充满惊喜的，不是吗？ 😊
-]]></content>
-      <categories>
-        <category>随思随想</category>
-      </categories>
-      <tags>
-        <tag>研究生生活</tag>
-        <tag>学术</tag>
-        <tag>思考</tag>
-        <tag>成长</tag>
       </tags>
   </entry>
   <entry>
@@ -710,6 +770,46 @@ On-policy
         <tag>机器学习</tag>
         <tag>理论基础</tag>
         <tag>算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>开启新的学术之旅</title>
+    <url>/2025/11/03/start-new-journey/</url>
+    <content><![CDATA[新的开始时间过得真快，转眼间已经步入了研究生阶段。无人机集群这个领域充满了挑战和机遇，每天都能感受到知识的广袤和自己的渺小。
+🤔 最近的思考做研究真的是一个痛并快乐着的过程：
+
+📚 看论文时经常被各种数学公式搞得头大
+💡 但偶尔的灵光一现又让人兴奋不已
+🚁 看着仿真中的无人机群协调飞行，有种说不出的成就感
+😅 当然，更多时候是在调试代码中度过…
+
+
+
+💭 关于未来有时候会想，做学术研究到底意味着什么？是为了发论文刷简历，还是真的想为这个世界贡献点什么？
+说实话，刚开始可能更多的是前者，但随着深入了解，越来越觉得无人机集群的研究确实很有意义：
+
+🌍 环境监测、救灾救援
+🏗️ 基础设施检查
+🎬 甚至是创意表演
+
+每当想到自己的研究可能会在某个场景下发挥作用，就觉得熬夜调代码也值得了。
+🎯 小目标
+坚持每周至少读2篇相关论文
+把强化学习的基础打牢
+学会享受研究过程，而不只是结果
+保持好奇心和耐心
+
+希望这个博客能记录下我在学术路上的点点滴滴，包括那些让人头疼的bug和偶尔的小突破。
+毕竟，成长的过程总是充满惊喜的，不是吗？ 😊
+]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>研究生生活</tag>
+        <tag>学术</tag>
+        <tag>思考</tag>
+        <tag>成长</tag>
       </tags>
   </entry>
 </search>
