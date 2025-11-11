@@ -1,114 +1,260 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>多智能体强化学习在无人机集群中的应用综述</title>
-    <url>/2025/11/03/marl-drone-swarm-survey/</url>
-    <content><![CDATA[研究背景最近在整理无人机集群协调控制的相关文献，发现多智能体强化学习（Multi-Agent Reinforcement Learning, MARL）在这个领域的应用越来越广泛。
-🎯 核心问题无人机集群面临的主要挑战：
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/11/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
 
-协调性：如何让多个智能体协同工作
-通信限制：实际环境中的通信延迟和丢包
-环境动态性：复杂多变的飞行环境
-可扩展性：算法能否适应不同规模的集群
-
-
-
-📚 主要研究方向1. 集中式训练分布式执行 (CTDE)代表算法：
-
-MADDPG (Multi-Agent DDPG)
-QMIX
-COMA (Counterfactual Multi-Agent)
-
-优势：
-
-训练时可以利用全局信息
-执行时只需要局部观测
-
-2. 通信学习核心思想：智能体学习何时、如何、与谁通信
-挑战：
-
-通信带宽限制
-通信内容的有效性
-动态网络拓扑
-
-3. 层次化多智能体学习应用场景：
-
-领导者-跟随者模式
-任务分解与分配
-不同层级的决策
-
-🔬 最新进展Transformer在MARL中的应用最近看到几篇将Transformer架构引入多智能体学习的论文，主要解决：
-
-智能体数量可变的问题
-注意力机制帮助建模智能体间关系
-更好的泛化能力
-
-元学习与快速适应
-如何快速适应新的任务和环境
-Few-shot learning在多智能体场景下的应用
-迁移学习的挑战
-
-💡 个人思考理论与实践的gap
-仿真到现实的转移
-
-仿真环境往往过于理想化
-硬件限制在论文中考虑不足
-安全性约束的建模
-
-
-算法复杂度
-
-很多算法计算复杂度过高
-实时性要求与算法性能的平衡
-边缘计算的限制
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
 
 
 
-未来研究方向
-鲁棒性：如何应对智能体故障
-可解释性：让决策过程更透明
-安全学习：在学习过程中保证安全约束
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
 
-📖 推荐阅读
-综述论文：
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
 
-“Multi-Agent Reinforcement Learning: A Selective Overview of Theories and Algorithms”
-“Challenges and Countermeasures for Adversarial Attacks on Deep Reinforcement Learning”
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
 
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
 
-经典算法：
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
 
-MADDPG: Multi-Agent Actor-Critic for Mixed Cooperative-Competitive Environments
-QMIX: Monotonic Value Function Factorisation for Deep Multi-Agent Reinforcement Learning
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
 
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
 
-最新工作：
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
 
-Multi-Agent Transformer for Drone Swarm Control
-Safe Multi-Agent Reinforcement Learning with Natural Language Constraints
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
 
-
-
-🤔 下一步计划
-深入研究通信学习的相关算法
-搭建无人机集群的仿真环境
-尝试复现几个经典算法
-
-感觉这个领域还有很多有趣的问题等着被解决，继续加油！ 🚁
-]]></content>
+一行整合版本：
+hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
       <categories>
-        <category>学术研究</category>
+        <category>随思随想</category>
+        <category>技术分享</category>
       </categories>
       <tags>
-        <tag>多智能体强化学习</tag>
-        <tag>无人机集群</tag>
-        <tag>论文阅读</tag>
-        <tag>MARL</tag>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS2 自定义消息接口</title>
+    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
+
+
+适用环境（示例命令为 Linux + bash）：
+
+ROS 2 Humble
+已创建工作空间 ~/ros2_ws 并包含 src 目录
+构建工具：colcon；构建类型：ament_cmake
+
+五步法总览
+创建接口包（ament_cmake + rosidl）
+在 msg/ 目录编写消息（.msg）
+配置 CMakeLists.txt
+配置 package.xml
+编译并验证接口
+
+
+1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
+–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
+进入包目录并创建接口文件夹：
+cd onboard_msgsmkdir -p msg
+
+
+2) 定义消息（.msg）2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。根据无人机集群业务，定义两类消息：命令与多机状态。msg/OnboardCommand.msg在 msg/OnboardCommand.msg 中：
+uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
+uint16 target_id	# 目标无人机编号在 msg/OnboardState.msg 中：
+uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
+
+建议的包结构（节选）：
+onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
+
+3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
+cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
+
+
+4) 配置 package.xml确保依赖与接口生成组声明完整：
+&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
+
+
+5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
+cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
+
+验证接口是否可见：
+ros2 interface list | grep onboard_msgs
+
+查看具体定义：
+ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
+
+
+CLI 快速试用（发布&#x2F;回显）使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
+发布一条命令到 /uav/cmd：
+ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
+
+回显无人机状态（若已有节点发布到 /uav/state）：
+ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
+
+提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
+
+在其他包中使用该接口（CMake 示例）若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
+find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
+
+并在 package.xml 中添加：
+&lt;depend&gt;onboard_msgs&lt;/depend&gt;
+
+
+常见错误与排查
+忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
+未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
+构建后未 source install/setup.bash → 终端会找不到接口定义。
+CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
+多机&#x2F;多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
+
+
+参考
+ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
+Tutorials: https://docs.ros2.org
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>接口</tag>
+        <tag>自定义消息</tag>
+        <tag>无人机</tag>
+        <tag>集群通信</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录在 Jetson Orin NX 上从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建过程，并给出可复制的命令与常见问题提示。
+
+
+🧩 环境信息
+硬件：Jetson Orin NX 开发板
+系统：Ubuntu 22.04（JetPack 对应版本）
+
+🧰 准备工具（推荐）
+Firefox（ARM 设备上更稳定）：
+下载地址：https://github.com/dreamer198/firefox
+
+
+ToDesk（远程桌面）：
+下载地址：https://www.todesk.com/download.html
+
+
+Clash Verge（代理工具，导入订阅后提升下载速度）：
+下载地址：https://clash-verge.org/zh-CN/download
+
+
+
+
+小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
+
+🚀 安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+
+配置本地化并准备源
+
+locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
+
+
+安装 ROS 2 与开发工具，并写入环境
+
+sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+✈️ 安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
+
+
+如果启动后出现提示：Preflight Fail: No connection to the GCS，可在 MAVLink 控制台中执行：
+param set NAV_DLL_ACT 0
+
+以绕过对地面站的要求。
+
+🔗 安装 MAVROS
+源码仓库：https://github.com/mavlink/mavros
+教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
+
+sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
+
+🧱 创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+
+📦 拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
+
+2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行：
+git clone https://&lt;token&gt;@github.com//dreamer198/onboard.git
+
+安装 JSON 依赖：
+sudo apt-get install -y nlohmann-json3-dev
+
+🛠️ 编译与环境在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 依赖）：
+cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+✅ 运行与测试1) 启动 PX4-Gazebo 仿真cd ~/PX4-Autopilotmake px4_sitl gz_x500
+
+2) 设置环境变量# 无人机编号（用于区分集群中的无人机）echo &quot;export UAV_ID=1&quot; &gt;&gt; ~/.bashrc# 飞控与机载电脑的连接方式（仿真环境）echo &quot;export FCU_URL=\&quot;udp://:14540@127.0.0.1:14557\&quot;&quot; &gt;&gt; ~/.bashrc# 真实飞行中常用串口连接举例（按实际设备名/波特率修改）# FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;source ~/.bashrc
+
+
+说明：集群场景通常不需要设置 ROS_DOMAIN_ID，默认值为 0 即可实现全网通信。
+
+3) 启动机载控制与通信# 启动主控制ros2 launch onboard_control mainTree.launch.py# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
+
+4) 成功判定当状态接收器能够正确显示集群中所有无人机的状态，并按规范在命令发布器中发布指令后，仿真中的无人机能执行相应动作，则表示环境搭建成功。
+🧭 常见问题与备注
+PX4 提示 “Preflight Fail: No connection to the GCS” 时，可设置 NAV_DLL_ACT=0 绕过；正式飞行前请恢复为安全配置。
+onboard 仓库为私有库，需先从作者处获取有效 token 才能 clone。
+若网络下载缓慢，建议先配置代理工具（如 Clash Verge）。
+
+🔗 参考链接
+ROS 2 Humble 官方安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+PX4 官方仓库：https://github.com/PX4/PX4-Autopilot
+MAVROS 官方仓库：https://github.com/mavlink/mavros
+GeographicLib 数据集安装脚本（镜像）：https://gitee.com/tyx6/mytools
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>无人机</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+        <tag>Jetson</tag>
+        <tag>环境配置</tag>
+        <tag>教程</tag>
       </tags>
   </entry>
   <entry>
     <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
-    <url>/2025/11/06/push-local-to-new-github-repo/</url>
+    <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
     <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
 前置条件
 已安装 Git（Linux）
@@ -341,475 +487,10 @@ git commit -m &quot;chore: initial commit&quot;
         <category>技术分享</category>
       </categories>
       <tags>
+        <tag>教程</tag>
         <tag>Git</tag>
         <tag>GitHub</tag>
         <tag>版本控制</tag>
-        <tag>教程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Jetson Orin NX 从零到一：ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
-    <url>/2025/11/11/jetson-orin-nx-ros2-px4-mavros-setup/</url>
-    <content><![CDATA[本文记录在 Jetson Orin NX 上从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建过程，并给出可复制的命令与常见问题提示。
-
-
-🧩 环境信息
-硬件：Jetson Orin NX 开发板
-系统：Ubuntu 22.04（JetPack 对应版本）
-
-🧰 准备工具（推荐）
-Firefox（ARM 设备上更稳定）：
-下载地址：https://github.com/dreamer198/firefox
-
-
-ToDesk（远程桌面）：
-下载地址：https://www.todesk.com/download.html
-
-
-Clash Verge（代理工具，导入订阅后提升下载速度）：
-下载地址：https://clash-verge.org/zh-CN/download
-
-
-
-
-小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
-
-🚀 安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-
-配置本地化并准备源
-
-locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
-
-
-安装 ROS 2 与开发工具，并写入环境
-
-sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-✈️ 安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
-
-
-如果启动后出现提示：Preflight Fail: No connection to the GCS，可在 MAVLink 控制台中执行：
-param set NAV_DLL_ACT 0
-
-以绕过对地面站的要求。
-
-🔗 安装 MAVROS
-源码仓库：https://github.com/mavlink/mavros
-教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
-
-sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
-
-🧱 创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
-
-📦 拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
-
-2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行：
-git clone https://&lt;token&gt;@github.com//dreamer198/onboard.git
-
-安装 JSON 依赖：
-sudo apt-get install -y nlohmann-json3-dev
-
-🛠️ 编译与环境在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 依赖）：
-cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-✅ 运行与测试1) 启动 PX4-Gazebo 仿真cd ~/PX4-Autopilotmake px4_sitl gz_x500
-
-2) 设置环境变量# 无人机编号（用于区分集群中的无人机）echo &quot;export UAV_ID=1&quot; &gt;&gt; ~/.bashrc# 飞控与机载电脑的连接方式（仿真环境）echo &quot;export FCU_URL=\&quot;udp://:14540@127.0.0.1:14557\&quot;&quot; &gt;&gt; ~/.bashrc# 真实飞行中常用串口连接举例（按实际设备名/波特率修改）# FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;source ~/.bashrc
-
-
-说明：集群场景通常不需要设置 ROS_DOMAIN_ID，默认值为 0 即可实现全网通信。
-
-3) 启动机载控制与通信# 启动主控制ros2 launch onboard_control mainTree.launch.py# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
-
-4) 成功判定当状态接收器能够正确显示集群中所有无人机的状态，并按规范在命令发布器中发布指令后，仿真中的无人机能执行相应动作，则表示环境搭建成功。
-🧭 常见问题与备注
-PX4 提示 “Preflight Fail: No connection to the GCS” 时，可设置 NAV_DLL_ACT=0 绕过；正式飞行前请恢复为安全配置。
-onboard 仓库为私有库，需先从作者处获取有效 token 才能 clone。
-若网络下载缓慢，建议先配置代理工具（如 Clash Verge）。
-
-🔗 参考链接
-ROS 2 Humble 官方安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-PX4 官方仓库：https://github.com/PX4/PX4-Autopilot
-MAVROS 官方仓库：https://github.com/mavlink/mavros
-GeographicLib 数据集安装脚本（镜像）：https://gitee.com/tyx6/mytools
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>教程</tag>
-        <tag>ROS2</tag>
-        <tag>PX4</tag>
-        <tag>MAVROS</tag>
-        <tag>Jetson</tag>
-        <tag>无人机</tag>
-        <tag>环境配置</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>解决PyTorch在多GPU环境下的常见问题</title>
-    <url>/2025/11/03/pytorch-multi-gpu-solutions/</url>
-    <content><![CDATA[问题背景最近在搭建多智能体强化学习的训练环境时，遇到了各种PyTorch多GPU的问题。经过一番折腾，总结了一些常见问题和解决方案。
-😅 我踩过的坑刚开始天真地以为只要有多张GPU，PyTorch就会自动利用，结果发现事情远没有那么简单…
-
-
-🔧 常见问题及解决方案1. CUDA版本不匹配问题描述：
-RuntimeError: CUDA error: no kernel image is available for execution on the device
-
-解决方案：
-# 查看CUDA版本nvidia-sminvcc --version# 卸载现有PyTorchpip uninstall torch torchvision torchaudio# 安装对应CUDA版本的PyTorch# 对于CUDA 11.8pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118# 对于CUDA 12.1pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
-
-验证安装：
-import torchprint(f&quot;CUDA available: &#123;torch.cuda.is_available()&#125;&quot;)print(f&quot;CUDA version: &#123;torch.version.cuda&#125;&quot;)print(f&quot;GPU count: &#123;torch.cuda.device_count()&#125;&quot;)
-
-2. 内存不足问题问题描述：
-RuntimeError: CUDA out of memory
-
-解决方案：
-方法1：减小batch size# 之前batch_size = 64# 修改后batch_size = 32  # 或者更小
-
-方法2：梯度累积accumulation_steps = 4optimizer.zero_grad()for i, (inputs, labels) in enumerate(dataloader):    outputs = model(inputs)    loss = criterion(outputs, labels)    loss = loss / accumulation_steps  # 归一化损失    loss.backward()        if (i + 1) % accumulation_steps == 0:        optimizer.step()        optimizer.zero_grad()
-
-方法3：清理GPU缓存import torchimport gc# 在训练循环中定期清理if batch_idx % 100 == 0:    torch.cuda.empty_cache()    gc.collect()
-
-3. DataParallel vs DistributedDataParallel**问题：**选择哪种并行方式？
-DataParallel（简单但效率低）：
-if torch.cuda.device_count() &gt; 1:    model = torch.nn.DataParallel(model)model.to(device)
-
-DistributedDataParallel（推荐）：
-import torch.distributed as distfrom torch.nn.parallel import DistributedDataParallel as DDP# 初始化进程组def setup(rank, world_size):    os.environ[&#x27;MASTER_ADDR&#x27;] = &#x27;localhost&#x27;    os.environ[&#x27;MASTER_PORT&#x27;] = &#x27;12355&#x27;    dist.init_process_group(&quot;nccl&quot;, rank=rank, world_size=world_size)# 包装模型model = model.to(rank)model = DDP(model, device_ids=[rank])
-
-4. 混合精度训练**问题：**训练速度慢，GPU利用率不高
-解决方案：
-from torch.cuda.amp import autocast, GradScalermodel = model.to(device)scaler = GradScaler()for inputs, labels in dataloader:    optimizer.zero_grad()        with autocast():        outputs = model(inputs)        loss = criterion(outputs, labels)        scaler.scale(loss).backward()    scaler.step(optimizer)    scaler.update()
-
-5. 环境变量配置常用的CUDA环境变量：
-# 控制可见GPUexport CUDA_VISIBLE_DEVICES=0,1,2,3# 内存增长策略export PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:128# 调试信息export CUDA_LAUNCH_BLOCKING=1
-
-🛠️ 调试技巧1. 监控GPU使用情况# 实时监控watch -n 1 nvidia-smi# 或者使用Pythonimport GPUtilGPUtil.showUtilization()
-
-2. 检查内存泄漏import torchdef check_memory():    if torch.cuda.is_available():        print(f&quot;Allocated: &#123;torch.cuda.memory_allocated() / 1024**3:.2f&#125; GB&quot;)        print(f&quot;Reserved: &#123;torch.cuda.memory_reserved() / 1024**3:.2f&#125; GB&quot;)# 在训练循环中定期调用check_memory()
-
-3. 性能分析import torch.profiler as profilerwith profiler.profile(    activities=[profiler.ProfilerActivity.CPU, profiler.ProfilerActivity.CUDA],    record_shapes=True,    profile_memory=True,    with_stack=True) as prof:    # 你的训练代码    passprint(prof.key_averages().table(sort_by=&quot;cuda_time_total&quot;, row_limit=10))
-
-📝 最佳实践总结
-环境配置：
-
-确保CUDA、PyTorch版本匹配
-使用conda管理环境更稳定
-
-
-内存管理：
-
-适当的batch size
-定期清理GPU缓存
-使用混合精度训练
-
-
-并行策略：
-
-小规模实验用DataParallel
-大规模训练用DistributedDataParallel
-
-
-调试习惯：
-
-先在单GPU上验证代码
-使用小数据集测试并行效果
-监控GPU利用率和内存使用
-
-
-
-希望这些经验能帮大家少踩一些坑！ 😄
-🔗 参考资源
-PyTorch官方文档
-分布式训练教程
-性能调优指南
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>环境配置</tag>
-        <tag>PyTorch</tag>
-        <tag>GPU</tag>
-        <tag>深度学习</tag>
-        <tag>踩坑记录</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>强化学习基础理论总结</title>
-    <url>/2025/11/03/reinforcement-learning-fundamentals/</url>
-    <content><![CDATA[强化学习概述强化学习（Reinforcement Learning, RL）是机器学习的一个重要分支，通过智能体与环境的交互来学习最优策略。
-🎯 核心概念基本要素：
-
-智能体（Agent）：学习和决策的主体
-环境（Environment）：智能体所处的外部世界
-状态（State）：环境的当前情况
-动作（Action）：智能体可以执行的操作
-奖励（Reward）：环境对智能体动作的反馈
-
-
-
-📊 马尔可夫决策过程（MDP）强化学习问题通常建模为马尔可夫决策过程：
-定义： MDP &#x3D; (S, A, P, R, γ)
-
-S: 状态空间
-A: 动作空间  
-P: 状态转移概率 P(s’|s,a)
-R: 奖励函数 R(s,a,s’)
-γ: 折扣因子 (0 ≤ γ ≤ 1)
-
-马尔可夫性质：
-P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a, S_&#123;t-1&#125;, A_&#123;t-1&#125;, ..., S_0, A_0) = P(S_&#123;t+1&#125; = s&#x27; | S_t = s, A_t = a)
-
-🎲 价值函数状态价值函数V^π(s) = E_π[G_t | S_t = s] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s]
-
-动作价值函数（Q函数）Q^π(s,a) = E_π[G_t | S_t = s, A_t = a] = E_π[∑_&#123;k=0&#125;^∞ γ^k R_&#123;t+k+1&#125; | S_t = s, A_t = a]
-
-贝尔曼方程状态价值函数的贝尔曼方程：
-V^π(s) = ∑_a π(a|s) ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γV^π(s&#x27;)]
-
-Q函数的贝尔曼方程：
-Q^π(s,a) = ∑_&#123;s&#x27;&#125; P(s&#x27;|s,a)[R(s,a,s&#x27;) + γ ∑_&#123;a&#x27;&#125; π(a&#x27;|s&#x27;)Q^π(s&#x27;,a&#x27;)]
-
-🧮 经典算法1. 动态规划策略评估（Policy Evaluation）def policy_evaluation(policy, env, theta=1e-6, gamma=0.9):    V = np.zeros(env.nS)    while True:        delta = 0        for s in range(env.nS):            v = V[s]            V[s] = sum([policy[s][a] * sum([p * (r + gamma * V[s_])                        for p, s_, r, _ in env.P[s][a]])                        for a in range(env.nA)])            delta = max(delta, abs(v - V[s]))        if delta &lt; theta:            break    return V
-
-策略改进（Policy Improvement）def policy_improvement(V, env, gamma=0.9):    policy = np.zeros([env.nS, env.nA]) / env.nA    for s in range(env.nS):        action_values = np.zeros(env.nA)        for a in range(env.nA):            action_values[a] = sum([p * (r + gamma * V[s_])                                   for p, s_, r, _ in env.P[s][a]])        best_action = np.argmax(action_values)        policy[s] = np.eye(env.nA)[best_action]    return policy
-
-2. 蒙特卡洛方法First-Visit MCdef first_visit_mc_prediction(policy, env, num_episodes, gamma=0.9):    V = defaultdict(float)    returns = defaultdict(list)        for episode in range(num_episodes):        states, actions, rewards = generate_episode(policy, env)        G = 0        visited = set()                for t in reversed(range(len(states))):            G = gamma * G + rewards[t]            if states[t] not in visited:                returns[states[t]].append(G)                V[states[t]] = np.mean(returns[states[t]])                visited.add(states[t])        return V
-
-3. 时序差分学习TD(0)def td_prediction(policy, env, num_episodes, alpha=0.1, gamma=0.9):    V = defaultdict(float)        for episode in range(num_episodes):        state = env.reset()        while True:            action = choose_action(policy, state)            next_state, reward, done, _ = env.step(action)                        # TD更新            V[state] += alpha * (reward + gamma * V[next_state] - V[state])                        if done:                break            state = next_state        return V
-
-Q-Learningdef q_learning(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        while True:            # ε-贪心策略            if random.random() &lt; epsilon:                action = env.action_space.sample()            else:                action = np.argmax(Q[state])                        next_state, reward, done, _ = env.step(action)                        # Q-Learning更新            Q[state][action] += alpha * (                reward + gamma * np.max(Q[next_state]) - Q[state][action]            )                        if done:                break            state = next_state        return Q
-
-SARSAdef sarsa(env, num_episodes, alpha=0.1, gamma=0.9, epsilon=0.1):    Q = defaultdict(lambda: np.zeros(env.action_space.n))        for episode in range(num_episodes):        state = env.reset()        action = epsilon_greedy_action(Q, state, epsilon)                while True:            next_state, reward, done, _ = env.step(action)            next_action = epsilon_greedy_action(Q, next_state, epsilon)                        # SARSA更新            Q[state][action] += alpha * (                reward + gamma * Q[next_state][next_action] - Q[state][action]            )                        if done:                break            state, action = next_state, next_action        return Q
-
-🚀 深度强化学习DQN核心思想经验回放（Experience Replay）：
-class ReplayBuffer:    def __init__(self, capacity):        self.buffer = deque(maxlen=capacity)        def add(self, state, action, reward, next_state, done):        self.buffer.append((state, action, reward, next_state, done))        def sample(self, batch_size):        return random.sample(self.buffer, batch_size)
-
-目标网络（Target Network）：
-# 主网络q_network = DQN(state_size, action_size)# 目标网络target_network = DQN(state_size, action_size)# 定期更新目标网络if step % update_target == 0:    target_network.load_state_dict(q_network.state_dict())
-
-Policy Gradient基础REINFORCE算法：
-def reinforce(policy_net, optimizer, episode):    log_probs = []    rewards = []        # 收集一个episode的数据    state = env.reset()    while True:        action_probs = policy_net(state)        action = torch.multinomial(action_probs, 1)        log_prob = torch.log(action_probs[action])                next_state, reward, done, _ = env.step(action.item())        log_probs.append(log_prob)        rewards.append(reward)                if done:            break        state = next_state        # 计算累积奖励    discounted_rewards = []    G = 0    for r in reversed(rewards):        G = r + gamma * G        discounted_rewards.insert(0, G)        # 策略梯度更新    policy_loss = []    for log_prob, G in zip(log_probs, discounted_rewards):        policy_loss.append(-log_prob * G)        optimizer.zero_grad()    loss = torch.stack(policy_loss).sum()    loss.backward()    optimizer.step()
-
-📝 学习要点总结理论基础
-MDP框架：理解状态、动作、奖励、转移概率
-贝尔曼方程：价值函数的递推关系
-最优性原理：最优策略的性质
-
-算法对比
-
-
-算法
-类型
-学习方式
-适用场景
-
-
-
-动态规划
-Model-based
-精确计算
-小状态空间，已知模型
-
-
-蒙特卡洛
-Model-free
-完整回合
-回合制任务
-
-
-TD学习
-Model-free
-单步更新
-连续任务
-
-
-Q-Learning
-Off-policy
-异策略
-探索要求高
-
-
-SARSA
-On-policy
-同策略
-安全性要求高
-
-
-实践建议
-调参技巧：
-
-学习率α：影响收敛速度和稳定性
-折扣因子γ：平衡短期和长期奖励
-探索率ε：平衡探索和利用
-
-
-算法选择：
-
-状态空间小：表格型方法
-状态空间大：函数近似方法
-连续控制：Actor-Critic方法
-
-
-
-强化学习是一个理论性很强但应用广泛的领域，需要理论学习和实践相结合！ 🎯
-]]></content>
-      <categories>
-        <category>学习笔记</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-        <tag>机器学习</tag>
-        <tag>理论基础</tag>
-        <tag>算法</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ROS2 自定义消息接口</title>
-    <url>/2025/11/05/ros2-custom-interfaces/</url>
-    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始带你完成 ROS2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终你将得到一个接口包 onboard_interfaces，内含三类消息：SwarmCommand、SwarmParam、SwarmState。
-适用环境（示例命令为 Linux + bash）：
-
-ROS 2 Humble
-已创建工作空间 ~/ros2_ws 并包含 src 目录
-构建工具：colcon；构建类型：ament_cmake
-
-
-五步法总览
-创建接口包（ament_cmake + rosidl）
-在 msg/ 目录编写消息（.msg）
-配置 CMakeLists.txt
-配置 package.xml
-编译并验证接口
-
-
-1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_interfaces \  --build-type ament_cmake \  --dependencies rosidl_default_generators std_msgs geometry_msgs \  --license Apache-2.0
-
-进入包目录并创建接口文件夹：
-cd onboard_interfacesmkdir -p msg
-
-
-2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。
-msg/SwarmParam.msg
-# 参数名string key# 参数类型（枚举）uint8  typeuint8  TYPE_FLOAT=1uint8  TYPE_INT=2uint8  TYPE_BOOL=3uint8  TYPE_STRING=4# 各类型对应的取值槽（仅取其一）float64 fint64   ibool    bstring  s
-
-msg/SwarmCommand.msg
-# 寻址：点名单机；0=广播uint16 target_id# 命令名：如 &#x27;goto&#x27; | &#x27;takeoff&#x27; | &#x27;land&#x27; | &#x27;arm&#x27; | &#x27;set_mode&#x27; ...string name# 参数表：按命令名取用所需键SwarmParam[] params
-
-msg/SwarmState.msg
-# 时间戳与坐标系std_msgs/Header header    # stamp=状态时间, frame_id 可设为 &quot;map&quot;# 本机ID（=PX4 SYSID 或业务定义）uint16 uav_id# 关键状态geometry_msgs/PoseStamped posebool   armeduint8  flight_mode        # 简易枚举（见下常量）bool   reached            # 到点事件：到达当帧=true，之后恢复falsestring reach_reason       # &quot;ok&quot; | &quot;timeout&quot; | &quot;preempted&quot; | &quot;&quot;（可选说明）# flight_mode 建议常量（枚举）uint8 MODE_MANUAL=0uint8 MODE_POSCTL=1uint8 MODE_OFFBOARD=2uint8 MODE_AUTO_MISSION=3uint8 MODE_AUTO_LOITER=4uint8 MODE_RTL=5uint8 MODE_LAND=6
-
-小贴士：
-
-数组使用 [] 表示动态长度，例如 SwarmParam[]。
-可以复用标准消息，如 std_msgs/Header、geometry_msgs/PoseStamped。
-字段注释用 #，用于生成文档时也很有帮助。
-
-
-3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
-cmake_minimum_required(VERSION 3.8)project(onboard_interfaces)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)find_package(std_msgs REQUIRED)find_package(geometry_msgs REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/SwarmParam.msg&quot;  &quot;msg/SwarmCommand.msg&quot;  &quot;msg/SwarmState.msg&quot;  DEPENDENCIES std_msgs geometry_msgs)ament_package()
-
-
-4) 配置 package.xml确保依赖与接口生成组声明完整：
-&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_interfaces&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;UAV swarm custom message interfaces&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;depend&gt;std_msgs&lt;/depend&gt;  &lt;depend&gt;geometry_msgs&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
-
-
-5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
-cd ~/ros2_wscolcon build --packages-select onboard_interfacessource install/setup.bash
-
-验证接口是否可见：
-ros2 interface list | grep onboard_interfaces
-
-查看具体定义：
-ros2 interface show onboard_interfaces/msg/SwarmCommandros2 interface show onboard_interfaces/msg/SwarmParamros2 interface show onboard_interfaces/msg/SwarmState
-
-
-最佳实践与设计建议
-文件命名使用 CamelCase，如 SwarmCommand.msg。
-为状态类消息加上 std_msgs/Header（时间戳与坐标系一致）。
-用常量模拟枚举，避免魔法数字，并在文档中收敛取值范围。
-参数容器（如 SwarmParam）要约定唯一取值通道，避免同时赋多种类型。
-接口发布后尽量保持兼容：新增字段放末尾，保留旧字段语义。
-
-
-常见问题与排查
-构建通过但找不到接口：没有加载环境。
-解决：source ~/ros2_ws/install/setup.bash（每个新终端都需要）。
-
-
-生成失败：缺少依赖或写错包名。
-解决：检查 CMakeLists.txt&#x2F;package.xml 的 std_msgs、geometry_msgs、rosidl_* 依赖是否齐全。
-
-
-发布&#x2F;回显报字段错误：YAML 字段名或类型不匹配。
-解决：使用 ros2 interface show onboard_interfaces/msg/SwarmCommand 对照校验。
-
-
-旧构建缓存导致异常：
-解决：清理并重建：rm -rf build/ install/ log/ &amp;&amp; colcon build。
-
-
-
-
-参考
-ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
-Tutorials: https://docs.ros2.org
-
-]]></content>
-      <categories>
-        <category>ROS2</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>无人机</tag>
-        <tag>接口</tag>
-        <tag>自定义消息</tag>
-        <tag>集群通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>开启新的学术之旅</title>
-    <url>/2025/11/03/start-new-journey/</url>
-    <content><![CDATA[新的开始时间过得真快，转眼间已经步入了研究生阶段。无人机集群这个领域充满了挑战和机遇，每天都能感受到知识的广袤和自己的渺小。
-🤔 最近的思考做研究真的是一个痛并快乐着的过程：
-
-📚 看论文时经常被各种数学公式搞得头大
-💡 但偶尔的灵光一现又让人兴奋不已
-🚁 看着仿真中的无人机群协调飞行，有种说不出的成就感
-😅 当然，更多时候是在调试代码中度过…
-
-
-
-💭 关于未来有时候会想，做学术研究到底意味着什么？是为了发论文刷简历，还是真的想为这个世界贡献点什么？
-说实话，刚开始可能更多的是前者，但随着深入了解，越来越觉得无人机集群的研究确实很有意义：
-
-🌍 环境监测、救灾救援
-🏗️ 基础设施检查
-🎬 甚至是创意表演
-
-每当想到自己的研究可能会在某个场景下发挥作用，就觉得熬夜调代码也值得了。
-🎯 小目标
-坚持每周至少读2篇相关论文
-把强化学习的基础打牢
-学会享受研究过程，而不只是结果
-保持好奇心和耐心
-
-希望这个博客能记录下我在学术路上的点点滴滴，包括那些让人头疼的bug和偶尔的小突破。
-毕竟，成长的过程总是充满惊喜的，不是吗？ 😊
-]]></content>
-      <categories>
-        <category>随思随想</category>
-      </categories>
-      <tags>
-        <tag>研究生生活</tag>
-        <tag>学术</tag>
-        <tag>思考</tag>
-        <tag>成长</tag>
       </tags>
   </entry>
 </search>
