@@ -1,6 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
+
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
+
+
+
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
+
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
+
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
+
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
+
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
+
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
+
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
+
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
+
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+
+一行整合版本：
+hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
     <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
     <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
@@ -239,65 +298,6 @@ git commit -m &quot;chore: initial commit&quot;
         <tag>GitHub</tag>
         <tag>版本控制</tag>
         <tag>教程</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客搭建过程记录</title>
-    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
-本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
-
-1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
-2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
-3. 技术栈与主题美化
-框架：Hexo
-主题：Butterfly
-美化动作：
-调整主题主色与背景图片
-自定义个人简介页面（借助 GPT 快速生成前端结构）
-优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
-Tag 页面与 Category 页面样式微调
-
-
-
-4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
-
-额外运维成本与时间投入不划算
-博客主要是“自用记录”，对性能与动态能力需求低
-服务器费用不必要
-
-最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
-
-缺点：图片首次加载稍慢
-优点：免服务器、配置简单、可持续维护
-
-5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
-
-建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
-每次写新文章：生成、部署后，再推送源码仓库保持同步
-
-虽然步骤多一点，但可用性与安全性更高。
-6. 当前写作与发布流程写新博客的操作顺序：
-
-在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
-准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
-在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
-本地预览或直接生成 + 部署
-
-7. 常用命令合集分步骤执行：
-hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
-
-一行整合版本：
-hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
-      <categories>
-        <category>随思随想</category>
-      </categories>
-      <tags>
-        <tag>Blog</tag>
-        <tag>Hexo</tag>
-        <tag>Butterfly</tag>
-        <tag>GitHub Pages</tag>
-        <tag>域名</tag>
       </tags>
   </entry>
   <entry>
