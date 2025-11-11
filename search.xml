@@ -1,258 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>博客搭建过程记录</title>
-    <url>/2025/11/11/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
-本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
-
-1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
-2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
-3. 技术栈与主题美化
-框架：Hexo
-主题：Butterfly
-美化动作：
-调整主题主色与背景图片
-自定义个人简介页面（借助 GPT 快速生成前端结构）
-优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
-Tag 页面与 Category 页面样式微调
-
-
-
-4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
-
-额外运维成本与时间投入不划算
-博客主要是“自用记录”，对性能与动态能力需求低
-服务器费用不必要
-
-最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
-
-缺点：图片首次加载稍慢
-优点：免服务器、配置简单、可持续维护
-
-5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
-
-建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
-每次写新文章：生成、部署后，再推送源码仓库保持同步
-
-虽然步骤多一点，但可用性与安全性更高。
-6. 当前写作与发布流程写新博客的操作顺序：
-
-在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
-准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
-在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
-本地预览或直接生成 + 部署
-
-7. 常用命令合集分步骤执行：
-hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
-
-一行整合版本：
-hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
-      <categories>
-        <category>随思随想</category>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Blog</tag>
-        <tag>Hexo</tag>
-        <tag>Butterfly</tag>
-        <tag>GitHub Pages</tag>
-        <tag>域名</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ROS2 自定义消息接口</title>
-    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
-
-
-适用环境（示例命令为 Linux + bash）：
-
-ROS 2 Humble
-已创建工作空间 ~/ros2_ws 并包含 src 目录
-构建工具：colcon；构建类型：ament_cmake
-
-五步法总览
-创建接口包（ament_cmake + rosidl）
-在 msg/ 目录编写消息（.msg）
-配置 CMakeLists.txt
-配置 package.xml
-编译并验证接口
-
-
-1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
-–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
-进入包目录并创建接口文件夹：
-cd onboard_msgsmkdir -p msg
-
-
-2) 定义消息（.msg）2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。根据无人机集群业务，定义两类消息：命令与多机状态。msg/OnboardCommand.msg在 msg/OnboardCommand.msg 中：
-uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
-uint16 target_id	# 目标无人机编号在 msg/OnboardState.msg 中：
-uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
-
-建议的包结构（节选）：
-onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
-
-3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
-cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
-
-
-4) 配置 package.xml确保依赖与接口生成组声明完整：
-&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
-
-
-5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
-cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
-
-验证接口是否可见：
-ros2 interface list | grep onboard_msgs
-
-查看具体定义：
-ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
-
-
-CLI 快速试用（发布&#x2F;回显）使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
-发布一条命令到 /uav/cmd：
-ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
-
-回显无人机状态（若已有节点发布到 /uav/state）：
-ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
-
-提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
-
-在其他包中使用该接口（CMake 示例）若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
-find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
-
-并在 package.xml 中添加：
-&lt;depend&gt;onboard_msgs&lt;/depend&gt;
-
-
-常见错误与排查
-忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
-未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
-构建后未 source install/setup.bash → 终端会找不到接口定义。
-CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
-多机&#x2F;多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
-
-
-参考
-ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
-Tutorials: https://docs.ros2.org
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>接口</tag>
-        <tag>自定义消息</tag>
-        <tag>无人机</tag>
-        <tag>集群通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
-    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[本文记录在 Jetson Orin NX 上从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建过程，并给出可复制的命令与常见问题提示。
-
-
-🧩 环境信息
-硬件：Jetson Orin NX 开发板
-系统：Ubuntu 22.04（JetPack 对应版本）
-
-🧰 准备工具（推荐）
-Firefox（ARM 设备上更稳定）：
-下载地址：https://github.com/dreamer198/firefox
-
-
-ToDesk（远程桌面）：
-下载地址：https://www.todesk.com/download.html
-
-
-Clash Verge（代理工具，导入订阅后提升下载速度）：
-下载地址：https://clash-verge.org/zh-CN/download
-
-
-
-
-小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
-
-🚀 安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-
-配置本地化并准备源
-
-locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
-
-
-安装 ROS 2 与开发工具，并写入环境
-
-sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-✈️ 安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
-
-
-如果启动后出现提示：Preflight Fail: No connection to the GCS，可在 MAVLink 控制台中执行：
-param set NAV_DLL_ACT 0
-
-以绕过对地面站的要求。
-
-🔗 安装 MAVROS
-源码仓库：https://github.com/mavlink/mavros
-教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
-
-sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
-
-🧱 创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
-
-📦 拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
-
-2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行：
-git clone https://&lt;token&gt;@github.com//dreamer198/onboard.git
-
-安装 JSON 依赖：
-sudo apt-get install -y nlohmann-json3-dev
-
-🛠️ 编译与环境在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 依赖）：
-cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-✅ 运行与测试1) 启动 PX4-Gazebo 仿真cd ~/PX4-Autopilotmake px4_sitl gz_x500
-
-2) 设置环境变量# 无人机编号（用于区分集群中的无人机）echo &quot;export UAV_ID=1&quot; &gt;&gt; ~/.bashrc# 飞控与机载电脑的连接方式（仿真环境）echo &quot;export FCU_URL=\&quot;udp://:14540@127.0.0.1:14557\&quot;&quot; &gt;&gt; ~/.bashrc# 真实飞行中常用串口连接举例（按实际设备名/波特率修改）# FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;source ~/.bashrc
-
-
-说明：集群场景通常不需要设置 ROS_DOMAIN_ID，默认值为 0 即可实现全网通信。
-
-3) 启动机载控制与通信# 启动主控制ros2 launch onboard_control mainTree.launch.py# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
-
-4) 成功判定当状态接收器能够正确显示集群中所有无人机的状态，并按规范在命令发布器中发布指令后，仿真中的无人机能执行相应动作，则表示环境搭建成功。
-🧭 常见问题与备注
-PX4 提示 “Preflight Fail: No connection to the GCS” 时，可设置 NAV_DLL_ACT=0 绕过；正式飞行前请恢复为安全配置。
-onboard 仓库为私有库，需先从作者处获取有效 token 才能 clone。
-若网络下载缓慢，建议先配置代理工具（如 Clash Verge）。
-
-🔗 参考链接
-ROS 2 Humble 官方安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-PX4 官方仓库：https://github.com/PX4/PX4-Autopilot
-MAVROS 官方仓库：https://github.com/mavlink/mavros
-GeographicLib 数据集安装脚本（镜像）：https://gitee.com/tyx6/mytools
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>无人机</tag>
-        <tag>PX4</tag>
-        <tag>MAVROS</tag>
-        <tag>Jetson</tag>
-        <tag>环境配置</tag>
-        <tag>教程</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
     <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
     <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
@@ -487,10 +235,261 @@ git commit -m &quot;chore: initial commit&quot;
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>教程</tag>
         <tag>Git</tag>
         <tag>GitHub</tag>
         <tag>版本控制</tag>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
+
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
+
+
+
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
+
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
+
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
+
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
+
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
+
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
+
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
+
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
+
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+
+一行整合版本：
+hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录在 Jetson Orin NX 上从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建过程，并给出可复制的命令与常见问题提示。
+
+
+🧩 环境信息
+硬件：Jetson Orin NX 开发板
+系统：Ubuntu 22.04（JetPack 对应版本）
+
+🧰 准备工具（推荐）
+Firefox（ARM 设备上更稳定）：
+下载地址：https://github.com/dreamer198/firefox
+
+
+ToDesk（远程桌面）：
+下载地址：https://www.todesk.com/download.html
+
+
+Clash Verge（代理工具，导入订阅后提升下载速度）：
+下载地址：https://clash-verge.org/zh-CN/download
+
+
+
+
+小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
+
+🚀 安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+
+配置本地化并准备源
+
+locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
+
+
+安装 ROS 2 与开发工具，并写入环境
+
+sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+✈️ 安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
+
+
+如果启动后出现提示：Preflight Fail: No connection to the GCS，可在 MAVLink 控制台中执行：
+param set NAV_DLL_ACT 0
+
+以绕过对地面站的要求。
+
+🔗 安装 MAVROS
+源码仓库：https://github.com/mavlink/mavros
+教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
+
+sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
+
+🧱 创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+
+📦 拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
+
+2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行：
+git clone https://&lt;token&gt;@github.com//dreamer198/onboard.git
+
+安装 JSON 依赖：
+sudo apt-get install -y nlohmann-json3-dev
+
+🛠️ 编译与环境在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 依赖）：
+cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+✅ 运行与测试1) 启动 PX4-Gazebo 仿真cd ~/PX4-Autopilotmake px4_sitl gz_x500
+
+2) 设置环境变量# 无人机编号（用于区分集群中的无人机）echo &quot;export UAV_ID=1&quot; &gt;&gt; ~/.bashrc# 飞控与机载电脑的连接方式（仿真环境）echo &quot;export FCU_URL=\&quot;udp://:14540@127.0.0.1:14557\&quot;&quot; &gt;&gt; ~/.bashrc# 真实飞行中常用串口连接举例（按实际设备名/波特率修改）# FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;source ~/.bashrc
+
+
+说明：集群场景通常不需要设置 ROS_DOMAIN_ID，默认值为 0 即可实现全网通信。
+
+3) 启动机载控制与通信# 启动主控制ros2 launch onboard_control mainTree.launch.py# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
+
+4) 成功判定当状态接收器能够正确显示集群中所有无人机的状态，并按规范在命令发布器中发布指令后，仿真中的无人机能执行相应动作，则表示环境搭建成功。
+🧭 常见问题与备注
+PX4 提示 “Preflight Fail: No connection to the GCS” 时，可设置 NAV_DLL_ACT=0 绕过；正式飞行前请恢复为安全配置。
+onboard 仓库为私有库，需先从作者处获取有效 token 才能 clone。
+若网络下载缓慢，建议先配置代理工具（如 Clash Verge）。
+
+🔗 参考链接
+ROS 2 Humble 官方安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+PX4 官方仓库：https://github.com/PX4/PX4-Autopilot
+MAVROS 官方仓库：https://github.com/mavlink/mavros
+GeographicLib 数据集安装脚本（镜像）：https://gitee.com/tyx6/mytools
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>ROS2</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+        <tag>Jetson</tag>
+        <tag>无人机</tag>
+        <tag>环境配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS2 自定义消息接口</title>
+    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
+
+
+适用环境（示例命令为 Linux + bash）：
+
+ROS 2 Humble
+已创建工作空间 ~/ros2_ws 并包含 src 目录
+构建工具：colcon；构建类型：ament_cmake
+
+五步法总览
+创建接口包（ament_cmake + rosidl）
+在 msg/ 目录编写消息（.msg）
+配置 CMakeLists.txt
+配置 package.xml
+编译并验证接口
+
+
+1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
+–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
+进入包目录并创建接口文件夹：
+cd onboard_msgsmkdir -p msg
+
+
+2) 定义消息（.msg）2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。根据无人机集群业务，定义两类消息：命令与多机状态。msg/OnboardCommand.msg在 msg/OnboardCommand.msg 中：
+uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
+uint16 target_id	# 目标无人机编号在 msg/OnboardState.msg 中：
+uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
+
+建议的包结构（节选）：
+onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
+
+3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
+cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
+
+
+4) 配置 package.xml确保依赖与接口生成组声明完整：
+&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
+
+
+5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
+cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
+
+验证接口是否可见：
+ros2 interface list | grep onboard_msgs
+
+查看具体定义：
+ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
+
+
+CLI 快速试用（发布&#x2F;回显）使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
+发布一条命令到 /uav/cmd：
+ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
+
+回显无人机状态（若已有节点发布到 /uav/state）：
+ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
+
+提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
+
+在其他包中使用该接口（CMake 示例）若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
+find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
+
+并在 package.xml 中添加：
+&lt;depend&gt;onboard_msgs&lt;/depend&gt;
+
+
+常见错误与排查
+忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
+未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
+构建后未 source install/setup.bash → 终端会找不到接口定义。
+CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
+多机&#x2F;多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
+
+
+参考
+ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
+Tutorials: https://docs.ros2.org
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>无人机</tag>
+        <tag>接口</tag>
+        <tag>自定义消息</tag>
+        <tag>集群通信</tag>
       </tags>
   </entry>
 </search>
