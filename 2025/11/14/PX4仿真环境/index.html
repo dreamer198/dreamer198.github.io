@@ -1,0 +1,292 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南 | Dreamer Island</title><meta name="author" content="Dreamer"><meta name="copyright" content="Dreamer"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="概述本文整理了使用 PX4 + Gazebo + MAVROS + Onboard 控制程序进行单机与多机仿真，以及对应的实测（真实飞控硬件）启动命令与注意事项。适合快速搭建与验证多机集群控制链路。包含四种场景：  单机仿真 多机仿真（PX4 SITL 多实例） 单机实测（连接真实飞控） 多机实测（多块飞控 + 多机载电脑）  环境说明 PX4 版本：SITL，使用 px4_sitl_defaul">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南">
+<meta property="og:url" content="https://dreamer198.top/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/">
+<meta property="og:site_name" content="Dreamer Island">
+<meta property="og:description" content="概述本文整理了使用 PX4 + Gazebo + MAVROS + Onboard 控制程序进行单机与多机仿真，以及对应的实测（真实飞控硬件）启动命令与注意事项。适合快速搭建与验证多机集群控制链路。包含四种场景：  单机仿真 多机仿真（PX4 SITL 多实例） 单机实测（连接真实飞控） 多机实测（多块飞控 + 多机载电脑）  环境说明 PX4 版本：SITL，使用 px4_sitl_defaul">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dreamer198.top/img/12.jpg">
+<meta property="article:published_time" content="2025-11-14T02:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-14T03:53:25.689Z">
+<meta property="article:author" content="Dreamer">
+<meta property="article:tag" content="Gazebo">
+<meta property="article:tag" content="MAVROS">
+<meta property="article:tag" content="PX4">
+<meta property="article:tag" content="ROS2">
+<meta property="article:tag" content="多机">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dreamer198.top/img/12.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南",
+  "url": "https://dreamer198.top/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/",
+  "image": "https://dreamer198.top/img/12.jpg",
+  "datePublished": "2025-11-14T02:00:00.000Z",
+  "dateModified": "2025-11-14T03:53:25.689Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Dreamer",
+      "url": "https://github.com/dreamer198"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://dreamer198.top/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1B5E20')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/12.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Dreamer Island</span></a><a class="nav-page-title" href="/"><span class="site-name">PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-14T02:00:00.000Z" title="发表于 2025-11-14 10:00:00">2025-11-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-14T03:53:25.689Z" title="更新于 2025-11-14 11:53:25">2025-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/">技术分享</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">958</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>本文整理了使用 PX4 + Gazebo + MAVROS + Onboard 控制程序进行单机与多机仿真，以及对应的实测（真实飞控硬件）启动命令与注意事项。适合快速搭建与验证多机集群控制链路。包含四种场景：</p>
+<ol>
+<li>单机仿真</li>
+<li>多机仿真（PX4 SITL 多实例）</li>
+<li>单机实测（连接真实飞控）</li>
+<li>多机实测（多块飞控 + 多机载电脑）</li>
+</ol>
+<h2 id="环境说明"><a href="#环境说明" class="headerlink" title="环境说明"></a>环境说明</h2><ul>
+<li>PX4 版本：SITL，使用 <code>px4_sitl_default</code> 构建。</li>
+<li>Gazebo：使用 PX4 官方支持的 Gazebo (可能是 classic 或 Garden，命令中使用 <code>gz_x500</code> 模型)。</li>
+<li>ROS 版本：ROS 2（适配 MAVROS2 &#x2F; onboard 控制程序）。</li>
+<li>地面站：QGroundControl (QGC) 用于设置真实飞控的 <code>MAV_SYS_ID</code>。</li>
+</ul>
+<blockquote>
+<p>说明：多实例仿真中通过环境变量和 <code>-i</code> 指定 PX4 实例编号，该编号会映射为对应的 MAV 系统 ID。MAVROS 端通过 <code>fcu_url</code> 指定与 PX4 通信的 UDP 端口或串口。请确保端口与实例一一对应。</p>
+</blockquote>
+<h2 id="情况-1：单机仿真"><a href="#情况-1：单机仿真" class="headerlink" title="情况 1：单机仿真"></a>情况 1：单机仿真</h2><h3 id="启动-PX4-Gazebo"><a href="#启动-PX4-Gazebo" class="headerlink" title="启动 PX4 + Gazebo"></a>启动 PX4 + Gazebo</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 0</span><br></pre></td></tr></table></figure>
+<h3 id="启动-MAVROS-Onboard-控制"><a href="#启动-MAVROS-Onboard-控制" class="headerlink" title="启动 MAVROS + Onboard 控制"></a>启动 MAVROS + Onboard 控制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=<span class="string">&quot;udp://:14540@127.0.0.1:14557&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="情况-2：多机仿真"><a href="#情况-2：多机仿真" class="headerlink" title="情况 2：多机仿真"></a>情况 2：多机仿真</h2><p>启动多个 PX4 SITL 实例，并为每架无人机分配初始位姿与系统 ID。</p>
+<h3 id="启动-PX4-多实例"><a href="#启动-PX4-多实例" class="headerlink" title="启动 PX4 多实例"></a>启动 PX4 多实例</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 实例 0</span></span><br><span class="line">PX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 PX4_GZ_MODEL_POSE=<span class="string">&quot;0,0&quot;</span> ./build/px4_sitl_default/bin/px4 -i 0</span><br><span class="line"><span class="comment"># 实例 1</span></span><br><span class="line">PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=<span class="string">&quot;1,0&quot;</span> PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 1</span><br><span class="line"><span class="comment"># 实例 2</span></span><br><span class="line">PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=<span class="string">&quot;0,1&quot;</span> PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>提示：<code>PX4_GZ_MODEL_POSE</code> 用于指定模型在 Gazebo 中的初始位置 (x,y)。<code>PX4_GZ_STANDALONE=1</code> 用于第二及后续实例防止与第一个实例的 Gazebo 插件冲突。</p>
+</blockquote>
+<h3 id="启动各自的-MAVROS-Onboard-控制"><a href="#启动各自的-MAVROS-Onboard-控制" class="headerlink" title="启动各自的 MAVROS + Onboard 控制"></a>启动各自的 MAVROS + Onboard 控制</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=<span class="string">&quot;udp://:14540@127.0.0.1:14557&quot;</span></span><br><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=<span class="string">&quot;udp://:14541@127.0.0.1:14558&quot;</span></span><br><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=<span class="string">&quot;udp://:14542@127.0.0.1:14559&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="PX4-实例与端口对应关系"><a href="#PX4-实例与端口对应关系" class="headerlink" title="PX4 实例与端口对应关系"></a>PX4 实例与端口对应关系</h3><table>
+<thead>
+<tr>
+<th>实例 <code>-i</code></th>
+<th>MAV_SYS_ID</th>
+<th>PX4 UDP 输入端口</th>
+<th>MAVROS <code>fcu_url</code> 示例</th>
+<th>对应参数 <code>tgt_system</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>1</td>
+<td>14540</td>
+<td>udp:&#x2F;&#x2F;:<a href="mailto:&#x31;&#x34;&#x35;&#x34;&#x30;&#x40;&#49;&#50;&#55;&#46;&#48;&#x2e;&#x30;&#46;&#49;">14540@127.0.0.1</a>:14557</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+<td>14541</td>
+<td>udp:&#x2F;&#x2F;:<a href="mailto:&#x31;&#52;&#x35;&#x34;&#x31;&#x40;&#49;&#x32;&#x37;&#x2e;&#x30;&#x2e;&#x30;&#46;&#x31;">14541@127.0.0.1</a>:14558</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>14542</td>
+<td>udp:&#x2F;&#x2F;:<a href="mailto:&#49;&#52;&#x35;&#52;&#50;&#64;&#x31;&#x32;&#55;&#46;&#48;&#x2e;&#48;&#x2e;&#x31;">14542@127.0.0.1</a>:14559</td>
+<td>3</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>规范建议：为每个无人机使用不同的 ROS 2 namespace，避免话题与 TF 树冲突。例如：<code>/uav1</code>, <code>/uav2</code>, <code>/uav3</code>。</p>
+</blockquote>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li>每个 PX4 实例的 <code>-i</code> 必须唯一，对应不同的 MAV_SYS_ID。</li>
+<li>MAVROS 的 <code>fcu_url</code> 端口号需与对应 PX4 的输入端口匹配。</li>
+<li>多机仿真&#x2F;实测时应区分 ROS namespace。</li>
+<li>若出现心跳冲突，检查是否有重复的系统 ID 或端口占用。</li>
+<li>建议在 QGC 中确认参数 <code>MAV_SYS_ID</code> 与仿真&#x2F;控制端配置一致。</li>
+</ol>
+<h2 id="情况-3：单机实测（真实飞控）"><a href="#情况-3：单机实测（真实飞控）" class="headerlink" title="情况 3：单机实测（真实飞控）"></a>情况 3：单机实测（真实飞控）</h2><p>连接真实飞控的串口（示例为 <code>/dev/ttyACM0</code>，波特率 57600）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=<span class="string">&quot;serial:///dev/ttyACM0:57600&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若使用不同接口（如 <code>/dev/ttyUSB0</code>），替换设备路径即可。</p>
+</blockquote>
+<h2 id="情况-4：多机实测"><a href="#情况-4：多机实测" class="headerlink" title="情况 4：多机实测"></a>情况 4：多机实测</h2><p>多块飞控 + 多机载电脑或同一机载电脑的多串口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=<span class="string">&quot;serial:///dev/ttyACM0:57600&quot;</span></span><br><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=<span class="string">&quot;serial:///dev/ttyACM1:57600&quot;</span></span><br><span class="line">ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=<span class="string">&quot;serial:///dev/ttyACM2:57600&quot;</span></span><br></pre></td></tr></table></figure>
+<p>在实测前需使用 QGC 分别设置每块飞控的 <code>MAV_SYS_ID</code>，保证：</p>
+<ul>
+<li>与对应启动命令中的 <code>uav_id</code> 一致</li>
+<li>集群内不重复</li>
+</ul>
+<h2 id="常见问题排查"><a href="#常见问题排查" class="headerlink" title="常见问题排查"></a>常见问题排查</h2><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>可能原因</th>
+<th>排查建议</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>无法连接 MAVROS</td>
+<td>端口号&#x2F;串口不对</td>
+<td>确认 <code>fcu_url</code> 与实际端口，UDP 是否被防火墙阻挡</td>
+</tr>
+<tr>
+<td>多机互相干扰</td>
+<td>系统 ID 重复</td>
+<td>检查 <code>-i</code> &#x2F; <code>MAV_SYS_ID</code> 设置以及 QGC 参数</td>
+</tr>
+<tr>
+<td>话题混杂</td>
+<td>未使用 namespace</td>
+<td>在 launch 文件中增加 <code>namespace</code> 参数</td>
+</tr>
+<tr>
+<td>位姿重叠</td>
+<td>初始 pose 未区分</td>
+<td>调整 <code>PX4_GZ_MODEL_POSE</code> 各实例坐标</td>
+</tr>
+</tbody></table>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/dreamer198">Dreamer</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dreamer198.top/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/">https://dreamer198.top/2025/11/14/PX4仿真环境/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dreamer198.top" target="_blank">Dreamer Island</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ROS2/">ROS2</a><a class="post-meta__tags" href="/tags/PX4/">PX4</a><a class="post-meta__tags" href="/tags/MAVROS/">MAVROS</a><a class="post-meta__tags" href="/tags/Gazebo/">Gazebo</a><a class="post-meta__tags" href="/tags/%E5%A4%9A%E6%9C%BA/">多机</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/" title="Jetson Orin NX 系统烧录全流程（SDK Manager）"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/6.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Jetson Orin NX 系统烧录全流程（SDK Manager）</div></div><div class="info-2"><div class="info-item-1"> 适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。    一、准备工作 一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64） USB Type‑C 数据线（支持数据传输） Jetson SDK Manager（NVIDIA 官方工具） Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）  软件下载：  SDK Manager: https://developer.nvidia.com/sdk-manager 需登录 NVIDIA 账号（没有先注册）  二、安装 SDK Manager 下载 .deb 包后双击安装，或执行：  1sudo apt install ./sdkmanager_*_amd64.deb  启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。  三、进入恢复模式（Recovery） 用 USB‑C 线连接 PC 与开发板短边...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/9.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-11</div><div class="info-item-2">ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</div></div><div class="info-2"><div class="info-item-1">本文记录在 Jetson Orin NX 上，从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建的可复制流程，并列出常见问题与排查方法。力求做到：结构清晰、命令可直接粘贴、出现异常可快速定位。   环境信息 硬件：Jetson Orin NX 开发板 系统：Ubuntu 22.04（JetPack 对应版本）  推荐辅助工具 Firefox（ARM 设备上更稳定）： 下载地址：https://github.com/dreamer198/firefox   ToDesk（远程桌面）： 下载地址：https://www.todesk.com/download.html   Clash Verge（代理工具，导入订阅后提升下载速度）： 下载地址：https://clash-verge.org/zh-CN/download     提示：在 ARM 设备上某些官方软件存在兼容性或性能问题，以下组合在 Jetson 上体验更好。  安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installati...</div></div></div></a><a class="pagination-related" href="/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/" title="ROS2 自定义消息接口"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/8.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-05</div><div class="info-item-2">ROS2 自定义消息接口</div></div><div class="info-2"><div class="info-item-1">ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。   适用环境（示例命令为 Linux + bash）：  ROS 2 Humble 已创建工作空间 ~/ros2_ws 并包含 src 目录 构建工具：colcon；构建类型：ament_cmake  五步法总览 创建接口包（ament_cmake + rosidl） 在 msg/ 目录编写消息（.msg） 配置 CMakeLists.txt 配置 package.xml 编译并验证接口   1) 创建接口包12345cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --licen...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Dreamer</div><div class="author-info-description">Welcome to Dreamer Island, a space for learning, creating, and dreaming.</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dreamer198"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dreamer198" target="_blank" title="Github"><i class="fab fa-github" style="color: #909090;"></i></a><a class="social-icon" href="/img/qq_qr.png" target="_blank" title="QQ"><i class="fab fa-qq" style="color: #12B7F5;"></i></a><a class="social-icon" href="/img/wechat_qr.png" target="_blank" title="WeChat"><i class="fab fa-weixin" style="color: #07C160;"></i></a><a class="social-icon" href="mailto:huangziqian@whu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A6%82%E8%BF%B0"><span class="toc-number">1.</span> <span class="toc-text">概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E8%AF%B4%E6%98%8E"><span class="toc-number">2.</span> <span class="toc-text">环境说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%86%B5-1%EF%BC%9A%E5%8D%95%E6%9C%BA%E4%BB%BF%E7%9C%9F"><span class="toc-number">3.</span> <span class="toc-text">情况 1：单机仿真</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-PX4-Gazebo"><span class="toc-number">3.1.</span> <span class="toc-text">启动 PX4 + Gazebo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-MAVROS-Onboard-%E6%8E%A7%E5%88%B6"><span class="toc-number">3.2.</span> <span class="toc-text">启动 MAVROS + Onboard 控制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%86%B5-2%EF%BC%9A%E5%A4%9A%E6%9C%BA%E4%BB%BF%E7%9C%9F"><span class="toc-number">4.</span> <span class="toc-text">情况 2：多机仿真</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8-PX4-%E5%A4%9A%E5%AE%9E%E4%BE%8B"><span class="toc-number">4.1.</span> <span class="toc-text">启动 PX4 多实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E5%90%84%E8%87%AA%E7%9A%84-MAVROS-Onboard-%E6%8E%A7%E5%88%B6"><span class="toc-number">4.2.</span> <span class="toc-text">启动各自的 MAVROS + Onboard 控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PX4-%E5%AE%9E%E4%BE%8B%E4%B8%8E%E7%AB%AF%E5%8F%A3%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="toc-number">4.3.</span> <span class="toc-text">PX4 实例与端口对应关系</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">5.</span> <span class="toc-text">注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%86%B5-3%EF%BC%9A%E5%8D%95%E6%9C%BA%E5%AE%9E%E6%B5%8B%EF%BC%88%E7%9C%9F%E5%AE%9E%E9%A3%9E%E6%8E%A7%EF%BC%89"><span class="toc-number">6.</span> <span class="toc-text">情况 3：单机实测（真实飞控）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%83%85%E5%86%B5-4%EF%BC%9A%E5%A4%9A%E6%9C%BA%E5%AE%9E%E6%B5%8B"><span class="toc-number">7.</span> <span class="toc-text">情况 4：多机实测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5"><span class="toc-number">8.</span> <span class="toc-text">常见问题排查</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/" title="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/12.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南"/></a><div class="content"><a class="title" href="/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/" title="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南">PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南</a><time datetime="2025-11-14T02:00:00.000Z" title="发表于 2025-11-14 10:00:00">2025-11-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/" title="Jetson Orin NX 系统烧录全流程（SDK Manager）"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/6.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Jetson Orin NX 系统烧录全流程（SDK Manager）"/></a><div class="content"><a class="title" href="/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/" title="Jetson Orin NX 系统烧录全流程（SDK Manager）">Jetson Orin NX 系统烧录全流程（SDK Manager）</a><time datetime="2025-11-12T02:00:00.000Z" title="发表于 2025-11-12 10:00:00">2025-11-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南"/></a><div class="content"><a class="title" href="/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南">ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</a><time datetime="2025-11-11T02:00:00.000Z" title="发表于 2025-11-11 10:00:00">2025-11-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/" title="从本地文件夹到 GitHub 新仓库：一步步推送指南"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从本地文件夹到 GitHub 新仓库：一步步推送指南"/></a><div class="content"><a class="title" href="/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/" title="从本地文件夹到 GitHub 新仓库：一步步推送指南">从本地文件夹到 GitHub 新仓库：一步步推送指南</a><time datetime="2025-11-06T02:00:00.000Z" title="发表于 2025-11-06 10:00:00">2025-11-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/" title="ROS2 自定义消息接口"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/8.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS2 自定义消息接口"/></a><div class="content"><a class="title" href="/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/" title="ROS2 自定义消息接口">ROS2 自定义消息接口</a><time datetime="2025-11-04T16:00:00.000Z" title="发表于 2025-11-05 00:00:00">2025-11-05</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/12.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Dreamer</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.1"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

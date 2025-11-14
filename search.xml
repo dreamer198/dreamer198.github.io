@@ -1,162 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>博客搭建过程记录</title>
-    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
-本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
-
-1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
-2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
-3. 技术栈与主题美化
-框架：Hexo
-主题：Butterfly
-美化动作：
-调整主题主色与背景图片
-自定义个人简介页面（借助 GPT 快速生成前端结构）
-优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
-Tag 页面与 Category 页面样式微调
-
-
-
-4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
-
-额外运维成本与时间投入不划算
-博客主要是“自用记录”，对性能与动态能力需求低
-服务器费用不必要
-
-最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
-
-缺点：图片首次加载稍慢
-优点：免服务器、配置简单、可持续维护
-
-5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
-
-建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
-每次写新文章：生成、部署后，再推送源码仓库保持同步
-
-虽然步骤多一点，但可用性与安全性更高。
-6. 当前写作与发布流程写新博客的操作顺序：
-
-在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
-准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
-在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
-本地预览或直接生成 + 部署
-
-7. 常用命令合集分步骤执行：
-hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
-
-一行整合版本：
-hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
-      <categories>
-        <category>随思随想</category>
-      </categories>
-      <tags>
-        <tag>Blog</tag>
-        <tag>Hexo</tag>
-        <tag>Butterfly</tag>
-        <tag>GitHub Pages</tag>
-        <tag>域名</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
-    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
-    <content><![CDATA[
-适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
-
-
-
-一、准备工作
-一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
-USB Type‑C 数据线（支持数据传输）
-Jetson SDK Manager（NVIDIA 官方工具）
-Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
-
-软件下载：
-
-SDK Manager: https://developer.nvidia.com/sdk-manager
-需登录 NVIDIA 账号（没有先注册）
-
-二、安装 SDK Manager
-下载 .deb 包后双击安装，或执行：
-
-sudo apt install ./sdkmanager_*_amd64.deb
-
-启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
-
-三、进入恢复模式（Recovery）
-用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
-断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
-此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
-
-常见位置提示：
-
-REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
-
-四、SDK Manager 配置与烧录
-Select Product Category: Jetson
-Hardware Configuration: 选择 Jetson Orin NX
-Target Operating System: Linux for Tegra
-Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
-选择 Host&#x2F;Target 组件（默认即可）
-点击 Continue，按引导下载镜像与依赖 → 开始 Flash
-
-烧录阶段注意：
-
-全程保持 USB 连接稳定，避免移动触碰
-若网络慢，建议先开代理或稳定网络
-出现权限提示时，按指引使用 sudo 重试
-
-五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
-
-设置语言、时区、用户名&#x2F;密码
-进入桌面后建议先运行：
-
-sudo apt update &amp;&amp; sudo apt upgrade -y
-
-六、常见问题排查（FAQ）
-PC 不识别设备（lsusb 看不到 NVIDIA）：
-
-
-检查是否严格按“按住 REC → 上电”顺序
-更换 USB‑C 线（必须支持数据）与 USB 口
-更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
-
-
-SDK Manager 卡在下载&#x2F;校验：
-
-
-切换网络或配置代理后重试
-退出后重新登录 SDK Manager，会复用已下载数据
-
-
-烧录成功但无法进桌面：
-
-
-尝试重启；检查电源&#x2F;显示器连接
-若持续异常，可重新进入 Recovery 再次烧录
-
-七、后续建议（可选）
-安装基础工具：
-
-sudo apt install -y git curl vim htop tmux
-
-使用 ToDesk&#x2F;向日葵等远程工具便于维护
-后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Jetson</tag>
-        <tag>教程</tag>
-        <tag>系统烧录</tag>
-        <tag>环境配置</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
     <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
     <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
@@ -391,10 +235,390 @@ git commit -m &quot;chore: initial commit&quot;
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>教程</tag>
         <tag>Git</tag>
         <tag>GitHub</tag>
         <tag>版本控制</tag>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
+
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
+
+
+
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
+
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
+
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
+
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
+
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
+
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
+
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
+
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
+
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+
+一行整合版本：
+hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
+    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
+    <content><![CDATA[
+适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
+
+
+
+一、准备工作
+一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
+USB Type‑C 数据线（支持数据传输）
+Jetson SDK Manager（NVIDIA 官方工具）
+Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
+
+软件下载：
+
+SDK Manager: https://developer.nvidia.com/sdk-manager
+需登录 NVIDIA 账号（没有先注册）
+
+二、安装 SDK Manager
+下载 .deb 包后双击安装，或执行：
+
+sudo apt install ./sdkmanager_*_amd64.deb
+
+启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
+
+三、进入恢复模式（Recovery）
+用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
+断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
+此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
+
+常见位置提示：
+
+REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
+
+四、SDK Manager 配置与烧录
+Select Product Category: Jetson
+Hardware Configuration: 选择 Jetson Orin NX
+Target Operating System: Linux for Tegra
+Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
+选择 Host&#x2F;Target 组件（默认即可）
+点击 Continue，按引导下载镜像与依赖 → 开始 Flash
+
+烧录阶段注意：
+
+全程保持 USB 连接稳定，避免移动触碰
+若网络慢，建议先开代理或稳定网络
+出现权限提示时，按指引使用 sudo 重试
+
+五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
+
+设置语言、时区、用户名&#x2F;密码
+进入桌面后建议先运行：
+
+sudo apt update &amp;&amp; sudo apt upgrade -y
+
+六、常见问题排查（FAQ）
+PC 不识别设备（lsusb 看不到 NVIDIA）：
+
+
+检查是否严格按“按住 REC → 上电”顺序
+更换 USB‑C 线（必须支持数据）与 USB 口
+更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
+
+
+SDK Manager 卡在下载&#x2F;校验：
+
+
+切换网络或配置代理后重试
+退出后重新登录 SDK Manager，会复用已下载数据
+
+
+烧录成功但无法进桌面：
+
+
+尝试重启；检查电源&#x2F;显示器连接
+若持续异常，可重新进入 Recovery 再次烧录
+
+七、后续建议（可选）
+安装基础工具：
+
+sudo apt install -y git curl vim htop tmux
+
+使用 ToDesk&#x2F;向日葵等远程工具便于维护
+后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>Jetson</tag>
+        <tag>系统烧录</tag>
+        <tag>环境配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录在 Jetson Orin NX 上，从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建的可复制流程，并列出常见问题与排查方法。力求做到：结构清晰、命令可直接粘贴、出现异常可快速定位。
+
+
+环境信息
+硬件：Jetson Orin NX 开发板
+系统：Ubuntu 22.04（JetPack 对应版本）
+
+推荐辅助工具
+Firefox（ARM 设备上更稳定）：
+下载地址：https://github.com/dreamer198/firefox
+
+
+ToDesk（远程桌面）：
+下载地址：https://www.todesk.com/download.html
+
+
+Clash Verge（代理工具，导入订阅后提升下载速度）：
+下载地址：https://clash-verge.org/zh-CN/download
+
+
+
+
+提示：在 ARM 设备上某些官方软件存在兼容性或性能问题，以下组合在 Jetson 上体验更好。
+
+安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+步骤 1：配置本地化并添加源locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
+
+步骤 2：安装 ROS 2 与开发工具并写入环境变量sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
+
+Jetson 上 OpenCV 版本冲突修复若在编译或运行时出现：
+/usr/lib/cmake/opencv4/OpenCVModules.cmake:172 (message):The imported target &quot;opencv_core&quot; references the file &quot;/usr/lib/libopencv_core.so.4.8.0&quot; but this file does not exist.
+
+原因：JetPack 自带的 OpenCV 与 ROS 2 Humble 期望版本不一致，导致链接缺失。
+解决步骤：
+sudo apt updatesudo apt install -y &#x27;nvidia-opencv*&#x27;
+
+验证：
+ldconfig -p | grep opencv_core
+
+更多参考：https://forums.developer.nvidia.com/t/opencv-libraries-missing-or-links-are-broken-on-a-fresh-install/335400
+&gt; 若启动后出现提示：`Preflight Fail: No connection to the GCS`，可在 MAVLink 控制台执行：&gt; ```bash&gt; param set NAV_DLL_ACT 0
+
+临时绕过对地面站的要求（仅用于仿真调试，不建议长期使用）。
+
+安装 MAVROS
+源码仓库：https://github.com/mavlink/mavros
+教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
+
+sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
+
+创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+
+拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
+
+2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行 clone：
+git clone https://&lt;token&gt;@github.com/dreamer198/onboard.git
+
+安装 JSON 头文件依赖：
+sudo apt-get install -y nlohmann-json3-dev
+
+编译与环境配置在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 接口）：
+cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+运行与测试1. 启动 PX4 Gazebo 仿真（示例：3 台无人机）cd ~/PX4-AutopilotPX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 PX4_GZ_MODEL_POSE=&quot;0,0&quot; ./build/px4_sitl_default/bin/px4 -i 0PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;1,0&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 1PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;0,1&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 2
+
+2. 启动机载控制主节点与通信节点# 启动主控制（uav_id 与端口需与 PX4 实例对应）ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=&quot;udp://:14541@127.0.0.1:14558&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=&quot;udp://:14542@127.0.0.1:14559&quot;# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
+
+3. 成功判定在 receive_status 终端可监听到全部无人机状态；在 send_cmd 按约定格式发布指令，可观察 Gazebo 中无人机执行对应动作。
+成功标准：
+
+所有 PX4 实例进入正常飞控循环，无持续错误输出。
+MAVROS 与机载节点能正确收发心跳与状态消息。
+指令发布后延迟在可接受范围（通常 &lt; 200 ms）。
+多机之间不存在端口冲突（如 14540/14557 组合互不重复）。
+
+官方与仓库
+ROS 2 Humble 安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+PX4 仓库：https://github.com/PX4/PX4-Autopilot
+MAVROS 仓库：https://github.com/mavlink/mavros
+GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>Jetson</tag>
+        <tag>环境配置</tag>
+        <tag>ROS2</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+        <tag>无人机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南</title>
+    <url>/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/</url>
+    <content><![CDATA[概述本文整理了使用 PX4 + Gazebo + MAVROS + Onboard 控制程序进行单机与多机仿真，以及对应的实测（真实飞控硬件）启动命令与注意事项。适合快速搭建与验证多机集群控制链路。包含四种场景：
+
+单机仿真
+多机仿真（PX4 SITL 多实例）
+单机实测（连接真实飞控）
+多机实测（多块飞控 + 多机载电脑）
+
+环境说明
+PX4 版本：SITL，使用 px4_sitl_default 构建。
+Gazebo：使用 PX4 官方支持的 Gazebo (可能是 classic 或 Garden，命令中使用 gz_x500 模型)。
+ROS 版本：ROS 2（适配 MAVROS2 &#x2F; onboard 控制程序）。
+地面站：QGroundControl (QGC) 用于设置真实飞控的 MAV_SYS_ID。
+
+
+说明：多实例仿真中通过环境变量和 -i 指定 PX4 实例编号，该编号会映射为对应的 MAV 系统 ID。MAVROS 端通过 fcu_url 指定与 PX4 通信的 UDP 端口或串口。请确保端口与实例一一对应。
+
+情况 1：单机仿真启动 PX4 + GazeboPX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 0
+启动 MAVROS + Onboard 控制ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;
+
+情况 2：多机仿真启动多个 PX4 SITL 实例，并为每架无人机分配初始位姿与系统 ID。
+启动 PX4 多实例# 实例 0PX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 PX4_GZ_MODEL_POSE=&quot;0,0&quot; ./build/px4_sitl_default/bin/px4 -i 0# 实例 1PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;1,0&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 1# 实例 2PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;0,1&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 2
+
+提示：PX4_GZ_MODEL_POSE 用于指定模型在 Gazebo 中的初始位置 (x,y)。PX4_GZ_STANDALONE=1 用于第二及后续实例防止与第一个实例的 Gazebo 插件冲突。
+
+启动各自的 MAVROS + Onboard 控制ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=&quot;udp://:14541@127.0.0.1:14558&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=&quot;udp://:14542@127.0.0.1:14559&quot;
+
+PX4 实例与端口对应关系
+
+
+实例 -i
+MAV_SYS_ID
+PX4 UDP 输入端口
+MAVROS fcu_url 示例
+对应参数 tgt_system
+
+
+
+0
+1
+14540
+udp:&#x2F;&#x2F;:14540@127.0.0.1:14557
+1
+
+
+1
+2
+14541
+udp:&#x2F;&#x2F;:14541@127.0.0.1:14558
+2
+
+
+2
+3
+14542
+udp:&#x2F;&#x2F;:14542@127.0.0.1:14559
+3
+
+
+
+规范建议：为每个无人机使用不同的 ROS 2 namespace，避免话题与 TF 树冲突。例如：/uav1, /uav2, /uav3。
+
+注意事项
+每个 PX4 实例的 -i 必须唯一，对应不同的 MAV_SYS_ID。
+MAVROS 的 fcu_url 端口号需与对应 PX4 的输入端口匹配。
+多机仿真&#x2F;实测时应区分 ROS namespace。
+若出现心跳冲突，检查是否有重复的系统 ID 或端口占用。
+建议在 QGC 中确认参数 MAV_SYS_ID 与仿真&#x2F;控制端配置一致。
+
+情况 3：单机实测（真实飞控）连接真实飞控的串口（示例为 /dev/ttyACM0，波特率 57600）：
+ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:///dev/ttyACM0:57600&quot;
+
+若使用不同接口（如 /dev/ttyUSB0），替换设备路径即可。
+
+情况 4：多机实测多块飞控 + 多机载电脑或同一机载电脑的多串口：
+ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:///dev/ttyACM0:57600&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=&quot;serial:///dev/ttyACM1:57600&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=&quot;serial:///dev/ttyACM2:57600&quot;
+在实测前需使用 QGC 分别设置每块飞控的 MAV_SYS_ID，保证：
+
+与对应启动命令中的 uav_id 一致
+集群内不重复
+
+常见问题排查
+
+
+问题
+可能原因
+排查建议
+
+
+
+无法连接 MAVROS
+端口号&#x2F;串口不对
+确认 fcu_url 与实际端口，UDP 是否被防火墙阻挡
+
+
+多机互相干扰
+系统 ID 重复
+检查 -i &#x2F; MAV_SYS_ID 设置以及 QGC 参数
+
+
+话题混杂
+未使用 namespace
+在 launch 文件中增加 namespace 参数
+
+
+位姿重叠
+初始 pose 未区分
+调整 PX4_GZ_MODEL_POSE 各实例坐标
+
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+        <tag>Gazebo</tag>
+        <tag>多机</tag>
       </tags>
   </entry>
   <entry>
@@ -483,119 +707,10 @@ Tutorials: https://docs.ros2.org
       </categories>
       <tags>
         <tag>ROS2</tag>
+        <tag>无人机</tag>
         <tag>接口</tag>
         <tag>自定义消息</tag>
-        <tag>无人机</tag>
         <tag>集群通信</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
-    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[本文记录在 Jetson Orin NX 上从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建过程，并给出可复制的命令与常见问题提示。
-
-
-🧩 环境信息
-硬件：Jetson Orin NX 开发板
-系统：Ubuntu 22.04（JetPack 对应版本）
-
-🧰 准备工具（推荐）
-Firefox（ARM 设备上更稳定）：
-下载地址：https://github.com/dreamer198/firefox
-
-
-ToDesk（远程桌面）：
-下载地址：https://www.todesk.com/download.html
-
-
-Clash Verge（代理工具，导入订阅后提升下载速度）：
-下载地址：https://clash-verge.org/zh-CN/download
-
-
-
-
-小提示：在 ARM 设备上，官方软件有时存在兼容性问题，以上几款在 Jetson 上体验更好。
-
-🚀 安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-
-配置本地化并准备源
-
-locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
-
-
-安装 ROS 2 与开发工具，并写入环境
-
-sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-✈️ 安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
-
-OpenCV 版本冲突（Jetson）修复若在编译或运行时出现：
-/usr/lib/cmake/opencv4/OpenCVModules.cmake:172 (message):The imported target &quot;opencv_core&quot; references the file &quot;/usr/lib/libopencv_core.so.4.8.0&quot; but this file does not exist.
-
-原因：JetPack 自带的 OpenCV 与 ROS2 Humble 期望版本不一致，导致链接缺失。
-解决步骤：
-sudo apt updatesudo apt install -y &#x27;nvidia-opencv*&#x27;
-
-验证：
-ldconfig -p | grep opencv_core
-
-更多参考：https://forums.developer.nvidia.com/t/opencv-libraries-missing-or-links-are-broken-on-a-fresh-install/335400
-&gt; 如果启动后出现提示：Preflight Fail: No connection to the GCS，可在 MAVLink 控制台中执行：&gt;&gt; ```bash&gt; param set NAV_DLL_ACT 0
-
-以绕过对地面站的要求。
-
-🔗 安装 MAVROS
-源码仓库：https://github.com/mavlink/mavros
-教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
-
-sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
-
-🧱 创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
-
-📦 拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
-
-2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行：
-git clone https://&lt;token&gt;@github.com/dreamer198/onboard.git
-
-安装 JSON 依赖：
-sudo apt-get install -y nlohmann-json3-dev
-
-🛠️ 编译与环境在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 依赖）：
-cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-✅ 运行与测试1) 启动 PX4-Gazebo 仿真cd ~/PX4-Autopilotmake px4_sitl gz_x500
-
-2) 设置环境变量# 无人机编号（用于区分集群中的无人机）echo &quot;export UAV_ID=1&quot; &gt;&gt; ~/.bashrc# 飞控与机载电脑的连接方式（仿真环境）echo &quot;export FCU_URL=\&quot;udp://:14540@127.0.0.1:14557\&quot;&quot; &gt;&gt; ~/.bashrc# 真实飞行中常用串口连接举例（按实际设备名/波特率修改）# FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;source ~/.bashrc
-
-
-说明：集群场景通常不需要设置 ROS_DOMAIN_ID，默认值为 0 即可实现全网通信。
-
-3) 启动机载控制与通信# 启动主控制ros2 launch onboard_control mainTree.launch.py# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
-
-4) 成功判定当状态接收器能够正确显示集群中所有无人机的状态，并按规范在命令发布器中发布指令后，仿真中的无人机能执行相应动作，则表示环境搭建成功。
-🧭 常见问题与备注
-PX4 提示 “Preflight Fail: No connection to the GCS” 时，可设置 NAV_DLL_ACT=0 绕过；正式飞行前请恢复为安全配置。
-onboard 仓库为私有库，需先从作者处获取有效 token 才能 clone。
-若网络下载缓慢，建议先配置代理工具（如 Clash Verge）。
-
-🔗 参考链接
-ROS 2 Humble 官方安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-PX4 官方仓库：https://github.com/PX4/PX4-Autopilot
-MAVROS 官方仓库：https://github.com/mavlink/mavros
-GeographicLib 数据集安装脚本（镜像）：https://gitee.com/tyx6/mytools
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Jetson</tag>
-        <tag>教程</tag>
-        <tag>环境配置</tag>
-        <tag>ROS2</tag>
-        <tag>无人机</tag>
-        <tag>PX4</tag>
-        <tag>MAVROS</tag>
       </tags>
   </entry>
 </search>
