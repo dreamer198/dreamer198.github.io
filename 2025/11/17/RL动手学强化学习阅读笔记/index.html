@@ -1,0 +1,263 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>《动手学强化学习》阅读笔记 | Dreamer Island</title><meta name="author" content="Dreamer"><meta name="copyright" content="Dreamer"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="《动手学强化学习》读书笔记，涵盖基础概念、多臂老虎机、马尔可夫决策过程等核心知识点与要点总结。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《动手学强化学习》阅读笔记">
+<meta property="og:url" content="https://dreamer198.top/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+<meta property="og:site_name" content="Dreamer Island">
+<meta property="og:description" content="《动手学强化学习》读书笔记，涵盖基础概念、多臂老虎机、马尔可夫决策过程等核心知识点与要点总结。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dreamer198.top/img/6.jpg">
+<meta property="article:published_time" content="2025-11-17T02:00:00.000Z">
+<meta property="article:modified_time" content="2025-11-17T02:00:00.000Z">
+<meta property="article:author" content="Dreamer">
+<meta property="article:tag" content="强化学习">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dreamer198.top/img/6.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "《动手学强化学习》阅读笔记",
+  "url": "https://dreamer198.top/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/",
+  "image": "https://dreamer198.top/img/6.jpg",
+  "datePublished": "2025-11-17T02:00:00.000Z",
+  "dateModified": "2025-11-17T02:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Dreamer",
+      "url": "https://github.com/dreamer198"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://dreamer198.top/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#1B5E20')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '《动手学强化学习》阅读笔记',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/6.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Dreamer Island</span></a><a class="nav-page-title" href="/"><span class="site-name">《动手学强化学习》阅读笔记</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> About</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">《动手学强化学习》阅读笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-11-17T02:00:00.000Z" title="发表于 2025-11-17 10:00:00">2025-11-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-11-17T02:00:00.000Z" title="更新于 2025-11-17 10:00:00">2025-11-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>4分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。</p>
+<span id="more"></span>
+
+<h2 id="第一章-强化学习基础"><a href="#第一章-强化学习基础" class="headerlink" title="第一章 强化学习基础"></a>第一章 强化学习基础</h2><h3 id="什么是强化学习？"><a href="#什么是强化学习？" class="headerlink" title="什么是强化学习？"></a>什么是强化学习？</h3><p>强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。</p>
+<h3 id="环境与随机性"><a href="#环境与随机性" class="headerlink" title="环境与随机性"></a>环境与随机性</h3><p>用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：</p>
+<ul>
+<li>动作选择的随机性（策略的随机性）</li>
+<li>环境状态转移的随机性（$P(s’\mid s,a)$ 的采样）</li>
+</ul>
+<h3 id="目标：最大化策略价值"><a href="#目标：最大化策略价值" class="headerlink" title="目标：最大化策略价值"></a>目标：最大化策略价值</h3><p>强化学习的优化目标是最大化在与环境交互过程中的策略价值（长期累积奖励的期望）。</p>
+<h3 id="数据从何而来"><a href="#数据从何而来" class="headerlink" title="数据从何而来"></a>数据从何而来</h3><p>数据并非来自固定数据集，而是在智能体与环境的交互过程中不断产生，且会随策略更新而改变分布。</p>
+<h4 id="占用度量（Occupancy-Measure）"><a href="#占用度量（Occupancy-Measure）" class="headerlink" title="占用度量（Occupancy Measure）"></a>占用度量（Occupancy Measure）</h4><ul>
+<li>定义：某策略与环境交互时，采样到状态-动作对 $(s,a)$ 的概率分布。</li>
+<li>性质：当且仅当两个策略诱导的占用度量完全相同时，这两个策略等价；策略变化会引起占用度量变化。</li>
+<li>关联：策略价值等价于在该占用度量下的奖励期望，因此“找最优策略 ≈ 找最优占用度量”。</li>
+</ul>
+<h3 id="与有监督学习的区别"><a href="#与有监督学习的区别" class="headerlink" title="与有监督学习的区别"></a>与有监督学习的区别</h3><ul>
+<li>有监督学习：给定数据分布，最小化损失的期望。</li>
+<li>强化学习：通过交互诱导数据分布，最大化奖励的期望。</li>
+<li>关键差异：RL 的数据分布随策略变化，非 i.i.d.</li>
+</ul>
+<hr>
+<h2 id="第二章-多臂老虎机：探索-vs-利用"><a href="#第二章-多臂老虎机：探索-vs-利用" class="headerlink" title="第二章 多臂老虎机：探索 vs 利用"></a>第二章 多臂老虎机：探索 vs 利用</h2><p>多臂老虎机（Multi-Armed Bandit, MAB）刻画“探索未知”和“利用已知”的权衡：既要尝试可能更优的臂（探索），又要选择当前估计最优的臂（利用）。</p>
+<h3 id="目标与懊悔（Regret）"><a href="#目标与懊悔（Regret）" class="headerlink" title="目标与懊悔（Regret）"></a>目标与懊悔（Regret）</h3><ul>
+<li>时刻 $t$ 的即时懊悔：$r_t &#x3D; \mu^* - \mu_{a_t}$。</li>
+<li>累积懊悔：$R_T &#x3D; \sum_{t&#x3D;1}^{T} (\mu^* - \mu_{a_t})$。</li>
+<li>目标等价：最大化累积奖励 ⇔ 最小化累积懊悔。</li>
+</ul>
+<h3 id="期望奖励的估计"><a href="#期望奖励的估计" class="headerlink" title="期望奖励的估计"></a>期望奖励的估计</h3><p>对某一拉杆（动作）$a$ 的经验期望奖励估计：</p>
+<p>$$<br>\hat{\mu}<em>a &#x3D; \frac{1}{n_a} \sum</em>{i&#x3D;1}^{n_a} r_i<br>$$</p>
+<p>其中 $n_a$ 为选择臂 $a$ 的次数，$r_i$ 为获得的奖励。</p>
+<h3 id="三类经典策略"><a href="#三类经典策略" class="headerlink" title="三类经典策略"></a>三类经典策略</h3><ol>
+<li><p>ε-贪心（$\varepsilon$-greedy）：</p>
+<ul>
+<li>以概率 $1-\varepsilon$ 选择当前估计最优的臂（利用），以概率 $\varepsilon$ 随机选择（探索）。</li>
+<li>常用做法：随时间衰减 $\varepsilon_t$（例如 $\varepsilon_t &#x3D; c&#x2F;t$ 或分段衰减）。</li>
+</ul>
+</li>
+<li><p>上置信界（UCB）：</p>
+<ul>
+<li>利用“乐观估计”促进探索。常见形式：<br> $$<br> a_t &#x3D; \arg\max_a \Big( \hat{\mu}_a + c\sqrt{\frac{2\ln t}{n_a}} \Big)<br> $$</li>
+<li>思想：不确定性越大（$n_a$ 越小），上置信界越宽，更值得探索。</li>
+</ul>
+</li>
+<li><p>汤普森采样（Thompson Sampling）：</p>
+<ul>
+<li>将每个臂的奖励建模为后验分布（如 Beta 分布），按后验进行一次采样并选择样本最大的臂。</li>
+<li>兼顾探索与利用，实践中表现优异、实现简单。</li>
+</ul>
+</li>
+</ol>
+<p>小结：MAB 不改变环境状态，可视为“无状态”RL 的特例。</p>
+<hr>
+<h2 id="第三章-马尔可夫决策过程（MDP）与价值"><a href="#第三章-马尔可夫决策过程（MDP）与价值" class="headerlink" title="第三章 马尔可夫决策过程（MDP）与价值"></a>第三章 马尔可夫决策过程（MDP）与价值</h2><h3 id="马尔可夫过程与马尔可夫奖励过程（MRP）"><a href="#马尔可夫过程与马尔可夫奖励过程（MRP）" class="headerlink" title="马尔可夫过程与马尔可夫奖励过程（MRP）"></a>马尔可夫过程与马尔可夫奖励过程（MRP）</h3><ul>
+<li>马尔可夫性质：$P(S_{t+1}\mid S_{0:t}) &#x3D; P(S_{t+1}\mid S_t)$。</li>
+<li>状态转移矩阵的每行和为 1。</li>
+<li>在马尔可夫过程中加入奖励与折扣因子 $\gamma\in(0,1]$ 得到 MRP。</li>
+<li>折扣动机：考虑不确定性与时间偏好；$\gamma$ 越接近 1 越重视长期。</li>
+</ul>
+<p>回报（从时刻 $t$ 出发的累积折扣奖励）：</p>
+<p>$$<br>G_t &#x3D; \sum_{k&#x3D;0}^{T-t-1} \gamma^k, R_{t+k+1}<br>$$</p>
+<p>状态价值函数（MRP）：</p>
+<p>$$<br>V(s) &#x3D; \mathbb{E}[G_t\mid S_t&#x3D;s] &#x3D; R(s) + \gamma, \sum_{s’} P(s’\mid s), V(s’)<br>$$</p>
+<p>常见求解：动态规划（DP）、蒙特卡洛（MC）、时序差分（TD）。</p>
+<h3 id="马尔可夫决策过程（MDP）"><a href="#马尔可夫决策过程（MDP）" class="headerlink" title="马尔可夫决策过程（MDP）"></a>马尔可夫决策过程（MDP）</h3><p>在 MRP 基础上加入动作 $a$ 与策略 $\pi(a\mid s)$：</p>
+<ul>
+<li>状态价值：$V^\pi(s) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s,]$。</li>
+<li>动作价值：$Q^\pi(s,a) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s, A_t&#x3D;a,]$。</li>
+<li>期望型贝尔曼方程：</li>
+</ul>
+<p>$$<br>V^\pi(s) &#x3D; \sum_a \pi(a\mid s) \sum_{s’} P(s’\mid s,a)\big[ R(s,a,s’) + \gamma V^\pi(s’) \big]<br>$$</p>
+<h3 id="占用度量（在-MDP-下）"><a href="#占用度量（在-MDP-下）" class="headerlink" title="占用度量（在 MDP 下）"></a>占用度量（在 MDP 下）</h3><p>策略的占用度量描述在策略 $\pi$ 与动力学 $P$ 下，状态-动作对 $(s,a)$ 被访问的频率分布。它直接决定了奖励期望与策略价值，是连接“采样分布”和“最优性”的桥梁。</p>
+<hr>
+<h2 id="关键要点速记"><a href="#关键要点速记" class="headerlink" title="关键要点速记"></a>关键要点速记</h2><ul>
+<li>RL 的核心在于“交互诱导的数据分布”和“长期最优”。</li>
+<li>MAB：ε-贪心、UCB、汤普森采样是三大基石；目标是最小化累积懊悔。</li>
+<li>MRP&#x2F;MDP：价值函数与贝尔曼方程是算法设计的基础；DP&#x2F;MC&#x2F;TD 各有适用场景。</li>
+<li>占用度量提供了从策略到数据分布、再到价值最大化的统一视角。</li>
+</ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>《动手学强化学习》</li>
+<li>Sutton &amp; Barto. Reinforcement Learning: An Introduction</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/dreamer198">Dreamer</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dreamer198.top/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">https://dreamer198.top/2025/11/17/RL动手学强化学习阅读笔记/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dreamer198.top" target="_blank">Dreamer Island</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">强化学习</a><a class="post-meta__tags" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/" title="Mesh 自组网搭建指南"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/8.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Mesh 自组网搭建指南</div></div><div class="info-2"><div class="info-item-1">本文记录 Mesh 自组网的完整配置流程，主要用于无人机集群通信场景。通过配置 Mesh 网络，可以实现多台设备在没有路由器的情况下组成局域网，进行数据传输和通信。   什么是 Mesh 网络Mesh 网络（网状网络）是一种无线网络拓扑结构，每个节点都可以作为数据的中继点，使网络覆盖范围更广、稳定性更强。在无人机集群场景中，Mesh 网络可以实现：  去中心化通信：无需依赖单一接入点 动态路由：节点可以自动寻找最佳通信路径 高可靠性：单个节点故障不影响整体网络  配置流程1. 初始网络配置首先需要将电脑配置为与 Mesh 设备相同的网段，以便访问设备的管理界面。 操作步骤：  打开网络设置 选择「新建配置」或「添加网络」 配置网络参数： IP 地址：192.168.1.123 子网掩码：255.255.255.0 网关：8.8.8.8    2. 访问 Mesh 设备管理界面使用浏览器访问 Mesh 设备的默认管理地址。 操作步骤：  打开浏览器 在地址栏输入：192.168.1.200（Mesh 设备默认 IP） 进入设备管理界面  3. 配置 Mesh 组网模式在设备管理界面...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Dreamer</div><div class="author-info-description">Welcome to Dreamer Island, a space for learning, creating, and dreaming.</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dreamer198"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dreamer198" target="_blank" title="Github"><i class="fab fa-github" style="color: #909090;"></i></a><a class="social-icon" href="/img/qq_qr.png" target="_blank" title="QQ"><i class="fab fa-qq" style="color: #12B7F5;"></i></a><a class="social-icon" href="/img/wechat_qr.png" target="_blank" title="WeChat"><i class="fab fa-weixin" style="color: #07C160;"></i></a><a class="social-icon" href="mailto:huangziqian@whu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%9F%BA%E7%A1%80"><span class="toc-number">1.</span> <span class="toc-text">第一章 强化学习基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">什么是强化学习？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E4%B8%8E%E9%9A%8F%E6%9C%BA%E6%80%A7"><span class="toc-number">1.2.</span> <span class="toc-text">环境与随机性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%EF%BC%9A%E6%9C%80%E5%A4%A7%E5%8C%96%E7%AD%96%E7%95%A5%E4%BB%B7%E5%80%BC"><span class="toc-number">1.3.</span> <span class="toc-text">目标：最大化策略价值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E4%BB%8E%E4%BD%95%E8%80%8C%E6%9D%A5"><span class="toc-number">1.4.</span> <span class="toc-text">数据从何而来</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8D%A0%E7%94%A8%E5%BA%A6%E9%87%8F%EF%BC%88Occupancy-Measure%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">占用度量（Occupancy Measure）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E6%9C%89%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.5.</span> <span class="toc-text">与有监督学习的区别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E5%A4%9A%E8%87%82%E8%80%81%E8%99%8E%E6%9C%BA%EF%BC%9A%E6%8E%A2%E7%B4%A2-vs-%E5%88%A9%E7%94%A8"><span class="toc-number">2.</span> <span class="toc-text">第二章 多臂老虎机：探索 vs 利用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9B%AE%E6%A0%87%E4%B8%8E%E6%87%8A%E6%82%94%EF%BC%88Regret%EF%BC%89"><span class="toc-number">2.1.</span> <span class="toc-text">目标与懊悔（Regret）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%9F%E6%9C%9B%E5%A5%96%E5%8A%B1%E7%9A%84%E4%BC%B0%E8%AE%A1"><span class="toc-number">2.2.</span> <span class="toc-text">期望奖励的估计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%B1%BB%E7%BB%8F%E5%85%B8%E7%AD%96%E7%95%A5"><span class="toc-number">2.3.</span> <span class="toc-text">三类经典策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0-%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B%EF%BC%88MDP%EF%BC%89%E4%B8%8E%E4%BB%B7%E5%80%BC"><span class="toc-number">3.</span> <span class="toc-text">第三章 马尔可夫决策过程（MDP）与价值</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E8%BF%87%E7%A8%8B%E4%B8%8E%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%A5%96%E5%8A%B1%E8%BF%87%E7%A8%8B%EF%BC%88MRP%EF%BC%89"><span class="toc-number">3.1.</span> <span class="toc-text">马尔可夫过程与马尔可夫奖励过程（MRP）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E5%86%B3%E7%AD%96%E8%BF%87%E7%A8%8B%EF%BC%88MDP%EF%BC%89"><span class="toc-number">3.2.</span> <span class="toc-text">马尔可夫决策过程（MDP）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%A0%E7%94%A8%E5%BA%A6%E9%87%8F%EF%BC%88%E5%9C%A8-MDP-%E4%B8%8B%EF%BC%89"><span class="toc-number">3.3.</span> <span class="toc-text">占用度量（在 MDP 下）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%94%AE%E8%A6%81%E7%82%B9%E9%80%9F%E8%AE%B0"><span class="toc-number">4.</span> <span class="toc-text">关键要点速记</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/" title="Mesh 自组网搭建指南"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/8.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mesh 自组网搭建指南"/></a><div class="content"><a class="title" href="/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/" title="Mesh 自组网搭建指南">Mesh 自组网搭建指南</a><time datetime="2025-11-17T02:00:00.000Z" title="发表于 2025-11-17 10:00:00">2025-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《动手学强化学习》阅读笔记"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/6.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《动手学强化学习》阅读笔记"/></a><div class="content"><a class="title" href="/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《动手学强化学习》阅读笔记">《动手学强化学习》阅读笔记</a><time datetime="2025-11-17T02:00:00.000Z" title="发表于 2025-11-17 10:00:00">2025-11-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/" title="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/5.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南"/></a><div class="content"><a class="title" href="/2025/11/14/PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83/" title="PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南">PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南</a><time datetime="2025-11-14T02:00:00.000Z" title="发表于 2025-11-14 10:00:00">2025-11-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/" title="Jetson Orin NX 系统烧录全流程（SDK Manager）"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Jetson Orin NX 系统烧录全流程（SDK Manager）"/></a><div class="content"><a class="title" href="/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/" title="Jetson Orin NX 系统烧录全流程（SDK Manager）">Jetson Orin NX 系统烧录全流程（SDK Manager）</a><time datetime="2025-11-12T02:00:00.000Z" title="发表于 2025-11-12 10:00:00">2025-11-12</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/11.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南"/></a><div class="content"><a class="title" href="/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南">ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</a><time datetime="2025-11-11T02:00:00.000Z" title="发表于 2025-11-11 10:00:00">2025-11-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url(/img/6.jpg);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Dreamer</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-fluttering-ribbon.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = false;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.1"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

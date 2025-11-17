@@ -242,62 +242,135 @@ git commit -m &quot;chore: initial commit&quot;
       </tags>
   </entry>
   <entry>
-    <title>博客搭建过程记录</title>
-    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
-本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
-
-1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
-2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
-3. 技术栈与主题美化
-框架：Hexo
-主题：Butterfly
-美化动作：
-调整主题主色与背景图片
-自定义个人简介页面（借助 GPT 快速生成前端结构）
-优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
-Tag 页面与 Category 页面样式微调
+    <title>Mesh 自组网搭建指南</title>
+    <url>/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录 Mesh 自组网的完整配置流程，主要用于无人机集群通信场景。通过配置 Mesh 网络，可以实现多台设备在没有路由器的情况下组成局域网，进行数据传输和通信。
 
 
+什么是 Mesh 网络Mesh 网络（网状网络）是一种无线网络拓扑结构，每个节点都可以作为数据的中继点，使网络覆盖范围更广、稳定性更强。在无人机集群场景中，Mesh 网络可以实现：
 
-4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
+去中心化通信：无需依赖单一接入点
+动态路由：节点可以自动寻找最佳通信路径
+高可靠性：单个节点故障不影响整体网络
 
-额外运维成本与时间投入不划算
-博客主要是“自用记录”，对性能与动态能力需求低
-服务器费用不必要
+配置流程1. 初始网络配置首先需要将电脑配置为与 Mesh 设备相同的网段，以便访问设备的管理界面。
+操作步骤：
 
-最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
+打开网络设置
+选择「新建配置」或「添加网络」
+配置网络参数：
+IP 地址：192.168.1.123
+子网掩码：255.255.255.0
+网关：8.8.8.8
 
-缺点：图片首次加载稍慢
-优点：免服务器、配置简单、可持续维护
 
-5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
 
-建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
-每次写新文章：生成、部署后，再推送源码仓库保持同步
+2. 访问 Mesh 设备管理界面使用浏览器访问 Mesh 设备的默认管理地址。
+操作步骤：
 
-虽然步骤多一点，但可用性与安全性更高。
-6. 当前写作与发布流程写新博客的操作顺序：
+打开浏览器
+在地址栏输入：192.168.1.200（Mesh 设备默认 IP）
+进入设备管理界面
 
-在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
-准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
-在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
-本地预览或直接生成 + 部署
+3. 配置 Mesh 组网模式在设备管理界面中，将网络模式设置为 Mesh 自组网。
+操作步骤：
 
-7. 常用命令合集分步骤执行：
-hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+进入「网络设置」页面
+选择网络模式为「Mesh 组网模式」
+保存配置
 
-一行整合版本：
-hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
+4. 为每个节点分配 IP 地址为了确保网络中每个设备都有唯一的 IP 地址，需要为每个无人机分配不同的 IP。
+操作步骤：
+
+打开「网络」→「新建配置」
+为每个无人机配置唯一的 IP 地址：
+IP 地址：192.168.1.XXX（每个设备使用不同的数字）
+子网掩码：255.255.255.0
+网关：8.8.8.8
+
+
+
+推荐 IP 分配方案：
+
+无人机 1：192.168.1.101
+无人机 2：192.168.1.102
+无人机 3：192.168.1.103
+地面站：192.168.1.100
+
+验证网络连通性配置完成后，需要验证 Mesh 网络是否正常工作。
+使用 ping 命令测试在终端中使用 ping 命令测试网络连通性：
+# 测试是否能 ping 通其他设备ping 192.168.1.101# 测试是否能 ping 通地面站ping 192.168.1.100
+
+预期结果：
+
+如果配置成功，应该能收到正常的回复：64 bytes from 192.168.1.101: icmp_seq=1 ttl=64 time=2.5 ms
+如果无法 ping 通，检查：
+IP 地址是否在同一网段
+防火墙是否阻止了 ICMP 包
+设备是否处于 Mesh 组网模式
+
+
+
+查看网络连接状态# 查看当前网络配置ip addr show# 查看路由表ip route show# 查看网络接口状态ifconfig
+
+常见问题与排查问题 1：无法访问 192.168.1.200可能原因：
+
+电脑 IP 地址未配置在同一网段
+网线连接不稳定
+Mesh 设备未正确启动
+
+解决方法：
+
+确认电脑 IP 配置为 192.168.1.x 网段
+检查网线连接
+重启 Mesh 设备
+
+问题 2：设备之间无法 ping 通可能原因：
+
+IP 地址冲突
+未设置为 Mesh 组网模式
+防火墙阻止通信
+
+解决方法：
+
+确保每个设备 IP 地址唯一
+检查设备是否都处于 Mesh 模式
+临时关闭防火墙测试：sudo ufw disable
+
+问题 3：网络不稳定，时通时断可能原因：
+
+信号干扰
+设备距离过远
+中继节点故障
+
+解决方法：
+
+减少设备间距离
+避开 2.4GHz 频段干扰源
+检查各节点工作状态
+
+总结通过以上步骤，就可以成功搭建 Mesh 自组网，实现无人机集群的局域网通信。配置过程的关键点：
+
+IP 地址规划：确保每个设备 IP 唯一且在同一网段
+模式配置：所有设备都要设置为 Mesh 组网模式
+连通性验证：使用 ping 命令验证网络是否正常
+
+Mesh 网络为无人机集群通信提供了可靠的基础，后续可以在此基础上进行 ROS2 通信、多机协同等应用开发。
+参考资料
+Mesh 网络原理与应用
+无人机集群通信技术
+Linux 网络配置指南
+
+]]></content>
       <categories>
-        <category>随思随想</category>
+        <category>技术分享</category>
       </categories>
       <tags>
-        <tag>Blog</tag>
-        <tag>Hexo</tag>
-        <tag>Butterfly</tag>
-        <tag>GitHub Pages</tag>
-        <tag>域名</tag>
+        <tag>教程</tag>
+        <tag>Mesh</tag>
+        <tag>无人机</tag>
+        <tag>集群通信</tag>
+        <tag>环境配置</tag>
       </tags>
   </entry>
   <entry>
@@ -392,9 +465,68 @@ sudo apt install -y git curl vim htop tmux
       </categories>
       <tags>
         <tag>教程</tag>
+        <tag>环境配置</tag>
         <tag>Jetson</tag>
         <tag>系统烧录</tag>
-        <tag>环境配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
+
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
+
+
+
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
+
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
+
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
+
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
+
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
+
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
+
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
+
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
+
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+
+一行整合版本：
+hexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
       </tags>
   </entry>
   <entry>
@@ -489,12 +621,12 @@ GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
       </categories>
       <tags>
         <tag>教程</tag>
-        <tag>Jetson</tag>
+        <tag>无人机</tag>
         <tag>环境配置</tag>
+        <tag>Jetson</tag>
         <tag>ROS2</tag>
         <tag>PX4</tag>
         <tag>MAVROS</tag>
-        <tag>无人机</tag>
       </tags>
   </entry>
   <entry>
@@ -622,6 +754,101 @@ ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:/
       </tags>
   </entry>
   <entry>
+    <title>《动手学强化学习》阅读笔记</title>
+    <url>/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。
+
+
+第一章 强化学习基础什么是强化学习？强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。
+环境与随机性用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：
+
+动作选择的随机性（策略的随机性）
+环境状态转移的随机性（$P(s’\mid s,a)$ 的采样）
+
+目标：最大化策略价值强化学习的优化目标是最大化在与环境交互过程中的策略价值（长期累积奖励的期望）。
+数据从何而来数据并非来自固定数据集，而是在智能体与环境的交互过程中不断产生，且会随策略更新而改变分布。
+占用度量（Occupancy Measure）
+定义：某策略与环境交互时，采样到状态-动作对 $(s,a)$ 的概率分布。
+性质：当且仅当两个策略诱导的占用度量完全相同时，这两个策略等价；策略变化会引起占用度量变化。
+关联：策略价值等价于在该占用度量下的奖励期望，因此“找最优策略 ≈ 找最优占用度量”。
+
+与有监督学习的区别
+有监督学习：给定数据分布，最小化损失的期望。
+强化学习：通过交互诱导数据分布，最大化奖励的期望。
+关键差异：RL 的数据分布随策略变化，非 i.i.d.
+
+
+第二章 多臂老虎机：探索 vs 利用多臂老虎机（Multi-Armed Bandit, MAB）刻画“探索未知”和“利用已知”的权衡：既要尝试可能更优的臂（探索），又要选择当前估计最优的臂（利用）。
+目标与懊悔（Regret）
+时刻 $t$ 的即时懊悔：$r_t &#x3D; \mu^* - \mu_{a_t}$。
+累积懊悔：$R_T &#x3D; \sum_{t&#x3D;1}^{T} (\mu^* - \mu_{a_t})$。
+目标等价：最大化累积奖励 ⇔ 最小化累积懊悔。
+
+期望奖励的估计对某一拉杆（动作）$a$ 的经验期望奖励估计：
+$$\hat{\mu}a &#x3D; \frac{1}{n_a} \sum{i&#x3D;1}^{n_a} r_i$$
+其中 $n_a$ 为选择臂 $a$ 的次数，$r_i$ 为获得的奖励。
+三类经典策略
+ε-贪心（$\varepsilon$-greedy）：
+
+以概率 $1-\varepsilon$ 选择当前估计最优的臂（利用），以概率 $\varepsilon$ 随机选择（探索）。
+常用做法：随时间衰减 $\varepsilon_t$（例如 $\varepsilon_t &#x3D; c&#x2F;t$ 或分段衰减）。
+
+
+上置信界（UCB）：
+
+利用“乐观估计”促进探索。常见形式： $$ a_t &#x3D; \arg\max_a \Big( \hat{\mu}_a + c\sqrt{\frac{2\ln t}{n_a}} \Big) $$
+思想：不确定性越大（$n_a$ 越小），上置信界越宽，更值得探索。
+
+
+汤普森采样（Thompson Sampling）：
+
+将每个臂的奖励建模为后验分布（如 Beta 分布），按后验进行一次采样并选择样本最大的臂。
+兼顾探索与利用，实践中表现优异、实现简单。
+
+
+
+小结：MAB 不改变环境状态，可视为“无状态”RL 的特例。
+
+第三章 马尔可夫决策过程（MDP）与价值马尔可夫过程与马尔可夫奖励过程（MRP）
+马尔可夫性质：$P(S_{t+1}\mid S_{0:t}) &#x3D; P(S_{t+1}\mid S_t)$。
+状态转移矩阵的每行和为 1。
+在马尔可夫过程中加入奖励与折扣因子 $\gamma\in(0,1]$ 得到 MRP。
+折扣动机：考虑不确定性与时间偏好；$\gamma$ 越接近 1 越重视长期。
+
+回报（从时刻 $t$ 出发的累积折扣奖励）：
+$$G_t &#x3D; \sum_{k&#x3D;0}^{T-t-1} \gamma^k, R_{t+k+1}$$
+状态价值函数（MRP）：
+$$V(s) &#x3D; \mathbb{E}[G_t\mid S_t&#x3D;s] &#x3D; R(s) + \gamma, \sum_{s’} P(s’\mid s), V(s’)$$
+常见求解：动态规划（DP）、蒙特卡洛（MC）、时序差分（TD）。
+马尔可夫决策过程（MDP）在 MRP 基础上加入动作 $a$ 与策略 $\pi(a\mid s)$：
+
+状态价值：$V^\pi(s) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s,]$。
+动作价值：$Q^\pi(s,a) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s, A_t&#x3D;a,]$。
+期望型贝尔曼方程：
+
+$$V^\pi(s) &#x3D; \sum_a \pi(a\mid s) \sum_{s’} P(s’\mid s,a)\big[ R(s,a,s’) + \gamma V^\pi(s’) \big]$$
+占用度量（在 MDP 下）策略的占用度量描述在策略 $\pi$ 与动力学 $P$ 下，状态-动作对 $(s,a)$ 被访问的频率分布。它直接决定了奖励期望与策略价值，是连接“采样分布”和“最优性”的桥梁。
+
+关键要点速记
+RL 的核心在于“交互诱导的数据分布”和“长期最优”。
+MAB：ε-贪心、UCB、汤普森采样是三大基石；目标是最小化累积懊悔。
+MRP&#x2F;MDP：价值函数与贝尔曼方程是算法设计的基础；DP&#x2F;MC&#x2F;TD 各有适用场景。
+占用度量提供了从策略到数据分布、再到价值最大化的统一视角。
+
+参考资料
+《动手学强化学习》
+Sutton &amp; Barto. Reinforcement Learning: An Introduction
+
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ROS2 自定义消息接口</title>
     <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
     <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
@@ -706,11 +933,11 @@ Tutorials: https://docs.ros2.org
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>ROS2</tag>
         <tag>无人机</tag>
+        <tag>集群通信</tag>
+        <tag>ROS2</tag>
         <tag>接口</tag>
         <tag>自定义消息</tag>
-        <tag>集群通信</tag>
       </tags>
   </entry>
 </search>
