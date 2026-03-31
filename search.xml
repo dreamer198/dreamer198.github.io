@@ -1,103 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
-    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
-    <content><![CDATA[
-适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
-
-
-
-一、准备工作
-一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
-USB Type‑C 数据线（支持数据传输）
-Jetson SDK Manager（NVIDIA 官方工具）
-Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
-
-软件下载：
-
-SDK Manager: https://developer.nvidia.com/sdk-manager
-需登录 NVIDIA 账号（没有先注册）
-
-二、安装 SDK Manager
-下载 .deb 包后双击安装，或执行：
-
-sudo apt install ./sdkmanager_*_amd64.deb
-
-启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
-
-三、进入恢复模式（Recovery）
-用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
-断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
-此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
-
-常见位置提示：
-
-REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
-
-四、SDK Manager 配置与烧录
-Select Product Category: Jetson
-Hardware Configuration: 选择 Jetson Orin NX
-Target Operating System: Linux for Tegra
-Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
-选择 Host&#x2F;Target 组件（默认即可）
-点击 Continue，按引导下载镜像与依赖 → 开始 Flash
-
-烧录阶段注意：
-
-全程保持 USB 连接稳定，避免移动触碰
-若网络慢，建议先开代理或稳定网络
-出现权限提示时，按指引使用 sudo 重试
-
-五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
-
-设置语言、时区、用户名&#x2F;密码
-进入桌面后建议先运行：
-
-sudo apt update &amp;&amp; sudo apt upgrade -y
-
-六、常见问题排查（FAQ）
-PC 不识别设备（lsusb 看不到 NVIDIA）：
-
-
-检查是否严格按“按住 REC → 上电”顺序
-更换 USB‑C 线（必须支持数据）与 USB 口
-更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
-
-
-SDK Manager 卡在下载&#x2F;校验：
-
-
-切换网络或配置代理后重试
-退出后重新登录 SDK Manager，会复用已下载数据
-
-
-烧录成功但无法进桌面：
-
-
-尝试重启；检查电源&#x2F;显示器连接
-若持续异常，可重新进入 Recovery 再次烧录
-
-七、后续建议（可选）
-安装基础工具：
-
-sudo apt install -y git curl vim htop tmux
-
-使用 ToDesk&#x2F;向日葵等远程工具便于维护
-后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Jetson</tag>
-        <tag>教程</tag>
-        <tag>系统烧录</tag>
-        <tag>环境配置</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>博客搭建过程记录</title>
     <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
     <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
@@ -157,308 +60,9 @@ cd /home/ziqian/blog/myblogshexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;
       </tags>
   </entry>
   <entry>
-    <title>Gazebo仿真环境中的无人机视觉定位测试</title>
-    <url>/2026/03/30/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%A7%86%E8%A7%89%E5%AE%9A%E4%BD%8D%E6%B5%8B%E8%AF%95/</url>
-    <content><![CDATA[前言本文记录在自定义的Gazebo仿真环境（赤壁场景）中，通过图像匹配技术实现无人机定位的测试过程。主要涉及PX4无人机仿真、ROS2话题桥接、MAVROS控制以及基于图像重定位的视觉定位系统。
-系统架构整个测试系统包含以下组件：
-
-Gazebo仿真环境：赤壁自定义场景
-PX4无人机：搭载下视单目相机的x500模型
-ROS2桥接：连接Gazebo和ROS2生态系统
-MAVROS：实现无人机控制
-视觉定位系统：基于图像匹配的定位服务
-
-环境准备版本兼容性说明
-重要：ROS2 Humble与Gazebo Harmonic版本匹配问题
-在桥接话题时需要安装 ros-humble-ros-gzharmonic，而不是ROS2自带的 ros-humble-ros-gz
-
-安装正确的桥接包：
-sudo apt install ros-humble-ros-gzharmonic
-
-启动仿真环境终端1：启动Gazebo仿真环境# 设置Gazebo模型路径export GZ_SIM_RESOURCE_PATH=$HOME/PX4-Autopilot/Tools/simulation/gz/models# 启动仿真（-s表示不启动GUI，减少显存占用）gz sim -s -r ~/PX4-Autopilot/Tools/simulation/gz/worlds/chibi.sdf
-
-参数说明：
-
--s：无GUI模式（headless），降低资源占用
--r：运行模式
-chibi.sdf：赤壁场景文件
-
-终端2：启动PX4无人机cd ~/PX4-AutopilotPX4_GZ_WORLD=chibi \PX4_SYS_AUTOSTART=4001 \PX4_SIM_MODEL=gz_x500_mono_cam_down \PX4_GZ_MODEL_POSE=&quot;0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
-
-参数说明：
-
-PX4_GZ_WORLD=chibi：指定赤壁世界
-PX4_SYS_AUTOSTART=4001：无人机系统ID
-PX4_SIM_MODEL=gz_x500_mono_cam_down：搭载下视单目相机的x500
-PX4_GZ_MODEL_POSE=&quot;0,0&quot;：初始位置
--i 0：实例编号
-
-ROS2集成桥接相机图像终端3：桥接Gazebo图像到ROS2ros2 run ros_gz_image image_bridge \  /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image \  --ros-args \  -r /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image:=/my_camera/image_raw
-
-这会将Gazebo中的相机图像桥接到ROS2话题 /my_camera/image_raw
-注意：实际话题名称需要根据Gazebo模型结构调整，可以使用以下命令查看：
-gz topic -l | grep image
-
-启动MAVROS终端4：启动MAVROS控制接口# 设置ROS2域ID（避免与其他ROS2系统冲突）export ROS_DOMAIN_ID=1# 启动MAVROSros2 launch onboard_control mainTree.launch.py \  fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;
-
-参数说明：
-
-ROS_DOMAIN_ID=1：设置ROS2域ID
-fcu_url：飞控连接URL（UDP协议）
-
-视觉定位系统启动匹配服务器终端5：启动图像匹配服务cd ~/ros2_ws/src/onboard/headless_resection_service# 设置ROS2域IDexport ROS_DOMAIN_ID=1# 启动服务bash start_ros_service.sh
-
-匹配服务器提供以下功能：
-
-接收实时相机图像
-与预先生成的数据库进行匹配
-返回相机位姿估计结果
-
-启动匹配客户端终端6：启动测试客户端# 设置ROS2域IDexport ROS_DOMAIN_ID=1# 启动客户端python3 test_client_ros_realtime.py
-
-客户端功能：
-
-订阅相机图像话题
-发送匹配请求到服务器
-接收并显示定位结果
-
-完整启动流程总结按照以下顺序启动各个组件：
-
-终端1：启动Gazebo仿真环境（无GUI）
-export GZ_SIM_RESOURCE_PATH=$HOME/PX4-Autopilot/Tools/simulation/gz/modelsgz sim -s -r ~/PX4-Autopilot/Tools/simulation/gz/worlds/chibi.sdf
-
-终端2：启动PX4无人机
-cd ~/PX4-AutopilotPX4_GZ_WORLD=chibi PX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500_mono_cam_down PX4_GZ_MODEL_POSE=&quot;0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
-
-终端3：桥接相机图像
-ros2 run ros_gz_image image_bridge /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image --ros-args -r /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image:=/my_camera/image_raw
-
-终端4：启动MAVROS
-export ROS_DOMAIN_ID=1ros2 launch onboard_control mainTree.launch.py fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;
-
-终端5：启动匹配服务器
-cd ~/ros2_ws/src/onboard/headless_resection_serviceexport ROS_DOMAIN_ID=1bash start_ros_service.sh
-
-终端6：启动匹配客户端
-export ROS_DOMAIN_ID=1python3 test_client_ros_realtime.py
-
-测试验证检查话题连接# 查看所有ROS2话题ros2 topic list# 查看相机图像ros2 topic echo /my_camera/image_raw --no-arr# 查看匹配结果（根据实际话题名调整）ros2 topic echo /matching/result
-
-检查Gazebo话题# 列出所有Gazebo话题gz topic -l# 查看相机图像话题gz topic -e -t /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image
-
-可视化使用RViz2可视化定位结果：
-rviz2
-
-在RViz2中添加：
-
-Image显示：查看相机图像
-Pose显示：查看定位位姿
-TF显示：查看坐标系关系
-
-性能优化减少资源占用
-使用无GUI模式：gz sim -s（已在上面的命令中使用）
-降低图像分辨率：在相机配置中调整分辨率参数
-减少特征点数量：在匹配算法中调整特征提取参数
-
-提高定位精度
-确保数据库质量：生成覆盖完整、光照均匀的数据库
-调整匹配阈值：根据实际场景调整匹配相似度阈值
-添加时间戳同步：确保图像和IMU数据时间对齐
-
-常见问题1. 话题名称不匹配现象：无法接收到图像数据
-解决方法：
-# 检查Gazebo中的实际话题名gz topic -l | grep image# 根据实际话题名调整桥接命令
-
-2. ROS2域ID冲突现象：不同节点之间无法通信
-解决方法：确保所有节点使用相同的ROS2域ID
-export ROS_DOMAIN_ID=1
-
-3. 匹配服务器无响应检查项：
-
-服务是否正常启动
-数据库是否正确加载
-网络通信是否正常
-
-4. MAVROS连接失败解决方法：
-
-检查PX4是否正常启动
-验证UDP端口配置
-查看MAVROS日志
-
-扩展应用1. 自定义场景可以根据需要创建其他Gazebo世界：
-
-室内环境
-城市场景
-特定任务场景
-
-2. 多机协同通过设置不同的实例编号和初始位置：
-./build/px4_sitl_default/bin/px4 -i 1./build/px4_sitl_default/bin/px4 -i 2
-
-3. 算法对比可以测试不同的视觉定位算法：
-
-特征点匹配
-深度学习定位
-混合方法
-
-参考资源
-PX4开发指南
-Gazebo Harmonic文档
-ROS GZ Bridge
-MAVROS文档
-
-总结本文介绍了在Gazebo仿真环境中进行无人机视觉定位测试的完整流程。通过PX4、ROS2和图像匹配技术的结合，可以快速验证视觉定位算法的有效性，为后续实际部署提供可靠的技术基础。
-关键要点：
-
-注意ROS2和Gazebo版本兼容性
-正确配置话题桥接
-统一ROS2域ID
-按照正确顺序启动各个组件
-及时验证各环节的数据流
-
-]]></content>
-      <categories>
-        <category>仿真</category>
-        <category>无人机</category>
-      </categories>
-      <tags>
-        <tag>Gazebo</tag>
-        <tag>PX4</tag>
-        <tag>视觉定位</tag>
-        <tag>图像匹配</tag>
-        <tag>ROS2</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mesh 自组网搭建指南</title>
-    <url>/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[本文记录 Mesh 自组网的完整配置流程，主要用于无人机集群通信场景。通过配置 Mesh 网络，可以实现多台设备在没有路由器的情况下组成局域网，进行数据传输和通信。
-
-
-什么是 Mesh 网络Mesh 网络（网状网络）是一种无线网络拓扑结构，每个节点都可以作为数据的中继点，使网络覆盖范围更广、稳定性更强。在无人机集群场景中，Mesh 网络可以实现：
-
-去中心化通信：无需依赖单一接入点
-动态路由：节点可以自动寻找最佳通信路径
-高可靠性：单个节点故障不影响整体网络
-
-配置流程1. 初始网络配置首先需要将电脑配置为与 Mesh 设备相同的网段，以便访问设备的管理界面。
-操作步骤：
-
-打开网络设置
-选择「新建配置」或「添加网络」
-配置网络参数：
-IP 地址：192.168.1.123
-子网掩码：255.255.255.0
-网关：8.8.8.8
-
-
-
-2. 访问 Mesh 设备管理界面使用浏览器访问 Mesh 设备的默认管理地址。
-操作步骤：
-
-打开浏览器
-在地址栏输入：192.168.1.200（Mesh 设备默认 IP）
-进入设备管理界面
-
-3. 配置 Mesh 组网模式在设备管理界面中，将网络模式设置为 Mesh 自组网。
-操作步骤：
-
-进入「网络设置」页面
-选择网络模式为「Mesh 组网模式」
-保存配置
-
-4. 为每个节点分配 IP 地址为了确保网络中每个设备都有唯一的 IP 地址，需要为每个无人机分配不同的 IP。
-操作步骤：
-
-打开「网络」→「新建配置」
-为每个无人机配置唯一的 IP 地址：
-IP 地址：192.168.1.XXX（每个设备使用不同的数字）
-子网掩码：255.255.255.0
-网关：8.8.8.8
-
-
-
-推荐 IP 分配方案：
-
-无人机 1：192.168.1.101
-无人机 2：192.168.1.102
-无人机 3：192.168.1.103
-地面站：192.168.1.100
-
-验证网络连通性配置完成后，需要验证 Mesh 网络是否正常工作。
-使用 ping 命令测试在终端中使用 ping 命令测试网络连通性：
-# 测试是否能 ping 通其他设备ping 192.168.1.101# 测试是否能 ping 通地面站ping 192.168.1.100
-
-预期结果：
-
-如果配置成功，应该能收到正常的回复：64 bytes from 192.168.1.101: icmp_seq=1 ttl=64 time=2.5 ms
-如果无法 ping 通，检查：
-IP 地址是否在同一网段
-防火墙是否阻止了 ICMP 包
-设备是否处于 Mesh 组网模式
-
-
-
-查看网络连接状态# 查看当前网络配置ip addr show# 查看路由表ip route show# 查看网络接口状态ifconfig
-
-常见问题与排查问题 1：无法访问 192.168.1.200可能原因：
-
-电脑 IP 地址未配置在同一网段
-网线连接不稳定
-Mesh 设备未正确启动
-
-解决方法：
-
-确认电脑 IP 配置为 192.168.1.x 网段
-检查网线连接
-重启 Mesh 设备
-
-问题 2：设备之间无法 ping 通可能原因：
-
-IP 地址冲突
-未设置为 Mesh 组网模式
-防火墙阻止通信
-
-解决方法：
-
-确保每个设备 IP 地址唯一
-检查设备是否都处于 Mesh 模式
-临时关闭防火墙测试：sudo ufw disable
-
-问题 3：网络不稳定，时通时断可能原因：
-
-信号干扰
-设备距离过远
-中继节点故障
-
-解决方法：
-
-减少设备间距离
-避开 2.4GHz 频段干扰源
-检查各节点工作状态
-
-总结通过以上步骤，就可以成功搭建 Mesh 自组网，实现无人机集群的局域网通信。配置过程的关键点：
-
-IP 地址规划：确保每个设备 IP 唯一且在同一网段
-模式配置：所有设备都要设置为 Mesh 组网模式
-连通性验证：使用 ping 命令验证网络是否正常
-
-Mesh 网络为无人机集群通信提供了可靠的基础，后续可以在此基础上进行 ROS2 通信、多机协同等应用开发。
-参考资料
-Mesh 网络原理与应用
-无人机集群通信技术
-Linux 网络配置指南
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>教程</tag>
-        <tag>环境配置</tag>
-        <tag>Mesh</tag>
-        <tag>无人机</tag>
-        <tag>集群通信</tag>
-      </tags>
+    <title></title>
+    <url>/2026/03/31/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
@@ -695,10 +299,279 @@ git commit -m &quot;chore: initial commit&quot;
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>教程</tag>
         <tag>Git</tag>
         <tag>GitHub</tag>
         <tag>版本控制</tag>
+        <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
+    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
+    <content><![CDATA[
+适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
+
+
+
+一、准备工作
+一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
+USB Type‑C 数据线（支持数据传输）
+Jetson SDK Manager（NVIDIA 官方工具）
+Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
+
+软件下载：
+
+SDK Manager: https://developer.nvidia.com/sdk-manager
+需登录 NVIDIA 账号（没有先注册）
+
+二、安装 SDK Manager
+下载 .deb 包后双击安装，或执行：
+
+sudo apt install ./sdkmanager_*_amd64.deb
+
+启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
+
+三、进入恢复模式（Recovery）
+用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
+断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
+此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
+
+常见位置提示：
+
+REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
+
+四、SDK Manager 配置与烧录
+Select Product Category: Jetson
+Hardware Configuration: 选择 Jetson Orin NX
+Target Operating System: Linux for Tegra
+Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
+选择 Host&#x2F;Target 组件（默认即可）
+点击 Continue，按引导下载镜像与依赖 → 开始 Flash
+
+烧录阶段注意：
+
+全程保持 USB 连接稳定，避免移动触碰
+若网络慢，建议先开代理或稳定网络
+出现权限提示时，按指引使用 sudo 重试
+
+五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
+
+设置语言、时区、用户名&#x2F;密码
+进入桌面后建议先运行：
+
+sudo apt update &amp;&amp; sudo apt upgrade -y
+
+六、常见问题排查（FAQ）
+PC 不识别设备（lsusb 看不到 NVIDIA）：
+
+
+检查是否严格按“按住 REC → 上电”顺序
+更换 USB‑C 线（必须支持数据）与 USB 口
+更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
+
+
+SDK Manager 卡在下载&#x2F;校验：
+
+
+切换网络或配置代理后重试
+退出后重新登录 SDK Manager，会复用已下载数据
+
+
+烧录成功但无法进桌面：
+
+
+尝试重启；检查电源&#x2F;显示器连接
+若持续异常，可重新进入 Recovery 再次烧录
+
+七、后续建议（可选）
+安装基础工具：
+
+sudo apt install -y git curl vim htop tmux
+
+使用 ToDesk&#x2F;向日葵等远程工具便于维护
+后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>Jetson</tag>
+        <tag>系统烧录</tag>
+        <tag>环境配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Gazebo仿真环境中的无人机视觉定位测试</title>
+    <url>/2026/03/30/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%A7%86%E8%A7%89%E5%AE%9A%E4%BD%8D%E6%B5%8B%E8%AF%95/</url>
+    <content><![CDATA[前言本文记录在自定义的Gazebo仿真环境（赤壁场景）中，通过图像匹配技术实现无人机定位的测试过程。主要涉及PX4无人机仿真、ROS2话题桥接、MAVROS控制以及基于图像重定位的视觉定位系统。
+系统架构整个测试系统包含以下组件：
+
+Gazebo仿真环境：赤壁自定义场景
+PX4无人机：搭载下视单目相机的x500模型
+ROS2桥接：连接Gazebo和ROS2生态系统
+MAVROS：实现无人机控制
+视觉定位系统：基于图像匹配的定位服务
+
+环境准备版本兼容性说明
+重要：ROS2 Humble与Gazebo Harmonic版本匹配问题
+在桥接话题时需要安装 ros-humble-ros-gzharmonic，而不是ROS2自带的 ros-humble-ros-gz
+
+安装正确的桥接包：
+sudo apt install ros-humble-ros-gzharmonic
+
+启动仿真环境终端1：启动Gazebo仿真环境# 设置Gazebo模型路径export GZ_SIM_RESOURCE_PATH=$HOME/PX4-Autopilot/Tools/simulation/gz/models# 启动仿真（-s表示不启动GUI，减少显存占用）gz sim -s -r ~/PX4-Autopilot/Tools/simulation/gz/worlds/chibi.sdf
+
+参数说明：
+
+-s：无GUI模式（headless），降低资源占用
+-r：运行模式
+chibi.sdf：赤壁场景文件
+
+终端2：启动PX4无人机cd ~/PX4-AutopilotPX4_GZ_WORLD=chibi \PX4_SYS_AUTOSTART=4001 \PX4_SIM_MODEL=gz_x500_mono_cam_down \PX4_GZ_MODEL_POSE=&quot;0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
+
+参数说明：
+
+PX4_GZ_WORLD=chibi：指定赤壁世界
+PX4_SYS_AUTOSTART=4001：无人机系统ID
+PX4_SIM_MODEL=gz_x500_mono_cam_down：搭载下视单目相机的x500
+PX4_GZ_MODEL_POSE=&quot;0,0&quot;：初始位置
+-i 0：实例编号
+
+ROS2集成桥接相机图像终端3：桥接Gazebo图像到ROS2ros2 run ros_gz_image image_bridge \  /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image \  --ros-args \  -r /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image:=/my_camera/image_raw
+
+这会将Gazebo中的相机图像桥接到ROS2话题 /my_camera/image_raw
+注意：实际话题名称需要根据Gazebo模型结构调整，可以使用以下命令查看：
+gz topic -l | grep image
+
+启动MAVROS终端4：启动MAVROS控制接口# 设置ROS2域ID（避免与其他ROS2系统冲突）export ROS_DOMAIN_ID=1# 启动MAVROSros2 launch onboard_control mainTree.launch.py \  fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;
+
+参数说明：
+
+ROS_DOMAIN_ID=1：设置ROS2域ID
+fcu_url：飞控连接URL（UDP协议）
+
+视觉定位系统启动匹配服务器终端5：启动图像匹配服务cd ~/ros2_ws/src/onboard/headless_resection_service# 设置ROS2域IDexport ROS_DOMAIN_ID=1# 启动服务bash start_ros_service.sh
+
+匹配服务器提供以下功能：
+
+接收实时相机图像
+与预先生成的数据库进行匹配
+返回相机位姿估计结果
+
+启动匹配客户端终端6：启动测试客户端# 设置ROS2域IDexport ROS_DOMAIN_ID=1# 启动客户端python3 test_client_ros_realtime.py
+
+客户端功能：
+
+订阅相机图像话题
+发送匹配请求到服务器
+接收并显示定位结果
+
+完整启动流程总结按照以下顺序启动各个组件：
+
+终端1：启动Gazebo仿真环境（无GUI）
+export GZ_SIM_RESOURCE_PATH=$HOME/PX4-Autopilot/Tools/simulation/gz/modelsgz sim -s -r ~/PX4-Autopilot/Tools/simulation/gz/worlds/chibi.sdf
+
+终端2：启动PX4无人机
+cd ~/PX4-AutopilotPX4_GZ_WORLD=chibi PX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500_mono_cam_down PX4_GZ_MODEL_POSE=&quot;0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
+
+终端3：桥接相机图像
+ros2 run ros_gz_image image_bridge /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image --ros-args -r /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image:=/my_camera/image_raw
+
+终端4：启动MAVROS
+export ROS_DOMAIN_ID=1ros2 launch onboard_control mainTree.launch.py fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;
+
+终端5：启动匹配服务器
+cd ~/ros2_ws/src/onboard/headless_resection_serviceexport ROS_DOMAIN_ID=1bash start_ros_service.sh
+
+终端6：启动匹配客户端
+export ROS_DOMAIN_ID=1python3 test_client_ros_realtime.py
+
+测试验证检查话题连接# 查看所有ROS2话题ros2 topic list# 查看相机图像ros2 topic echo /my_camera/image_raw --no-arr# 查看匹配结果（根据实际话题名调整）ros2 topic echo /matching/result
+
+检查Gazebo话题# 列出所有Gazebo话题gz topic -l# 查看相机图像话题gz topic -e -t /world/chibi/model/x500_mono_cam_down_0/link/camera_link/sensor/camera/image
+
+可视化使用RViz2可视化定位结果：
+rviz2
+
+在RViz2中添加：
+
+Image显示：查看相机图像
+Pose显示：查看定位位姿
+TF显示：查看坐标系关系
+
+性能优化减少资源占用
+使用无GUI模式：gz sim -s（已在上面的命令中使用）
+降低图像分辨率：在相机配置中调整分辨率参数
+减少特征点数量：在匹配算法中调整特征提取参数
+
+提高定位精度
+确保数据库质量：生成覆盖完整、光照均匀的数据库
+调整匹配阈值：根据实际场景调整匹配相似度阈值
+添加时间戳同步：确保图像和IMU数据时间对齐
+
+常见问题1. 话题名称不匹配现象：无法接收到图像数据
+解决方法：
+# 检查Gazebo中的实际话题名gz topic -l | grep image# 根据实际话题名调整桥接命令
+
+2. ROS2域ID冲突现象：不同节点之间无法通信
+解决方法：确保所有节点使用相同的ROS2域ID
+export ROS_DOMAIN_ID=1
+
+3. 匹配服务器无响应检查项：
+
+服务是否正常启动
+数据库是否正确加载
+网络通信是否正常
+
+4. MAVROS连接失败解决方法：
+
+检查PX4是否正常启动
+验证UDP端口配置
+查看MAVROS日志
+
+扩展应用1. 自定义场景可以根据需要创建其他Gazebo世界：
+
+室内环境
+城市场景
+特定任务场景
+
+2. 多机协同通过设置不同的实例编号和初始位置：
+./build/px4_sitl_default/bin/px4 -i 1./build/px4_sitl_default/bin/px4 -i 2
+
+3. 算法对比可以测试不同的视觉定位算法：
+
+特征点匹配
+深度学习定位
+混合方法
+
+参考资源
+PX4开发指南
+Gazebo Harmonic文档
+ROS GZ Bridge
+MAVROS文档
+
+总结本文介绍了在Gazebo仿真环境中进行无人机视觉定位测试的完整流程。通过PX4、ROS2和图像匹配技术的结合，可以快速验证视觉定位算法的有效性，为后续实际部署提供可靠的技术基础。
+关键要点：
+
+注意ROS2和Gazebo版本兼容性
+正确配置话题桥接
+统一ROS2域ID
+按照正确顺序启动各个组件
+及时验证各环节的数据流
+
+]]></content>
+      <categories>
+        <category>仿真</category>
+        <category>无人机</category>
+      </categories>
+      <tags>
+        <tag>Gazebo</tag>
+        <tag>PX4</tag>
+        <tag>视觉定位</tag>
+        <tag>图像匹配</tag>
+        <tag>ROS2</tag>
       </tags>
   </entry>
   <entry>
@@ -792,13 +665,145 @@ GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>Jetson</tag>
         <tag>教程</tag>
+        <tag>Jetson</tag>
         <tag>环境配置</tag>
         <tag>PX4</tag>
         <tag>ROS2</tag>
-        <tag>无人机</tag>
         <tag>MAVROS</tag>
+        <tag>无人机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mesh 自组网搭建指南</title>
+    <url>/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录 Mesh 自组网的完整配置流程，主要用于无人机集群通信场景。通过配置 Mesh 网络，可以实现多台设备在没有路由器的情况下组成局域网，进行数据传输和通信。
+
+
+什么是 Mesh 网络Mesh 网络（网状网络）是一种无线网络拓扑结构，每个节点都可以作为数据的中继点，使网络覆盖范围更广、稳定性更强。在无人机集群场景中，Mesh 网络可以实现：
+
+去中心化通信：无需依赖单一接入点
+动态路由：节点可以自动寻找最佳通信路径
+高可靠性：单个节点故障不影响整体网络
+
+配置流程1. 初始网络配置首先需要将电脑配置为与 Mesh 设备相同的网段，以便访问设备的管理界面。
+操作步骤：
+
+打开网络设置
+选择「新建配置」或「添加网络」
+配置网络参数：
+IP 地址：192.168.1.123
+子网掩码：255.255.255.0
+网关：8.8.8.8
+
+
+
+2. 访问 Mesh 设备管理界面使用浏览器访问 Mesh 设备的默认管理地址。
+操作步骤：
+
+打开浏览器
+在地址栏输入：192.168.1.200（Mesh 设备默认 IP）
+进入设备管理界面
+
+3. 配置 Mesh 组网模式在设备管理界面中，将网络模式设置为 Mesh 自组网。
+操作步骤：
+
+进入「网络设置」页面
+选择网络模式为「Mesh 组网模式」
+保存配置
+
+4. 为每个节点分配 IP 地址为了确保网络中每个设备都有唯一的 IP 地址，需要为每个无人机分配不同的 IP。
+操作步骤：
+
+打开「网络」→「新建配置」
+为每个无人机配置唯一的 IP 地址：
+IP 地址：192.168.1.XXX（每个设备使用不同的数字）
+子网掩码：255.255.255.0
+网关：8.8.8.8
+
+
+
+推荐 IP 分配方案：
+
+无人机 1：192.168.1.101
+无人机 2：192.168.1.102
+无人机 3：192.168.1.103
+地面站：192.168.1.100
+
+验证网络连通性配置完成后，需要验证 Mesh 网络是否正常工作。
+使用 ping 命令测试在终端中使用 ping 命令测试网络连通性：
+# 测试是否能 ping 通其他设备ping 192.168.1.101# 测试是否能 ping 通地面站ping 192.168.1.100
+
+预期结果：
+
+如果配置成功，应该能收到正常的回复：64 bytes from 192.168.1.101: icmp_seq=1 ttl=64 time=2.5 ms
+如果无法 ping 通，检查：
+IP 地址是否在同一网段
+防火墙是否阻止了 ICMP 包
+设备是否处于 Mesh 组网模式
+
+
+
+查看网络连接状态# 查看当前网络配置ip addr show# 查看路由表ip route show# 查看网络接口状态ifconfig
+
+常见问题与排查问题 1：无法访问 192.168.1.200可能原因：
+
+电脑 IP 地址未配置在同一网段
+网线连接不稳定
+Mesh 设备未正确启动
+
+解决方法：
+
+确认电脑 IP 配置为 192.168.1.x 网段
+检查网线连接
+重启 Mesh 设备
+
+问题 2：设备之间无法 ping 通可能原因：
+
+IP 地址冲突
+未设置为 Mesh 组网模式
+防火墙阻止通信
+
+解决方法：
+
+确保每个设备 IP 地址唯一
+检查设备是否都处于 Mesh 模式
+临时关闭防火墙测试：sudo ufw disable
+
+问题 3：网络不稳定，时通时断可能原因：
+
+信号干扰
+设备距离过远
+中继节点故障
+
+解决方法：
+
+减少设备间距离
+避开 2.4GHz 频段干扰源
+检查各节点工作状态
+
+总结通过以上步骤，就可以成功搭建 Mesh 自组网，实现无人机集群的局域网通信。配置过程的关键点：
+
+IP 地址规划：确保每个设备 IP 唯一且在同一网段
+模式配置：所有设备都要设置为 Mesh 组网模式
+连通性验证：使用 ping 命令验证网络是否正常
+
+Mesh 网络为无人机集群通信提供了可靠的基础，后续可以在此基础上进行 ROS2 通信、多机协同等应用开发。
+参考资料
+Mesh 网络原理与应用
+无人机集群通信技术
+Linux 网络配置指南
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>教程</tag>
+        <tag>环境配置</tag>
+        <tag>无人机</tag>
+        <tag>Mesh</tag>
+        <tag>集群通信</tag>
       </tags>
   </entry>
   <entry>
@@ -1043,6 +1048,183 @@ ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:/
         <tag>ROS2</tag>
         <tag>MAVROS</tag>
         <tag>多机</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RealSense D435i安装与使用教程</title>
+    <url>/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言Intel RealSense D435i是一款带有IMU（惯性测量单元）的深度相机，广泛应用于SLAM、视觉导航等领域。本文记录在ROS2环境下的安装与使用方法。
+驱动安装详细的驱动安装步骤可以参考：CSDN教程
+简要步骤：
+1. 安装依赖sudo apt updatesudo apt install -y librealsense2-utils librealsense2-dev
+
+2. 安装ROS2包装sudo apt install -y ros-humble-realsense2-camera
+
+3. 验证安装连接相机后，运行：
+realsense-viewer
+
+如果能够看到相机图像和IMU数据，说明驱动安装成功。
+ROS2使用基本使用发布影像和IMU数据的完整命令：
+ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
+
+参数说明
+
+
+参数
+说明
+默认值
+
+
+
+enable_color
+启用彩色相机
+true
+
+
+enable_depth
+启用深度相机
+true
+
+
+enable_infra1
+启用左红外相机
+true
+
+
+enable_infra2
+启用右红外相机
+true
+
+
+enable_accel
+启用加速度计
+false
+
+
+enable_gyro
+启用陀螺仪
+false
+
+
+unite_imu_method
+IMU数据融合方式（0&#x3D;不融合，1&#x3D;线性插值，2&#x3D;拷贝）
+0
+
+
+gyro_fps
+陀螺仪采样率
+200
+
+
+accel_fps
+加速度计采样率
+200
+
+
+depth_module.infra_profile
+红外相机分辨率和帧率
+640,480,30
+
+
+常用配置仅发布双目红外图像和IMU数据（适合VIO）ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
+
+仅发布RGB-D图像ros2 launch realsense2_camera rs_launch.py \    enable_color:=true \    enable_depth:=true \    enable_infra1:=false \    enable_infra2:=false \    enable_accel:=false \    enable_gyro:=false
+
+发布所有数据ros2 launch realsense2_camera rs_launch.py
+
+运行时配置关闭激光发射器在某些场景下（如使用双目相机进行室外VIO），需要关闭激光投影器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+查看可用参数ros2 param list /camera/camera
+
+修改参数值ros2 param set /camera/camera &lt;参数名&gt; &lt;参数值&gt;
+
+常用话题相机启动后，会发布以下主要话题：
+
+
+
+话题名
+消息类型
+说明
+
+
+
+/camera/infra1/image_raw
+sensor_msgs/msg/Image
+左红外相机图像
+
+
+/camera/infra2/image_raw
+sensor_msgs/msg/Image
+右红外相机图像
+
+
+/camera/color/image_raw
+sensor_msgs/msg/Image
+RGB彩色图像
+
+
+/camera/depth/image_rect_raw
+sensor_msgs/msg/Image
+对齐后的深度图像
+
+
+/camera/accel/sample
+sensor_msgs/msg/Imu
+加速度计数据
+
+
+/camera/gyro/sample
+sensor_msgs/msg/Imu
+陀螺仪数据
+
+
+/camera/imu
+sensor_msgs/msg/Imu
+融合后的IMU数据
+
+
+可视化查看使用RViz2查看相机数据：
+rviz2
+
+在RViz2中添加相应的显示项：
+
+Image：查看红外&#x2F;彩色图像
+PointCloud2：查看点云数据（需启用深度相机）
+TF：查看坐标系关系
+
+性能优化建议
+根据需求选择数据流：不需要的数据流禁用可以降低CPU占用
+调整帧率和分辨率：降低帧率可以减少数据传输量
+使用IMU融合：设置 unite_imu_method:=2 可以获得时间同步更好的IMU数据
+关闭激光发射器：在室外或使用被动双目时关闭，节省电量
+
+常见问题1. 相机无法识别检查USB连接和权限：
+lsusb | grep Intelrealsense-viewer
+
+2. ROS2无法启动相机检查驱动安装：
+dpkg -l | grep realsense
+
+重新安装驱动：
+sudo apt install --reinstall ros-humble-realsense2-camera
+
+3. IMU数据不同步设置 unite_imu_method:=2 并重启相机节点。
+4. 帧率不稳定检查USB带宽，尝试使用USB 3.0接口，或降低帧率设置。
+参考资源
+Intel RealSense官方文档
+librealense2 GitHub
+realsense2_camera ROS2包装
+
+]]></content>
+      <categories>
+        <category>传感器</category>
+        <category>安装教程</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>RealSense</tag>
+        <tag>深度相机</tag>
+        <tag>IMU</tag>
       </tags>
   </entry>
   <entry>
@@ -1375,180 +1557,81 @@ AR&#x2F;VR应用
       </tags>
   </entry>
   <entry>
-    <title>RealSense D435i安装与使用教程</title>
-    <url>/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言Intel RealSense D435i是一款带有IMU（惯性测量单元）的深度相机，广泛应用于SLAM、视觉导航等领域。本文记录在ROS2环境下的安装与使用方法。
-驱动安装详细的驱动安装步骤可以参考：CSDN教程
-简要步骤：
-1. 安装依赖sudo apt updatesudo apt install -y librealsense2-utils librealsense2-dev
-
-2. 安装ROS2包装sudo apt install -y ros-humble-realsense2-camera
-
-3. 验证安装连接相机后，运行：
-realsense-viewer
-
-如果能够看到相机图像和IMU数据，说明驱动安装成功。
-ROS2使用基本使用发布影像和IMU数据的完整命令：
-ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
-
-参数说明
+    <title>YOPO-ROS2 运行指南</title>
+    <url>/2026/03/31/YOPO-ROS2-RUN/</url>
+    <content><![CDATA[YOPO-ROS2 运行指南
 
 
-参数
-说明
-默认值
+项目地址：https://github.com/dreamer198/YOPO-ROS2.git
+
+环境依赖
+
+
+依赖
+版本要求
 
 
 
-enable_color
-启用彩色相机
-true
+ROS 2
+Humble
 
 
-enable_depth
-启用深度相机
-true
+CUDA
+12.6+
 
 
-enable_infra1
-启用左红外相机
-true
+GCC&#x2F;G++
+11
 
 
-enable_infra2
-启用右红外相机
-true
+PyTorch
+2.4.1+cu118
 
 
-enable_accel
-启用加速度计
-false
+Eigen3, PCL, OpenCV, yaml-cpp
+系统安装
 
 
-enable_gyro
-启用陀螺仪
-false
+一、构建1. 构建 Controller 工作空间cd ~/code/YOPO-ROS2/Controllersource /opt/ros/humble/setup.bashcolcon build --packages-select cmake_utils --symlink-installcolcon build
+
+2. 构建 Simulator 工作空间cd ~/code/YOPO-ROS2/Simulatorsource /opt/ros/humble/setup.bashcolcon build
+
+3. 安装 YOPO Python 依赖cd ~/code/YOPO-ROS2/YOPOpip install -r requirements.txt
+
+二、运行（5 个终端）终端 1：四旋翼仿真器cd ~/code/YOPO-ROS2/Controllersource /opt/ros/humble/setup.bashsource install/setup.bashros2 launch so3_quadrotor_simulator simulator_attitude_control.launch.py
+
+终端 2：CUDA 传感器仿真器cd ~/code/YOPO-ROS2/Simulatorsource /opt/ros/humble/setup.bashsource install/setup.bashros2 run sensor_simulator sensor_simulator_cuda
+
+终端 3：YOPO 策略节点cd ~/code/YOPO-ROS2/YOPOsource /opt/ros/humble/setup.bashsource ~/code/YOPO-ROS2/Controller/install/setup.bashpython3 test_yopo_ros.py
+
+终端 4：RViz 可视化rviz2 -d ~/code/YOPO-ROS2/YOPO/yopo2.rviz
+
+终端 5：发送目标点YOPO 默认目标为 [50, 0, 2]，无人机可能很快到达。可通过以下命令发送新目标点使其重新飞行：
+source /opt/ros/humble/setup.bashros2 topic pub --once /move_base_simple/goal geometry_msgs/msg/PoseStamped \  &quot;&#123;header: &#123;frame_id: &#x27;world&#x27;&#125;, pose: &#123;position: &#123;x: 100.0, y: 20.0, z: 2.0&#125;, orientation: &#123;w: 1.0&#125;&#125;&#125;&quot;
 
 
-unite_imu_method
-IMU数据融合方式（0&#x3D;不融合，1&#x3D;线性插值，2&#x3D;拷贝）
-0
+目标坐标可自行修改 x, y, z 的值。
 
+三、常见问题1. CUDA 版本不匹配Simulator CMakeLists.txt 默认要求 CUDA 12.8。如果你的 CUDA 版本不同（如 12.6），需修改 Simulator/src/CMakeLists.txt 第 46 行：
+# 将find_package(CUDA 12.8 EXACT REQUIRED)# 改为find_package(CUDA REQUIRED)
 
-gyro_fps
-陀螺仪采样率
-200
+2. RViz 报错找不到 uav.dae源码中硬编码了作者本地路径。需修改 Controller/src/so3_quadrotor_simulator/src/quadrotor_simulator_so3.cpp 第 377 行，改为使用 ament_index_cpp 动态获取包路径：
+// 将硬编码路径meshROS.mesh_resource = &quot;file:///home/hu/YOPO_backup/YOPO/Controller/src/so3_quadrotor_simulator/config/uav.dae&quot;;// 改为std::string pkg_path = ament_index_cpp::get_package_share_directory(&quot;so3_quadrotor_simulator&quot;);meshROS.mesh_resource = &quot;file://&quot; + pkg_path + &quot;/config/uav.dae&quot;;
 
+修改后重新编译：
+cd ~/code/YOPO-ROS2/Controllercolcon build --packages-select so3_quadrotor_simulator
 
-accel_fps
-加速度计采样率
-200
-
-
-depth_module.infra_profile
-红外相机分辨率和帧率
-640,480,30
-
-
-常用配置仅发布双目红外图像和IMU数据（适合VIO）ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
-
-仅发布RGB-D图像ros2 launch realsense2_camera rs_launch.py \    enable_color:=true \    enable_depth:=true \    enable_infra1:=false \    enable_infra2:=false \    enable_accel:=false \    enable_gyro:=false
-
-发布所有数据ros2 launch realsense2_camera rs_launch.py
-
-运行时配置关闭激光发射器在某些场景下（如使用双目相机进行室外VIO），需要关闭激光投影器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-
-查看可用参数ros2 param list /camera/camera
-
-修改参数值ros2 param set /camera/camera &lt;参数名&gt; &lt;参数值&gt;
-
-常用话题相机启动后，会发布以下主要话题：
-
-
-
-话题名
-消息类型
-说明
-
-
-
-/camera/infra1/image_raw
-sensor_msgs/msg/Image
-左红外相机图像
-
-
-/camera/infra2/image_raw
-sensor_msgs/msg/Image
-右红外相机图像
-
-
-/camera/color/image_raw
-sensor_msgs/msg/Image
-RGB彩色图像
-
-
-/camera/depth/image_rect_raw
-sensor_msgs/msg/Image
-对齐后的深度图像
-
-
-/camera/accel/sample
-sensor_msgs/msg/Imu
-加速度计数据
-
-
-/camera/gyro/sample
-sensor_msgs/msg/Imu
-陀螺仪数据
-
-
-/camera/imu
-sensor_msgs/msg/Imu
-融合后的IMU数据
-
-
-可视化查看使用RViz2查看相机数据：
-rviz2
-
-在RViz2中添加相应的显示项：
-
-Image：查看红外&#x2F;彩色图像
-PointCloud2：查看点云数据（需启用深度相机）
-TF：查看坐标系关系
-
-性能优化建议
-根据需求选择数据流：不需要的数据流禁用可以降低CPU占用
-调整帧率和分辨率：降低帧率可以减少数据传输量
-使用IMU融合：设置 unite_imu_method:=2 可以获得时间同步更好的IMU数据
-关闭激光发射器：在室外或使用被动双目时关闭，节省电量
-
-常见问题1. 相机无法识别检查USB连接和权限：
-lsusb | grep Intelrealsense-viewer
-
-2. ROS2无法启动相机检查驱动安装：
-dpkg -l | grep realsense
-
-重新安装驱动：
-sudo apt install --reinstall ros-humble-realsense2-camera
-
-3. IMU数据不同步设置 unite_imu_method:=2 并重启相机节点。
-4. 帧率不稳定检查USB带宽，尝试使用USB 3.0接口，或降低帧率设置。
-参考资源
-Intel RealSense官方文档
-librealense2 GitHub
-realsense2_camera ROS2包装
-
+3. pip 依赖冲突安装 Python 依赖时可能出现 numpy&#x2F;empy 版本冲突警告（与 ultralytics、bloom 等包），不影响 YOPO 本身运行，可忽略。
 ]]></content>
       <categories>
-        <category>传感器</category>
-        <category>安装教程</category>
+        <category>技术分享</category>
       </categories>
       <tags>
         <tag>ROS2</tag>
-        <tag>RealSense</tag>
-        <tag>深度相机</tag>
-        <tag>IMU</tag>
+        <tag>无人机</tag>
+        <tag>YOPO</tag>
+        <tag>仿真</tag>
+        <tag>四旋翼</tag>
       </tags>
   </entry>
 </search>
