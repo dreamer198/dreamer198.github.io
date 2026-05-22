@@ -1,65 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>博客搭建过程记录</title>
-    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
-本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
-
-1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
-2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
-3. 技术栈与主题美化
-框架：Hexo
-主题：Butterfly
-美化动作：
-调整主题主色与背景图片
-自定义个人简介页面（借助 GPT 快速生成前端结构）
-优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
-Tag 页面与 Category 页面样式微调
-
-
-
-4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
-
-额外运维成本与时间投入不划算
-博客主要是“自用记录”，对性能与动态能力需求低
-服务器费用不必要
-
-最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
-
-缺点：图片首次加载稍慢
-优点：免服务器、配置简单、可持续维护
-
-5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
-
-建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
-每次写新文章：生成、部署后，再推送源码仓库保持同步
-
-虽然步骤多一点，但可用性与安全性更高。
-6. 当前写作与发布流程写新博客的操作顺序：
-
-在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
-准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
-在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
-本地预览或直接生成 + 部署
-
-7. 常用命令合集分步骤执行：
-hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
-
-一行整合版本：
-cd /home/ziqian/blog/myblogshexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
-      <categories>
-        <category>随思随想</category>
-      </categories>
-      <tags>
-        <tag>Blog</tag>
-        <tag>Hexo</tag>
-        <tag>Butterfly</tag>
-        <tag>GitHub Pages</tag>
-        <tag>域名</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Docker使用教程</title>
     <url>/2026/04/30/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[前言Docker 是一种常用的容器化工具，可以把应用程序和运行环境打包到容器中，方便在不同机器上部署和运行。
@@ -111,6 +52,250 @@ docker rmi 用来删除本地镜像。如果镜像正在被容器使用，需要
         <tag>Docker</tag>
         <tag>容器</tag>
         <tag>Linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>FAST-LIO2 从 0 跑通教程</title>
+    <url>/2026/05/06/FAST-LIO2%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言前面已经跑通了 Mid-360S，接下来把 /livox/lidar 和 /livox/imu 接入 FAST-LIO2，实现实时激光惯性里程计和建图。
+本文环境：
+Ubuntu 22.04ROS 2 HumbleLivox Mid-360SFAST_LIO_ROS2
+
+
+
+一、准备环境加载 ROS 2 Humble：
+source /opt/ros/humble/setup.bashecho $ROS_DISTRO
+
+正常应输出：
+humble
+
+安装依赖：
+sudo apt updatesudo apt install -y \  git \  cmake \  build-essential \  python3-colcon-common-extensions \  python3-rosdep \  libpcl-dev \  libeigen3-dev \  ros-humble-pcl-ros \  ros-humble-rviz2
+
+如果没有初始化过 rosdep：
+sudo rosdep initrosdep update
+
+如果提示已经初始化过，忽略 sudo rosdep init 的报错，直接执行 rosdep update 即可。
+二、确认 Mid-360S 数据正常先加载 Livox 驱动环境：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bash
+
+启动 Mid-360S：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+这里要注意：跑 FAST-LIO2 时要用 msg_MID360s_launch.py，不要用 rviz_MID360s_launch.py。前者发布的是 FAST-LIO2 需要的 Livox 自定义点云消息。
+另开终端检查话题：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 topic list
+
+应该能看到：
+/livox/lidar/livox/imu
+
+检查消息类型：
+ros2 topic info /livox/lidarros2 topic info /livox/imu
+
+推荐结果：
+/livox/lidar: livox_ros_driver2/msg/CustomMsg/livox/imu: sensor_msgs/msg/Imu
+
+如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，说明启动方式不对，换回 msg_MID360s_launch.py。
+三、下载并编译 FAST-LIO2创建工作空间：
+mkdir -p ~/fastlio_ws/srccd ~/fastlio_ws/src
+
+下载 ROS2 版本：
+git clone https://github.com/Ericsii/FAST_LIO_ROS2.git --recursive
+
+编译：
+cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashrosdep install --from-paths src --ignore-src -ycolcon build --symlink-install
+
+加载环境：
+source ~/fastlio_ws/install/setup.bash
+
+也可以写入 ~/.bashrc：
+echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcecho &#x27;source ~/fastlio_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+四、检查配置文件进入配置目录：
+cd ~/fastlio_ws/src/FAST_LIO_ROS2/configls
+
+实际可以看到：
+avia.yaml  horizon.yaml  mid360.yaml  ouster64.yaml  velodyne.yaml
+
+Mid-360S 跑 FAST-LIO2 时直接使用仓库自带的 mid360.yaml 即可：
+Livox 驱动启动文件：msg_MID360s_launch.pyFAST-LIO2 配置文件：mid360.yaml
+
+打开配置：
+gedit mid360.yaml
+
+第一次跑通时，建议先保持默认参数，只确认下面几个关键项：
+common:  lid_topic: &quot;/livox/lidar&quot;  imu_topic: &quot;/livox/imu&quot;  time_sync_en: falsepreprocess:  lidar_type: 1  scan_line: 4  blind: 0.5  timestamp_unit: 3  scan_rate: 10mapping:  fov_degree: 360.0  det_range: 100.0  extrinsic_est_en: truepublish:  map_en: true  scan_publish_en: true  dense_publish_en: falsepcd_save:  pcd_save_en: true  interval: -1
+
+其中最重要的是：
+
+
+
+参数
+说明
+
+
+
+lid_topic
+点云话题，保持 /livox/lidar
+
+
+imu_topic
+IMU 话题，保持 /livox/imu
+
+
+lidar_type
+Livox 系列为 1
+
+
+timestamp_unit
+默认 3，不要随意改
+
+
+extrinsic_est_en
+默认 true，先让 FAST-LIO2 在线估计外参
+
+
+后续如果已经有准确的雷达-IMU 外参，再把 extrinsic_est_en 改为 false，并填写自己的 extrinsic_T 和 extrinsic_R。
+五、启动 FAST-LIO2开两个终端。
+终端 1：启动雷达source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+终端 2：启动 FAST-LIO2source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+
+若不设置rviz:&#x3D;false，执行后 RViz2 会自动打开，不需要额外再运行 rviz2。
+刚启动后先让雷达静止几秒，再缓慢移动。第一次测试建议在房间、走廊等有明显结构的环境中进行。
+六、查看建图结果RViz2 中重点看这些内容：
+Fixed Frame: camera_initPointCloud2: /Laser_mapPointCloud2: /cloud_registeredOdometry: /OdometryPath: /path
+
+如果 RViz2 中没有地图，先检查 FAST-LIO2 是否有输出：
+ros2 topic hz /Laser_mapros2 topic hz /Odometry
+
+如果有频率，多半是 RViz2 的 Fixed Frame 或显示项没设对。
+七、保存地图配置中已经开启：
+pcd_save:  pcd_save_en: true  interval: -1
+
+先查看保存地图服务：
+ros2 service list | grep map
+
+如果看到 /map_save，调用：
+ros2 service call /map_save std_srvs/srv/Trigger
+
+这个 ROS2 版本的 /map_save 会按照配置文件里的 map_file_path 保存地图。mid360.yaml 默认是：
+map_file_path: &quot;./test.pcd&quot;
+
+这里的 ./test.pcd 是相对路径，实际会保存在启动 FAST-LIO2 时终端所在的目录。比如在 ~ 目录启动 FAST-LIO2，地图就是 ~/test.pcd。
+建议改成绝对路径，避免保存后找不到文件：
+map_file_path: &quot;/home/dreamer198/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd&quot;
+
+重新启动 FAST-LIO2 后，再调用 /map_save，然后查看：
+ls -lh ~/fastlio_ws/src/FAST_LIO_ROS2/PCD
+
+查看 PCD 地图：
+pcl_viewer ~/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd
+
+八、录包测试实机调试时可以录一段 bag，后面离线反复测试：
+mkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
+
+播放：
+ros2 bag play &lt;bag目录&gt;
+
+离线测试时，先启动 FAST-LIO2：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
+
+再播放 bag：
+ros2 bag play ~/bags/&lt;bag目录&gt;
+
+九、常见问题1. FAST-LIO2 没有点云输入检查点云类型：
+ros2 topic info /livox/lidar
+
+应该是：
+livox_ros_driver2/msg/CustomMsg
+
+如果不是，重新用下面命令启动雷达：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+2. 找不到 livox_ros_driver2/msg/CustomMsg编译或运行 FAST-LIO2 前，需要先加载 Livox 工作空间：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bash
+
+如果是编译时报错：
+cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashcolcon build --symlink-install
+
+3. Jetson 通过 SSH 启动时报 RViz2 显示错误如果在 Jetson 上通过 SSH 远程执行：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
+
+出现类似错误：
+qt.qpa.xcb: could not connect to displayCould not load the Qt platform plugin &quot;xcb&quot;
+
+这说明当前 SSH 终端没有图形显示环境，RViz2 打不开。这个错误只影响 RViz2，不代表 FAST-LIO2 本身一定有问题。
+mapping.launch.py 默认会启动 RViz2，如果 Jetson 是无屏幕运行，或者只是通过 SSH 远程跑算法，可以先关闭 RViz2：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+
+然后在另一台带显示器的电脑上查看话题：
+ros2 topic listros2 topic hz /Odometryros2 topic hz /Laser_map
+
+如果两台电脑配置了 ROS 2 多机通信，也可以在自己的主力电脑上单独打开 RViz2 来看 Jetson 发布的话题。
+4. Jetson 运行时报 libusb_set_option如果 FAST-LIO2 节点直接退出，并出现：
+/lib/aarch64-linux-gnu/libpcl_io.so.1.12: undefined symbol: libusb_set_option
+
+这通常不是 FAST-LIO2 参数问题，而是 PCL 加载 libusb 时发生了动态库版本冲突。常见原因是系统里同时存在多个 libusb-1.0.so，例如 /usr/local/lib 下的旧版本 libusb 覆盖了 Ubuntu apt 安装的版本，导致 /lib/aarch64-linux-gnu/libpcl_io.so.1.12 找不到 libusb_set_option 符号。
+先检查 PCL 实际链接到了哪个 libusb：
+ldd /lib/aarch64-linux-gnu/libpcl_io.so.1.12 | grep usb
+
+再检查系统库里有没有这个符号：
+nm -D /lib/aarch64-linux-gnu/libusb-1.0.so.0 | grep libusb_set_option
+
+如果第二条命令能看到 libusb_set_option，说明系统自带的 libusb 是正常的，多半是运行时加载了别处的旧库。可以先用 LD_PRELOAD 临时指定系统库测试：
+LD_PRELOAD=/lib/aarch64-linux-gnu/libusb-1.0.so.0 \ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+
+如果这样能启动，说明就是 libusb 动态库冲突。接着检查是否存在 /usr/local/lib 里的旧库：
+ls -l /usr/local/lib | grep libusbldconfig -p | grep libusb
+
+如果确认 /usr/local/lib/libusb-1.0.so* 是旧版本残留，可以先备份再刷新动态库缓存：
+sudo mkdir -p /usr/local/lib/libusb_backupsudo mv /usr/local/lib/libusb-1.0.so* /usr/local/lib/libusb_backup/sudo ldconfig
+
+然后重新测试：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+
+如果系统库本身缺失或损坏，可以重装相关包：
+sudo apt updatesudo apt install --reinstall -y libusb-1.0-0 libusb-1.0-0-dev libpcl-dev ros-humble-pcl-ros
+
+建议处理顺序：
+
+先加 rviz:=false，排除远程图形界面问题。
+再用 ldd 和 nm 检查 libusb 是否冲突。
+用 LD_PRELOAD 做临时验证。
+确认后清理 /usr/local/lib 里的旧 libusb。
+
+5. 地图漂移明显先检查：
+
+启动后是否静止了几秒。
+是否在玻璃、空旷区域、长直走廊等退化场景。
+/livox/lidar 和 /livox/imu 是否稳定发布。
+mid360.yaml 中的话题名是否正确。
+外参是否和实际安装差别很大。
+
+第一次跑通建议先保持 mid360.yaml 默认参数。后续追求精度时，再重点处理时间同步、外参标定和安装刚性。
+6. 编译内存不够降低并行数：
+cd ~/fastlio_wscolcon build --symlink-install --parallel-workers 2
+
+参考资料
+FAST-LIO2 官方仓库：https://github.com/hku-mars/FAST_LIO
+FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
+livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
+Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
+
+总结Mid-360S 跑 FAST-LIO2 的核心流程：
+启动 Mid-360S：msg_MID360s_launch.py编译 FAST_LIO_ROS2使用配置文件：mid360.yaml启动 FAST-LIO2：ros2 launch fast_lio mapping.launch.py config_file:=mid360.yamlRViz2 查看 /Laser_map、/Odometry、/path
+]]></content>
+      <categories>
+        <category>技术分享</category>
+        <category>SLAM</category>
+      </categories>
+      <tags>
+        <tag>FAST-LIO2</tag>
+        <tag>SLAM</tag>
+        <tag>Livox</tag>
+        <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
       </tags>
   </entry>
   <entry>
@@ -478,13 +663,72 @@ PX4 Offboard 模式文档：https://docs.px4.io/main/en/flight_modes/offboard.ht
         <category>无人机</category>
       </categories>
       <tags>
-        <tag>EGO-Planner</tag>
-        <tag>ROS2</tag>
-        <tag>MAVROS</tag>
-        <tag>PX4</tag>
         <tag>FAST-LIO2</tag>
         <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>EGO-Planner</tag>
+        <tag>MAVROS</tag>
+        <tag>PX4</tag>
         <tag>Offboard</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
+
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
+
+
+
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
+
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
+
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
+
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
+
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
+
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
+
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
+
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
+
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+
+一行整合版本：
+cd /home/ziqian/blog/myblogshexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
+      <categories>
+        <category>随思随想</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
       </tags>
   </entry>
   <entry>
@@ -869,12 +1113,12 @@ BACKEND=tmux \~/code/start_sim_px4_mid360_fastlio_ego.sh restart
         <category>无人机</category>
       </categories>
       <tags>
-        <tag>EGO-Planner</tag>
-        <tag>ROS2</tag>
-        <tag>MAVROS</tag>
-        <tag>PX4</tag>
         <tag>FAST-LIO2</tag>
         <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>EGO-Planner</tag>
+        <tag>MAVROS</tag>
+        <tag>PX4</tag>
         <tag>Gazebo</tag>
         <tag>无人机仿真</tag>
       </tags>
@@ -1086,255 +1330,11 @@ ros2 topic list | grep mid360ros2 topic echo /mid360/points --once
         <category>无人机</category>
       </categories>
       <tags>
+        <tag>Mid-360S</tag>
         <tag>ROS2</tag>
         <tag>PX4</tag>
-        <tag>Mid-360S</tag>
         <tag>Gazebo</tag>
         <tag>无人机仿真</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAST-LIO2 从 0 跑通教程</title>
-    <url>/2026/05/06/FAST-LIO2%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言前面已经跑通了 Mid-360S，接下来把 /livox/lidar 和 /livox/imu 接入 FAST-LIO2，实现实时激光惯性里程计和建图。
-本文环境：
-Ubuntu 22.04ROS 2 HumbleLivox Mid-360SFAST_LIO_ROS2
-
-
-
-一、准备环境加载 ROS 2 Humble：
-source /opt/ros/humble/setup.bashecho $ROS_DISTRO
-
-正常应输出：
-humble
-
-安装依赖：
-sudo apt updatesudo apt install -y \  git \  cmake \  build-essential \  python3-colcon-common-extensions \  python3-rosdep \  libpcl-dev \  libeigen3-dev \  ros-humble-pcl-ros \  ros-humble-rviz2
-
-如果没有初始化过 rosdep：
-sudo rosdep initrosdep update
-
-如果提示已经初始化过，忽略 sudo rosdep init 的报错，直接执行 rosdep update 即可。
-二、确认 Mid-360S 数据正常先加载 Livox 驱动环境：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bash
-
-启动 Mid-360S：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-这里要注意：跑 FAST-LIO2 时要用 msg_MID360s_launch.py，不要用 rviz_MID360s_launch.py。前者发布的是 FAST-LIO2 需要的 Livox 自定义点云消息。
-另开终端检查话题：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 topic list
-
-应该能看到：
-/livox/lidar/livox/imu
-
-检查消息类型：
-ros2 topic info /livox/lidarros2 topic info /livox/imu
-
-推荐结果：
-/livox/lidar: livox_ros_driver2/msg/CustomMsg/livox/imu: sensor_msgs/msg/Imu
-
-如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，说明启动方式不对，换回 msg_MID360s_launch.py。
-三、下载并编译 FAST-LIO2创建工作空间：
-mkdir -p ~/fastlio_ws/srccd ~/fastlio_ws/src
-
-下载 ROS2 版本：
-git clone https://github.com/Ericsii/FAST_LIO_ROS2.git --recursive
-
-编译：
-cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashrosdep install --from-paths src --ignore-src -ycolcon build --symlink-install
-
-加载环境：
-source ~/fastlio_ws/install/setup.bash
-
-也可以写入 ~/.bashrc：
-echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcecho &#x27;source ~/fastlio_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-四、检查配置文件进入配置目录：
-cd ~/fastlio_ws/src/FAST_LIO_ROS2/configls
-
-实际可以看到：
-avia.yaml  horizon.yaml  mid360.yaml  ouster64.yaml  velodyne.yaml
-
-Mid-360S 跑 FAST-LIO2 时直接使用仓库自带的 mid360.yaml 即可：
-Livox 驱动启动文件：msg_MID360s_launch.pyFAST-LIO2 配置文件：mid360.yaml
-
-打开配置：
-gedit mid360.yaml
-
-第一次跑通时，建议先保持默认参数，只确认下面几个关键项：
-common:  lid_topic: &quot;/livox/lidar&quot;  imu_topic: &quot;/livox/imu&quot;  time_sync_en: falsepreprocess:  lidar_type: 1  scan_line: 4  blind: 0.5  timestamp_unit: 3  scan_rate: 10mapping:  fov_degree: 360.0  det_range: 100.0  extrinsic_est_en: truepublish:  map_en: true  scan_publish_en: true  dense_publish_en: falsepcd_save:  pcd_save_en: true  interval: -1
-
-其中最重要的是：
-
-
-
-参数
-说明
-
-
-
-lid_topic
-点云话题，保持 /livox/lidar
-
-
-imu_topic
-IMU 话题，保持 /livox/imu
-
-
-lidar_type
-Livox 系列为 1
-
-
-timestamp_unit
-默认 3，不要随意改
-
-
-extrinsic_est_en
-默认 true，先让 FAST-LIO2 在线估计外参
-
-
-后续如果已经有准确的雷达-IMU 外参，再把 extrinsic_est_en 改为 false，并填写自己的 extrinsic_T 和 extrinsic_R。
-五、启动 FAST-LIO2开两个终端。
-终端 1：启动雷达source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-终端 2：启动 FAST-LIO2source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-
-若不设置rviz:&#x3D;false，执行后 RViz2 会自动打开，不需要额外再运行 rviz2。
-刚启动后先让雷达静止几秒，再缓慢移动。第一次测试建议在房间、走廊等有明显结构的环境中进行。
-六、查看建图结果RViz2 中重点看这些内容：
-Fixed Frame: camera_initPointCloud2: /Laser_mapPointCloud2: /cloud_registeredOdometry: /OdometryPath: /path
-
-如果 RViz2 中没有地图，先检查 FAST-LIO2 是否有输出：
-ros2 topic hz /Laser_mapros2 topic hz /Odometry
-
-如果有频率，多半是 RViz2 的 Fixed Frame 或显示项没设对。
-七、保存地图配置中已经开启：
-pcd_save:  pcd_save_en: true  interval: -1
-
-先查看保存地图服务：
-ros2 service list | grep map
-
-如果看到 /map_save，调用：
-ros2 service call /map_save std_srvs/srv/Trigger
-
-这个 ROS2 版本的 /map_save 会按照配置文件里的 map_file_path 保存地图。mid360.yaml 默认是：
-map_file_path: &quot;./test.pcd&quot;
-
-这里的 ./test.pcd 是相对路径，实际会保存在启动 FAST-LIO2 时终端所在的目录。比如在 ~ 目录启动 FAST-LIO2，地图就是 ~/test.pcd。
-建议改成绝对路径，避免保存后找不到文件：
-map_file_path: &quot;/home/dreamer198/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd&quot;
-
-重新启动 FAST-LIO2 后，再调用 /map_save，然后查看：
-ls -lh ~/fastlio_ws/src/FAST_LIO_ROS2/PCD
-
-查看 PCD 地图：
-pcl_viewer ~/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd
-
-八、录包测试实机调试时可以录一段 bag，后面离线反复测试：
-mkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
-
-播放：
-ros2 bag play &lt;bag目录&gt;
-
-离线测试时，先启动 FAST-LIO2：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
-
-再播放 bag：
-ros2 bag play ~/bags/&lt;bag目录&gt;
-
-九、常见问题1. FAST-LIO2 没有点云输入检查点云类型：
-ros2 topic info /livox/lidar
-
-应该是：
-livox_ros_driver2/msg/CustomMsg
-
-如果不是，重新用下面命令启动雷达：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-2. 找不到 livox_ros_driver2/msg/CustomMsg编译或运行 FAST-LIO2 前，需要先加载 Livox 工作空间：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bash
-
-如果是编译时报错：
-cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashcolcon build --symlink-install
-
-3. Jetson 通过 SSH 启动时报 RViz2 显示错误如果在 Jetson 上通过 SSH 远程执行：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
-
-出现类似错误：
-qt.qpa.xcb: could not connect to displayCould not load the Qt platform plugin &quot;xcb&quot;
-
-这说明当前 SSH 终端没有图形显示环境，RViz2 打不开。这个错误只影响 RViz2，不代表 FAST-LIO2 本身一定有问题。
-mapping.launch.py 默认会启动 RViz2，如果 Jetson 是无屏幕运行，或者只是通过 SSH 远程跑算法，可以先关闭 RViz2：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-
-然后在另一台带显示器的电脑上查看话题：
-ros2 topic listros2 topic hz /Odometryros2 topic hz /Laser_map
-
-如果两台电脑配置了 ROS 2 多机通信，也可以在自己的主力电脑上单独打开 RViz2 来看 Jetson 发布的话题。
-4. Jetson 运行时报 libusb_set_option如果 FAST-LIO2 节点直接退出，并出现：
-/lib/aarch64-linux-gnu/libpcl_io.so.1.12: undefined symbol: libusb_set_option
-
-这通常不是 FAST-LIO2 参数问题，而是 PCL 加载 libusb 时发生了动态库版本冲突。常见原因是系统里同时存在多个 libusb-1.0.so，例如 /usr/local/lib 下的旧版本 libusb 覆盖了 Ubuntu apt 安装的版本，导致 /lib/aarch64-linux-gnu/libpcl_io.so.1.12 找不到 libusb_set_option 符号。
-先检查 PCL 实际链接到了哪个 libusb：
-ldd /lib/aarch64-linux-gnu/libpcl_io.so.1.12 | grep usb
-
-再检查系统库里有没有这个符号：
-nm -D /lib/aarch64-linux-gnu/libusb-1.0.so.0 | grep libusb_set_option
-
-如果第二条命令能看到 libusb_set_option，说明系统自带的 libusb 是正常的，多半是运行时加载了别处的旧库。可以先用 LD_PRELOAD 临时指定系统库测试：
-LD_PRELOAD=/lib/aarch64-linux-gnu/libusb-1.0.so.0 \ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-
-如果这样能启动，说明就是 libusb 动态库冲突。接着检查是否存在 /usr/local/lib 里的旧库：
-ls -l /usr/local/lib | grep libusbldconfig -p | grep libusb
-
-如果确认 /usr/local/lib/libusb-1.0.so* 是旧版本残留，可以先备份再刷新动态库缓存：
-sudo mkdir -p /usr/local/lib/libusb_backupsudo mv /usr/local/lib/libusb-1.0.so* /usr/local/lib/libusb_backup/sudo ldconfig
-
-然后重新测试：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-
-如果系统库本身缺失或损坏，可以重装相关包：
-sudo apt updatesudo apt install --reinstall -y libusb-1.0-0 libusb-1.0-0-dev libpcl-dev ros-humble-pcl-ros
-
-建议处理顺序：
-
-先加 rviz:=false，排除远程图形界面问题。
-再用 ldd 和 nm 检查 libusb 是否冲突。
-用 LD_PRELOAD 做临时验证。
-确认后清理 /usr/local/lib 里的旧 libusb。
-
-5. 地图漂移明显先检查：
-
-启动后是否静止了几秒。
-是否在玻璃、空旷区域、长直走廊等退化场景。
-/livox/lidar 和 /livox/imu 是否稳定发布。
-mid360.yaml 中的话题名是否正确。
-外参是否和实际安装差别很大。
-
-第一次跑通建议先保持 mid360.yaml 默认参数。后续追求精度时，再重点处理时间同步、外参标定和安装刚性。
-6. 编译内存不够降低并行数：
-cd ~/fastlio_wscolcon build --symlink-install --parallel-workers 2
-
-参考资料
-FAST-LIO2 官方仓库：https://github.com/hku-mars/FAST_LIO
-FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
-livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
-Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
-
-总结Mid-360S 跑 FAST-LIO2 的核心流程：
-启动 Mid-360S：msg_MID360s_launch.py编译 FAST_LIO_ROS2使用配置文件：mid360.yaml启动 FAST-LIO2：ros2 launch fast_lio mapping.launch.py config_file:=mid360.yamlRViz2 查看 /Laser_map、/Odometry、/path
-]]></content>
-      <categories>
-        <category>技术分享</category>
-        <category>SLAM</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>FAST-LIO2</tag>
-        <tag>Mid-360S</tag>
-        <tag>SLAM</tag>
-        <tag>Livox</tag>
       </tags>
   </entry>
   <entry>
@@ -1579,103 +1579,6 @@ git commit -m &quot;chore: initial commit&quot;
       </tags>
   </entry>
   <entry>
-    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
-    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
-    <content><![CDATA[
-适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
-
-
-
-一、准备工作
-一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
-USB Type‑C 数据线（支持数据传输）
-Jetson SDK Manager（NVIDIA 官方工具）
-Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
-
-软件下载：
-
-SDK Manager: https://developer.nvidia.com/sdk-manager
-需登录 NVIDIA 账号（没有先注册）
-
-二、安装 SDK Manager
-下载 .deb 包后双击安装，或执行：
-
-sudo apt install ./sdkmanager_*_amd64.deb
-
-启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
-
-三、进入恢复模式（Recovery）
-用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
-断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
-此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
-
-常见位置提示：
-
-REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
-
-四、SDK Manager 配置与烧录
-Select Product Category: Jetson
-Hardware Configuration: 选择 Jetson Orin NX
-Target Operating System: Linux for Tegra
-Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
-选择 Host&#x2F;Target 组件（默认即可）
-点击 Continue，按引导下载镜像与依赖 → 开始 Flash
-
-烧录阶段注意：
-
-全程保持 USB 连接稳定，避免移动触碰
-若网络慢，建议先开代理或稳定网络
-出现权限提示时，按指引使用 sudo 重试
-
-五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
-
-设置语言、时区、用户名&#x2F;密码
-进入桌面后建议先运行：
-
-sudo apt update &amp;&amp; sudo apt upgrade -y
-
-六、常见问题排查（FAQ）
-PC 不识别设备（lsusb 看不到 NVIDIA）：
-
-
-检查是否严格按“按住 REC → 上电”顺序
-更换 USB‑C 线（必须支持数据）与 USB 口
-更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
-
-
-SDK Manager 卡在下载&#x2F;校验：
-
-
-切换网络或配置代理后重试
-退出后重新登录 SDK Manager，会复用已下载数据
-
-
-烧录成功但无法进桌面：
-
-
-尝试重启；检查电源&#x2F;显示器连接
-若持续异常，可重新进入 Recovery 再次烧录
-
-七、后续建议（可选）
-安装基础工具：
-
-sudo apt install -y git curl vim htop tmux
-
-使用 ToDesk&#x2F;向日葵等远程工具便于维护
-后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>教程</tag>
-        <tag>Jetson</tag>
-        <tag>系统烧录</tag>
-        <tag>环境配置</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Mesh 自组网搭建指南</title>
     <url>/2025/11/17/Mesh%E8%87%AA%E7%BB%84%E7%BD%91%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[本文记录 Mesh 自组网的完整配置流程，主要用于无人机集群通信场景。通过配置 Mesh 网络，可以实现多台设备在没有路由器的情况下组成局域网，进行数据传输和通信。
@@ -1801,110 +1704,107 @@ Linux 网络配置指南
       </categories>
       <tags>
         <tag>教程</tag>
-        <tag>环境配置</tag>
         <tag>Mesh</tag>
         <tag>无人机</tag>
         <tag>集群通信</tag>
+        <tag>环境配置</tag>
       </tags>
   </entry>
   <entry>
-    <title>ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
-    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[本文记录在 Jetson Orin NX 上，从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建的可复制流程，并列出常见问题与排查方法。力求做到：结构清晰、命令可直接粘贴、出现异常可快速定位。
-
-
-环境信息
-硬件：Jetson Orin NX 开发板
-系统：Ubuntu 22.04（JetPack 对应版本）
-
-推荐辅助工具
-Firefox（ARM 设备上更稳定）：
-下载地址：https://github.com/dreamer198/firefox
-
-
-ToDesk（远程桌面）：
-下载地址：https://www.todesk.com/download.html
-
-
-Clash Verge（代理工具，导入订阅后提升下载速度）：
-下载地址：https://clash-verge.org/zh-CN/download
+    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
+    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
+    <content><![CDATA[
+适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
 
 
 
+一、准备工作
+一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
+USB Type‑C 数据线（支持数据传输）
+Jetson SDK Manager（NVIDIA 官方工具）
+Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
 
-提示：在 ARM 设备上某些官方软件存在兼容性或性能问题，以下组合在 Jetson 上体验更好。
+软件下载：
 
-安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-步骤 1：配置本地化并添加源locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
+SDK Manager: https://developer.nvidia.com/sdk-manager
+需登录 NVIDIA 账号（没有先注册）
 
-步骤 2：安装 ROS 2 与开发工具并写入环境变量sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+二、安装 SDK Manager
+下载 .deb 包后双击安装，或执行：
 
-安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
+sudo apt install ./sdkmanager_*_amd64.deb
 
-Jetson 上 OpenCV 版本冲突修复若在编译或运行时出现：
-/usr/lib/cmake/opencv4/OpenCVModules.cmake:172 (message):The imported target &quot;opencv_core&quot; references the file &quot;/usr/lib/libopencv_core.so.4.8.0&quot; but this file does not exist.
+启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
 
-原因：JetPack 自带的 OpenCV 与 ROS 2 Humble 期望版本不一致，导致链接缺失。
-解决步骤：
-sudo apt updatesudo apt install -y &#x27;nvidia-opencv*&#x27;
+三、进入恢复模式（Recovery）
+用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
+断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
+此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
 
-验证：
-ldconfig -p | grep opencv_core
+常见位置提示：
 
-更多参考：https://forums.developer.nvidia.com/t/opencv-libraries-missing-or-links-are-broken-on-a-fresh-install/335400
-&gt; 若启动后出现提示：`Preflight Fail: No connection to the GCS`，可在 MAVLink 控制台执行：&gt; ```bash&gt; param set NAV_DLL_ACT 0
+REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
 
-临时绕过对地面站的要求（仅用于仿真调试，不建议长期使用）。
+四、SDK Manager 配置与烧录
+Select Product Category: Jetson
+Hardware Configuration: 选择 Jetson Orin NX
+Target Operating System: Linux for Tegra
+Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
+选择 Host&#x2F;Target 组件（默认即可）
+点击 Continue，按引导下载镜像与依赖 → 开始 Flash
 
-安装 MAVROS
-源码仓库：https://github.com/mavlink/mavros
-教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
+烧录阶段注意：
 
-sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
+全程保持 USB 连接稳定，避免移动触碰
+若网络慢，建议先开代理或稳定网络
+出现权限提示时，按指引使用 sudo 重试
 
-创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
 
-拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
+设置语言、时区、用户名&#x2F;密码
+进入桌面后建议先运行：
 
-2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行 clone：
-git clone https://&lt;token&gt;@github.com/dreamer198/onboard.git
+sudo apt update &amp;&amp; sudo apt upgrade -y
 
-安装 JSON 头文件依赖：
-sudo apt-get install -y nlohmann-json3-dev
+六、常见问题排查（FAQ）
+PC 不识别设备（lsusb 看不到 NVIDIA）：
 
-编译与环境配置在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 接口）：
-cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
 
-运行与测试1. 启动 PX4 Gazebo 仿真（示例：3 台无人机）cd ~/PX4-AutopilotPX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 PX4_GZ_MODEL_POSE=&quot;0,0&quot; ./build/px4_sitl_default/bin/px4 -i 0PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;1,0&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 1PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;0,1&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 2
+检查是否严格按“按住 REC → 上电”顺序
+更换 USB‑C 线（必须支持数据）与 USB 口
+更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
 
-2. 启动机载控制主节点与通信节点# 启动主控制（uav_id 与端口需与 PX4 实例对应）ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=&quot;udp://:14541@127.0.0.1:14558&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=&quot;udp://:14542@127.0.0.1:14559&quot;# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
 
-3. 成功判定在 receive_status 终端可监听到全部无人机状态；在 send_cmd 按约定格式发布指令，可观察 Gazebo 中无人机执行对应动作。
-成功标准：
+SDK Manager 卡在下载&#x2F;校验：
 
-所有 PX4 实例进入正常飞控循环，无持续错误输出。
-MAVROS 与机载节点能正确收发心跳与状态消息。
-指令发布后延迟在可接受范围（通常 &lt; 200 ms）。
-多机之间不存在端口冲突（如 14540/14557 组合互不重复）。
 
-官方与仓库
-ROS 2 Humble 安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-PX4 仓库：https://github.com/PX4/PX4-Autopilot
-MAVROS 仓库：https://github.com/mavlink/mavros
-GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
+切换网络或配置代理后重试
+退出后重新登录 SDK Manager，会复用已下载数据
+
+
+烧录成功但无法进桌面：
+
+
+尝试重启；检查电源&#x2F;显示器连接
+若持续异常，可重新进入 Recovery 再次烧录
+
+七、后续建议（可选）
+安装基础工具：
+
+sudo apt install -y git curl vim htop tmux
+
+使用 ToDesk&#x2F;向日葵等远程工具便于维护
+后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
 
 ]]></content>
       <categories>
         <category>技术分享</category>
       </categories>
       <tags>
-        <tag>ROS2</tag>
-        <tag>MAVROS</tag>
-        <tag>PX4</tag>
         <tag>教程</tag>
-        <tag>Jetson</tag>
         <tag>环境配置</tag>
-        <tag>无人机</tag>
+        <tag>Jetson</tag>
+        <tag>系统烧录</tag>
       </tags>
   </entry>
   <entry>
@@ -2229,74 +2129,113 @@ FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
         <category>无人机</category>
       </categories>
       <tags>
+        <tag>FAST-LIO2</tag>
+        <tag>Livox</tag>
+        <tag>Mid-360S</tag>
         <tag>MAVROS</tag>
         <tag>PX4</tag>
-        <tag>FAST-LIO2</tag>
-        <tag>Mid-360S</tag>
-        <tag>Livox</tag>
         <tag>无人机</tag>
         <tag>室内定位</tag>
       </tags>
   </entry>
   <entry>
-    <title>OpenVINS搭建与测试</title>
-    <url>/2026/05/13/OpenVINS%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[环境
-系统：Ubuntu 22.04
-ROS2：Humble
-源码仓库：https://github.com/dreamer198/open_vins.git
+    <title>ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+    <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录在 Jetson Orin NX 上，从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建的可复制流程，并列出常见问题与排查方法。力求做到：结构清晰、命令可直接粘贴、出现异常可快速定位。
 
-源码下载mkdir -p ~/ros2_ws/srccd ~/ros2_ws/srcgit clone https://github.com/dreamer198/open_vins.git
 
-依赖安装source /opt/ros/humble/setup.bashsudo apt-get updatesudo apt-get install -y \  libeigen3-dev \  libboost-all-dev \  libceres-dev \  python3-colcon-common-extensions \  ros-humble-ros2bag \  ros-humble-rosbag2*
+环境信息
+硬件：Jetson Orin NX 开发板
+系统：Ubuntu 22.04（JetPack 对应版本）
 
-编译进入工作空间根目录：
-cd ~/ros2_ws
+推荐辅助工具
+Firefox（ARM 设备上更稳定）：
+下载地址：https://github.com/dreamer198/firefox
 
-直接使用 colcon build 可能会因为并行编译占用内存过高而卡死，建议限制并行度：
-MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf
 
-如果在 Jetson Orin NX 上遇到 OpenCV 缺少 aruco 模块的问题，可以关闭 ArUco Tag 支持后重新编译：
-MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf \  --cmake-args -DENABLE_ARUCO_TAGS=OFF
+ToDesk（远程桌面）：
+下载地址：https://www.todesk.com/download.html
 
-编译完成后加载环境：
-source ~/ros2_ws/install/setup.bash
 
-公开数据集测试下载数据集数据集下载地址：OpenVINS EuRoC 数据集说明
-推荐先下载 Vicon Room 1 01，也就是 V1_01_easy。
-运行测试终端 1：启动 OpenVINS。
-cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf subscribe.launch.py config:=euroc_mav
+Clash Verge（代理工具，导入订阅后提升下载速度）：
+下载地址：https://clash-verge.org/zh-CN/download
 
-终端 2：播放数据集。
-ros2 bag play V1_01_easy
 
-终端 3：打开 RViz2 可视化。
-rviz2 -d ~/ros2_ws/src/open_vins/ov_msckf/launch/display_ros2.rviz
 
-RealSense D455测试启动相机终端 1：发布双目红外图像和 IMU 数据。
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_gyro:=true \  enable_accel:=true \  unite_imu_method:=1 \  depth_module.infra_profile:=640,480,30 \  gyro_fps:=200 \  accel_fps:=200
 
-可以通过 rqt 查看红外图像中是否有红外斑点。如果有，关闭相机发射器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
+提示：在 ARM 设备上某些官方软件存在兼容性或性能问题，以下组合在 Jetson 上体验更好。
 
-启动 OpenVINS终端 2：运行 D455 配置。
-cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf d455.launch.py enable_rviz:=true enable_mavros:=true
+安装 ROS 2 Humble官方文档参考：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+步骤 1：配置本地化并添加源locale  # 检查 UTF-8sudo apt update &amp;&amp; sudo apt install -y localessudo locale-gen en_US en_US.UTF-8sudo update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8export LANG=en_US.UTF-8locale  # 验证设置sudo apt install -y software-properties-commonsudo add-apt-repository universe -ysudo apt update &amp;&amp; sudo apt install -y curlexport ROS_APT_SOURCE_VERSION=$(curl -s https://api.github.com/repos/ros-infrastructure/ros-apt-source/releases/latest | grep -F &quot;tag_name&quot; | awk -F\&quot; &#x27;&#123;print $4&#125;&#x27;)curl -L -o /tmp/ros2-apt-source.deb &quot;https://github.com/ros-infrastructure/ros-apt-source/releases/download/$&#123;ROS_APT_SOURCE_VERSION&#125;/ros2-apt-source_$&#123;ROS_APT_SOURCE_VERSION&#125;.$(. /etc/os-release &amp;&amp; echo $&#123;UBUNTU_CODENAME:-$&#123;VERSION_CODENAME&#125;&#125;)_all.deb&quot;sudo dpkg -i /tmp/ros2-apt-source.debsudo apt updatesudo apt upgrade -y
 
-常见问题
-编译卡死：降低 MAKEFLAGS 或 CMAKE_BUILD_PARALLEL_LEVEL。
-Jetson 缺少 aruco：编译时添加 --cmake-args -DENABLE_ARUCO_TAGS=OFF。
-红外图像有斑点：关闭 depth_module.emitter_enabled。
+步骤 2：安装 ROS 2 与开发工具并写入环境变量sudo apt install -y ros-humble-desktopsudo apt install -y ros-dev-toolsecho &quot;source /opt/ros/humble/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+安装 PX4 仿真环境（可选）# 获取源码git clone https://github.com/PX4/PX4-Autopilot.git --recursivecd PX4-Autopilotgit submodule update --init --recursive# 一键安装依赖bash ./Tools/setup/ubuntu.sh# 首次编译运行 Gazebo 仿真make px4_sitl gz_x500
+
+Jetson 上 OpenCV 版本冲突修复若在编译或运行时出现：
+/usr/lib/cmake/opencv4/OpenCVModules.cmake:172 (message):The imported target &quot;opencv_core&quot; references the file &quot;/usr/lib/libopencv_core.so.4.8.0&quot; but this file does not exist.
+
+原因：JetPack 自带的 OpenCV 与 ROS 2 Humble 期望版本不一致，导致链接缺失。
+解决步骤：
+sudo apt updatesudo apt install -y &#x27;nvidia-opencv*&#x27;
+
+验证：
+ldconfig -p | grep opencv_core
+
+更多参考：https://forums.developer.nvidia.com/t/opencv-libraries-missing-or-links-are-broken-on-a-fresh-install/335400
+&gt; 若启动后出现提示：`Preflight Fail: No connection to the GCS`，可在 MAVLink 控制台执行：&gt; ```bash&gt; param set NAV_DLL_ACT 0
+
+临时绕过对地面站的要求（仅用于仿真调试，不建议长期使用）。
+
+安装 MAVROS
+源码仓库：https://github.com/mavlink/mavros
+教程参考：https://blog.csdn.net/huahua19891221/article/details/137724488
+
+sudo apt install -y ros-$ROS_DISTRO-mavros ros-$ROS_DISTRO-mavros-extraswget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.shsudo ./install_geographiclib_datasets.sh
+
+创建 ROS 2 工作空间mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+
+拉取依赖与项目代码1) BehaviorTree.CPPgit clone https://github.com/BehaviorTree/BehaviorTree.CPP.gitcd BehaviorTree.CPPgit checkout 4.7.2cd ..
+
+2) onboard 项目（私有仓库）onboard 为私有仓库，需向作者获取 token 后再执行 clone：
+git clone https://&lt;token&gt;@github.com/dreamer198/onboard.git
+
+安装 JSON 头文件依赖：
+sudo apt-get install -y nlohmann-json3-dev
+
+编译与环境配置在工作空间根目录编译（如不需要 GROOT 可视化，关闭 ZeroMQ 接口）：
+cd ~/ros2_wscolcon build --cmake-args -DBTCPP_GROOT_INTERFACE=OFFecho &quot;source ~/ros2_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+运行与测试1. 启动 PX4 Gazebo 仿真（示例：3 台无人机）cd ~/PX4-AutopilotPX4_SYS_AUTOSTART=4001 PX4_SIM_MODEL=gz_x500 PX4_GZ_MODEL_POSE=&quot;0,0&quot; ./build/px4_sitl_default/bin/px4 -i 0PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;1,0&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 1PX4_GZ_STANDALONE=1 PX4_SYS_AUTOSTART=4001 PX4_GZ_MODEL_POSE=&quot;0,1&quot; PX4_SIM_MODEL=gz_x500 ./build/px4_sitl_default/bin/px4 -i 2
+
+2. 启动机载控制主节点与通信节点# 启动主控制（uav_id 与端口需与 PX4 实例对应）ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;udp://:14540@127.0.0.1:14557&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=2 fcu_url:=&quot;udp://:14541@127.0.0.1:14558&quot;ros2 launch onboard_control mainTree.launch.py uav_id:=3 fcu_url:=&quot;udp://:14542@127.0.0.1:14559&quot;# 启动命令发布器ros2 run onboard_comunication send_cmd# 启动状态接收器ros2 run onboard_comunication receive_status
+
+3. 成功判定在 receive_status 终端可监听到全部无人机状态；在 send_cmd 按约定格式发布指令，可观察 Gazebo 中无人机执行对应动作。
+成功标准：
+
+所有 PX4 实例进入正常飞控循环，无持续错误输出。
+MAVROS 与机载节点能正确收发心跳与状态消息。
+指令发布后延迟在可接受范围（通常 &lt; 200 ms）。
+多机之间不存在端口冲突（如 14540/14557 组合互不重复）。
+
+官方与仓库
+ROS 2 Humble 安装文档：https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
+PX4 仓库：https://github.com/PX4/PX4-Autopilot
+MAVROS 仓库：https://github.com/mavlink/mavros
+GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
 
 ]]></content>
       <categories>
-        <category>SLAM</category>
-        <category>视觉惯性导航</category>
+        <category>技术分享</category>
       </categories>
       <tags>
         <tag>ROS2</tag>
-        <tag>SLAM</tag>
-        <tag>OpenVINS</tag>
-        <tag>VIO</tag>
+        <tag>MAVROS</tag>
+        <tag>PX4</tag>
+        <tag>教程</tag>
+        <tag>无人机</tag>
+        <tag>环境配置</tag>
+        <tag>Jetson</tag>
       </tags>
   </entry>
   <entry>
@@ -2510,10 +2449,71 @@ Mid-360(S) 通信协议：https://livox-wiki-en.readthedocs.io/en/latest/
         <category>使用教程</category>
       </categories>
       <tags>
-        <tag>ROS2</tag>
-        <tag>Mid-360S</tag>
         <tag>Livox</tag>
+        <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
         <tag>激光雷达</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OpenVINS搭建与测试</title>
+    <url>/2026/05/13/OpenVINS%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[环境
+系统：Ubuntu 22.04
+ROS2：Humble
+源码仓库：https://github.com/dreamer198/open_vins.git
+
+源码下载mkdir -p ~/ros2_ws/srccd ~/ros2_ws/srcgit clone https://github.com/dreamer198/open_vins.git
+
+依赖安装source /opt/ros/humble/setup.bashsudo apt-get updatesudo apt-get install -y \  libeigen3-dev \  libboost-all-dev \  libceres-dev \  python3-colcon-common-extensions \  ros-humble-ros2bag \  ros-humble-rosbag2*
+
+编译进入工作空间根目录：
+cd ~/ros2_ws
+
+直接使用 colcon build 可能会因为并行编译占用内存过高而卡死，建议限制并行度：
+MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf
+
+如果在 Jetson Orin NX 上遇到 OpenCV 缺少 aruco 模块的问题，可以关闭 ArUco Tag 支持后重新编译：
+MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf \  --cmake-args -DENABLE_ARUCO_TAGS=OFF
+
+编译完成后加载环境：
+source ~/ros2_ws/install/setup.bash
+
+公开数据集测试下载数据集数据集下载地址：OpenVINS EuRoC 数据集说明
+推荐先下载 Vicon Room 1 01，也就是 V1_01_easy。
+运行测试终端 1：启动 OpenVINS。
+cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf subscribe.launch.py config:=euroc_mav
+
+终端 2：播放数据集。
+ros2 bag play V1_01_easy
+
+终端 3：打开 RViz2 可视化。
+rviz2 -d ~/ros2_ws/src/open_vins/ov_msckf/launch/display_ros2.rviz
+
+RealSense D455测试启动相机终端 1：发布双目红外图像和 IMU 数据。
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_gyro:=true \  enable_accel:=true \  unite_imu_method:=1 \  depth_module.infra_profile:=640,480,30 \  gyro_fps:=200 \  accel_fps:=200
+
+可以通过 rqt 查看红外图像中是否有红外斑点。如果有，关闭相机发射器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+启动 OpenVINS终端 2：运行 D455 配置。
+cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf d455.launch.py enable_rviz:=true enable_mavros:=true
+
+常见问题
+编译卡死：降低 MAKEFLAGS 或 CMAKE_BUILD_PARALLEL_LEVEL。
+Jetson 缺少 aruco：编译时添加 --cmake-args -DENABLE_ARUCO_TAGS=OFF。
+红外图像有斑点：关闭 depth_module.emitter_enabled。
+
+]]></content>
+      <categories>
+        <category>SLAM</category>
+        <category>视觉惯性导航</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+        <tag>ROS2</tag>
+        <tag>OpenVINS</tag>
+        <tag>VIO</tag>
       </tags>
   </entry>
   <entry>
@@ -2634,6 +2634,101 @@ ROS Gazebo Bridge
         <tag>PX4</tag>
         <tag>Gazebo</tag>
         <tag>无人机仿真</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《动手学强化学习》阅读笔记</title>
+    <url>/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。
+
+
+第一章 强化学习基础什么是强化学习？强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。
+环境与随机性用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：
+
+动作选择的随机性（策略的随机性）
+环境状态转移的随机性（$P(s’\mid s,a)$ 的采样）
+
+目标：最大化策略价值强化学习的优化目标是最大化在与环境交互过程中的策略价值（长期累积奖励的期望）。
+数据从何而来数据并非来自固定数据集，而是在智能体与环境的交互过程中不断产生，且会随策略更新而改变分布。
+占用度量（Occupancy Measure）
+定义：某策略与环境交互时，采样到状态-动作对 $(s,a)$ 的概率分布。
+性质：当且仅当两个策略诱导的占用度量完全相同时，这两个策略等价；策略变化会引起占用度量变化。
+关联：策略价值等价于在该占用度量下的奖励期望，因此“找最优策略 ≈ 找最优占用度量”。
+
+与有监督学习的区别
+有监督学习：给定数据分布，最小化损失的期望。
+强化学习：通过交互诱导数据分布，最大化奖励的期望。
+关键差异：RL 的数据分布随策略变化，非 i.i.d.
+
+
+第二章 多臂老虎机：探索 vs 利用多臂老虎机（Multi-Armed Bandit, MAB）刻画“探索未知”和“利用已知”的权衡：既要尝试可能更优的臂（探索），又要选择当前估计最优的臂（利用）。
+目标与懊悔（Regret）
+时刻 $t$ 的即时懊悔：$r_t &#x3D; \mu^* - \mu_{a_t}$。
+累积懊悔：$R_T &#x3D; \sum_{t&#x3D;1}^{T} (\mu^* - \mu_{a_t})$。
+目标等价：最大化累积奖励 ⇔ 最小化累积懊悔。
+
+期望奖励的估计对某一拉杆（动作）$a$ 的经验期望奖励估计：
+$$\hat{\mu}a &#x3D; \frac{1}{n_a} \sum{i&#x3D;1}^{n_a} r_i$$
+其中 $n_a$ 为选择臂 $a$ 的次数，$r_i$ 为获得的奖励。
+三类经典策略
+ε-贪心（$\varepsilon$-greedy）：
+
+以概率 $1-\varepsilon$ 选择当前估计最优的臂（利用），以概率 $\varepsilon$ 随机选择（探索）。
+常用做法：随时间衰减 $\varepsilon_t$（例如 $\varepsilon_t &#x3D; c&#x2F;t$ 或分段衰减）。
+
+
+上置信界（UCB）：
+
+利用“乐观估计”促进探索。常见形式： $$ a_t &#x3D; \arg\max_a \Big( \hat{\mu}_a + c\sqrt{\frac{2\ln t}{n_a}} \Big) $$
+思想：不确定性越大（$n_a$ 越小），上置信界越宽，更值得探索。
+
+
+汤普森采样（Thompson Sampling）：
+
+将每个臂的奖励建模为后验分布（如 Beta 分布），按后验进行一次采样并选择样本最大的臂。
+兼顾探索与利用，实践中表现优异、实现简单。
+
+
+
+小结：MAB 不改变环境状态，可视为“无状态”RL 的特例。
+
+第三章 马尔可夫决策过程（MDP）与价值马尔可夫过程与马尔可夫奖励过程（MRP）
+马尔可夫性质：$P(S_{t+1}\mid S_{0:t}) &#x3D; P(S_{t+1}\mid S_t)$。
+状态转移矩阵的每行和为 1。
+在马尔可夫过程中加入奖励与折扣因子 $\gamma\in(0,1]$ 得到 MRP。
+折扣动机：考虑不确定性与时间偏好；$\gamma$ 越接近 1 越重视长期。
+
+回报（从时刻 $t$ 出发的累积折扣奖励）：
+$$G_t &#x3D; \sum_{k&#x3D;0}^{T-t-1} \gamma^k, R_{t+k+1}$$
+状态价值函数（MRP）：
+$$V(s) &#x3D; \mathbb{E}[G_t\mid S_t&#x3D;s] &#x3D; R(s) + \gamma, \sum_{s’} P(s’\mid s), V(s’)$$
+常见求解：动态规划（DP）、蒙特卡洛（MC）、时序差分（TD）。
+马尔可夫决策过程（MDP）在 MRP 基础上加入动作 $a$ 与策略 $\pi(a\mid s)$：
+
+状态价值：$V^\pi(s) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s,]$。
+动作价值：$Q^\pi(s,a) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s, A_t&#x3D;a,]$。
+期望型贝尔曼方程：
+
+$$V^\pi(s) &#x3D; \sum_a \pi(a\mid s) \sum_{s’} P(s’\mid s,a)\big[ R(s,a,s’) + \gamma V^\pi(s’) \big]$$
+占用度量（在 MDP 下）策略的占用度量描述在策略 $\pi$ 与动力学 $P$ 下，状态-动作对 $(s,a)$ 被访问的频率分布。它直接决定了奖励期望与策略价值，是连接“采样分布”和“最优性”的桥梁。
+
+关键要点速记
+RL 的核心在于“交互诱导的数据分布”和“长期最优”。
+MAB：ε-贪心、UCB、汤普森采样是三大基石；目标是最小化累积懊悔。
+MRP&#x2F;MDP：价值函数与贝尔曼方程是算法设计的基础；DP&#x2F;MC&#x2F;TD 各有适用场景。
+占用度量提供了从策略到数据分布、再到价值最大化的统一视角。
+
+参考资料
+《动手学强化学习》
+Sutton &amp; Barto. Reinforcement Learning: An Introduction
+
+]]></content>
+      <categories>
+        <category>学习笔记</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>机器学习</tag>
       </tags>
   </entry>
   <entry>
@@ -2758,101 +2853,6 @@ ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:/
         <tag>PX4</tag>
         <tag>Gazebo</tag>
         <tag>多机</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《动手学强化学习》阅读笔记</title>
-    <url>/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。
-
-
-第一章 强化学习基础什么是强化学习？强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。
-环境与随机性用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：
-
-动作选择的随机性（策略的随机性）
-环境状态转移的随机性（$P(s’\mid s,a)$ 的采样）
-
-目标：最大化策略价值强化学习的优化目标是最大化在与环境交互过程中的策略价值（长期累积奖励的期望）。
-数据从何而来数据并非来自固定数据集，而是在智能体与环境的交互过程中不断产生，且会随策略更新而改变分布。
-占用度量（Occupancy Measure）
-定义：某策略与环境交互时，采样到状态-动作对 $(s,a)$ 的概率分布。
-性质：当且仅当两个策略诱导的占用度量完全相同时，这两个策略等价；策略变化会引起占用度量变化。
-关联：策略价值等价于在该占用度量下的奖励期望，因此“找最优策略 ≈ 找最优占用度量”。
-
-与有监督学习的区别
-有监督学习：给定数据分布，最小化损失的期望。
-强化学习：通过交互诱导数据分布，最大化奖励的期望。
-关键差异：RL 的数据分布随策略变化，非 i.i.d.
-
-
-第二章 多臂老虎机：探索 vs 利用多臂老虎机（Multi-Armed Bandit, MAB）刻画“探索未知”和“利用已知”的权衡：既要尝试可能更优的臂（探索），又要选择当前估计最优的臂（利用）。
-目标与懊悔（Regret）
-时刻 $t$ 的即时懊悔：$r_t &#x3D; \mu^* - \mu_{a_t}$。
-累积懊悔：$R_T &#x3D; \sum_{t&#x3D;1}^{T} (\mu^* - \mu_{a_t})$。
-目标等价：最大化累积奖励 ⇔ 最小化累积懊悔。
-
-期望奖励的估计对某一拉杆（动作）$a$ 的经验期望奖励估计：
-$$\hat{\mu}a &#x3D; \frac{1}{n_a} \sum{i&#x3D;1}^{n_a} r_i$$
-其中 $n_a$ 为选择臂 $a$ 的次数，$r_i$ 为获得的奖励。
-三类经典策略
-ε-贪心（$\varepsilon$-greedy）：
-
-以概率 $1-\varepsilon$ 选择当前估计最优的臂（利用），以概率 $\varepsilon$ 随机选择（探索）。
-常用做法：随时间衰减 $\varepsilon_t$（例如 $\varepsilon_t &#x3D; c&#x2F;t$ 或分段衰减）。
-
-
-上置信界（UCB）：
-
-利用“乐观估计”促进探索。常见形式： $$ a_t &#x3D; \arg\max_a \Big( \hat{\mu}_a + c\sqrt{\frac{2\ln t}{n_a}} \Big) $$
-思想：不确定性越大（$n_a$ 越小），上置信界越宽，更值得探索。
-
-
-汤普森采样（Thompson Sampling）：
-
-将每个臂的奖励建模为后验分布（如 Beta 分布），按后验进行一次采样并选择样本最大的臂。
-兼顾探索与利用，实践中表现优异、实现简单。
-
-
-
-小结：MAB 不改变环境状态，可视为“无状态”RL 的特例。
-
-第三章 马尔可夫决策过程（MDP）与价值马尔可夫过程与马尔可夫奖励过程（MRP）
-马尔可夫性质：$P(S_{t+1}\mid S_{0:t}) &#x3D; P(S_{t+1}\mid S_t)$。
-状态转移矩阵的每行和为 1。
-在马尔可夫过程中加入奖励与折扣因子 $\gamma\in(0,1]$ 得到 MRP。
-折扣动机：考虑不确定性与时间偏好；$\gamma$ 越接近 1 越重视长期。
-
-回报（从时刻 $t$ 出发的累积折扣奖励）：
-$$G_t &#x3D; \sum_{k&#x3D;0}^{T-t-1} \gamma^k, R_{t+k+1}$$
-状态价值函数（MRP）：
-$$V(s) &#x3D; \mathbb{E}[G_t\mid S_t&#x3D;s] &#x3D; R(s) + \gamma, \sum_{s’} P(s’\mid s), V(s’)$$
-常见求解：动态规划（DP）、蒙特卡洛（MC）、时序差分（TD）。
-马尔可夫决策过程（MDP）在 MRP 基础上加入动作 $a$ 与策略 $\pi(a\mid s)$：
-
-状态价值：$V^\pi(s) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s,]$。
-动作价值：$Q^\pi(s,a) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s, A_t&#x3D;a,]$。
-期望型贝尔曼方程：
-
-$$V^\pi(s) &#x3D; \sum_a \pi(a\mid s) \sum_{s’} P(s’\mid s,a)\big[ R(s,a,s’) + \gamma V^\pi(s’) \big]$$
-占用度量（在 MDP 下）策略的占用度量描述在策略 $\pi$ 与动力学 $P$ 下，状态-动作对 $(s,a)$ 被访问的频率分布。它直接决定了奖励期望与策略价值，是连接“采样分布”和“最优性”的桥梁。
-
-关键要点速记
-RL 的核心在于“交互诱导的数据分布”和“长期最优”。
-MAB：ε-贪心、UCB、汤普森采样是三大基石；目标是最小化累积懊悔。
-MRP&#x2F;MDP：价值函数与贝尔曼方程是算法设计的基础；DP&#x2F;MC&#x2F;TD 各有适用场景。
-占用度量提供了从策略到数据分布、再到价值最大化的统一视角。
-
-参考资料
-《动手学强化学习》
-Sutton &amp; Barto. Reinforcement Learning: An Introduction
-
-]]></content>
-      <categories>
-        <category>学习笔记</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-        <tag>机器学习</tag>
       </tags>
   </entry>
   <entry>
@@ -3138,148 +3138,6 @@ realsense2_camera ROS2包装
       </tags>
   </entry>
   <entry>
-    <title>VINS-Fusion环境搭建与使用</title>
-    <url>/2026/03/30/VINS-Fusion%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[前言VINS-Fusion是一款优秀的视觉惯性导航系统（VIO），支持多种相机配置（单目、双目、RGB-D等）和GPS融合。本文记录在ROS2环境下的搭建与使用过程。
-参考教程详细的安装步骤可以参考：CSDN教程
-环境搭建依赖安装sudo apt updatesudo apt install -y \    ros-humble-cv-bridge \    ros-humble-tf2-ros \    ros-humble-pcl-conversions \    ros-humble-nav_msgs \    ros-humble-sensor-msgs \    ros-humble-geometry-msgs
-
-编译安装# 创建工作空间mkdir -p ~/code/vins_ws/srccd ~/code/vins_ws/src# 克隆VINS-Fusion ROS2版本git clone https://github.com/HKUST-Aerial-Robotics/VINS-Fusion.git vins_fusion_ros2# 安装依赖cd vins_fusion_ros2rosdep install --from-paths . --ignore-src -r -y# 编译cd ~/code/vins_wscolcon build --symlink-install# 设置环境变量echo &quot;source ~/code/vins_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-数据集测试1. 下载数据集下载EuRoC数据集（ROS2 bag格式）：
-
-数据集地址：EuRoC Data Sets
-推荐序列：V1_01_easy、V1_02_medium、MH_01_easy 等
-
-将数据下载并解压到合适的位置，例如：
-~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/
-
-2. 启动RViz2可视化在终端1中运行：
-source ~/code/vins_ws/install/setup.bashrviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
-
-3. 启动VINS-Fusion节点在终端2中运行：
-source ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
-
-4. 播放数据集在终端3中运行：
-ros2 bag play ~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/V1_01_easy.db3
-
-在RViz2中应该能看到位姿估计轨迹和特征点云。
-RealSense D435i实机测试1. 启动相机在新终端中发布双目红外图像和IMU数据：
-ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
-
-2. 关闭激光发射器在室外或使用被动双目时，建议关闭激光投影器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-
-3. 启动VINS-Fusionsource ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
-
-4. 查看结果在RViz2中可视化：
-rviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
-
-配置文件说明VINS-Fusion的配置文件位于：
-~/code/vins_ws/src/vins_fusion_ros2/config/
-
-主要配置文件：
-
-
-
-配置文件
-说明
-
-
-
-stereo_euroc_config.yaml
-EuRoC数据集双目配置
-
-
-stereo_realsense_config.yaml
-RealSense双目配置
-
-
-rgb_d_realsense_config.yaml
-RGB-D配置
-
-
-配置文件关键参数# 相机话题image0_topic: &quot;/camera/infra1/image_raw&quot;image1_topic: &quot;/camera/infra2/image_raw&quot;imu_topic: &quot;/camera/imu&quot;# 相机内参（需要标定）camera_matrix: [fx, 0.0, cx, 0.0, fy, cy, 0.0, 0.0, 1.0]# IMU到相机的外参body_T_imu: [...]# 时间同步参数acc_noise: 0.1    # 加速度计噪声gyr_noise: 0.01   # 陀螺仪噪声
-
-使用技巧1. 相机标定使用VINS-Fusion前，需要对相机进行内参标定：
-# 安装kalibrsudo apt install -y ros-humble-kalibr# 标定相机内参kalibr_calibrate_imu_camera --bag your_calibration.bag \    --cam camchain.yaml --imu imu.yaml \    --target april_6x6.yaml
-
-2. 提高初始化成功率
-确保相机视野中有足够的纹理和特征点
-初始化时缓慢移动相机，避免快速运动
-保持足够的照明条件
-
-3. 多机协同VINS-Fusion支持多传感器融合，可以根据需要添加：
-
-GPS传感器
-轮速计
-其他视觉传感器
-
-常见问题1. 初始化失败原因：相机运动过快或特征点不足
-解决方法：
-
-缓慢移动相机
-增加场景纹理
-调整特征检测参数
-
-2. 时间戳不同步原因：IMU和图像时间戳未对齐
-解决方法：
-
-设置 unite_imu_method:=2
-检查话题时间戳
-调整时间同步参数
-
-3. 性能问题解决方法：
-
-降低图像分辨率
-减少特征点数量
-使用更好的CPU&#x2F;GPU
-
-4. 漂移问题原因：长时间运行或纹理单一环境
-解决方法：
-
-添加闭环检测模块
-融合GPS信息
-定期重置
-
-进阶应用1. 回环检测VINS-Fusion可以集成回环检测模块：
-# 在配置文件中启用loop_closure: 1load_previous_pose_graph: 1
-
-2. 与其他系统集成VINS-Fusion可以与以下系统集成：
-
-Fast-Drone：快速无人机导航
-LIO-SAM：激光-视觉融合
-Cartographer：2D&#x2F;3D建图
-
-3. 实时性能优化# 降低特征点数量max_cnt: 150           # 特征点最大数量min_dist: 30           # 特征点最小间距# 调整窗口大小window_size: 10        # 滑动窗口大小
-
-参考资源
-VINS-Fusion GitHub
-VINS-Mono论文
-EuRoC数据集
-Kalibr标定工具
-
-总结VINS-Fusion是一个功能强大的VIO系统，适合用于：
-
-无人机自主导航
-移动机器人定位
-AR&#x2F;VR应用
-三维重建
-
-通过本文的配置，你可以快速搭建VINS-Fusion环境并开始使用。
-]]></content>
-      <categories>
-        <category>SLAM</category>
-        <category>视觉惯性导航</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>SLAM</tag>
-        <tag>VIO</tag>
-        <tag>VINS-Fusion</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>YOPO-ROS2 运行指南</title>
     <url>/2026/03/31/YOPO-ROS2-RUN/</url>
     <content><![CDATA[YOPO-ROS2 运行指南
@@ -3529,6 +3387,148 @@ sudo systemctl disable ssh
         <tag>SSH</tag>
         <tag>局域网</tag>
         <tag>远程控制</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VINS-Fusion环境搭建与使用</title>
+    <url>/2026/03/30/VINS-Fusion%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[前言VINS-Fusion是一款优秀的视觉惯性导航系统（VIO），支持多种相机配置（单目、双目、RGB-D等）和GPS融合。本文记录在ROS2环境下的搭建与使用过程。
+参考教程详细的安装步骤可以参考：CSDN教程
+环境搭建依赖安装sudo apt updatesudo apt install -y \    ros-humble-cv-bridge \    ros-humble-tf2-ros \    ros-humble-pcl-conversions \    ros-humble-nav_msgs \    ros-humble-sensor-msgs \    ros-humble-geometry-msgs
+
+编译安装# 创建工作空间mkdir -p ~/code/vins_ws/srccd ~/code/vins_ws/src# 克隆VINS-Fusion ROS2版本git clone https://github.com/HKUST-Aerial-Robotics/VINS-Fusion.git vins_fusion_ros2# 安装依赖cd vins_fusion_ros2rosdep install --from-paths . --ignore-src -r -y# 编译cd ~/code/vins_wscolcon build --symlink-install# 设置环境变量echo &quot;source ~/code/vins_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+数据集测试1. 下载数据集下载EuRoC数据集（ROS2 bag格式）：
+
+数据集地址：EuRoC Data Sets
+推荐序列：V1_01_easy、V1_02_medium、MH_01_easy 等
+
+将数据下载并解压到合适的位置，例如：
+~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/
+
+2. 启动RViz2可视化在终端1中运行：
+source ~/code/vins_ws/install/setup.bashrviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
+
+3. 启动VINS-Fusion节点在终端2中运行：
+source ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
+
+4. 播放数据集在终端3中运行：
+ros2 bag play ~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/V1_01_easy.db3
+
+在RViz2中应该能看到位姿估计轨迹和特征点云。
+RealSense D435i实机测试1. 启动相机在新终端中发布双目红外图像和IMU数据：
+ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
+
+2. 关闭激光发射器在室外或使用被动双目时，建议关闭激光投影器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+3. 启动VINS-Fusionsource ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
+
+4. 查看结果在RViz2中可视化：
+rviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
+
+配置文件说明VINS-Fusion的配置文件位于：
+~/code/vins_ws/src/vins_fusion_ros2/config/
+
+主要配置文件：
+
+
+
+配置文件
+说明
+
+
+
+stereo_euroc_config.yaml
+EuRoC数据集双目配置
+
+
+stereo_realsense_config.yaml
+RealSense双目配置
+
+
+rgb_d_realsense_config.yaml
+RGB-D配置
+
+
+配置文件关键参数# 相机话题image0_topic: &quot;/camera/infra1/image_raw&quot;image1_topic: &quot;/camera/infra2/image_raw&quot;imu_topic: &quot;/camera/imu&quot;# 相机内参（需要标定）camera_matrix: [fx, 0.0, cx, 0.0, fy, cy, 0.0, 0.0, 1.0]# IMU到相机的外参body_T_imu: [...]# 时间同步参数acc_noise: 0.1    # 加速度计噪声gyr_noise: 0.01   # 陀螺仪噪声
+
+使用技巧1. 相机标定使用VINS-Fusion前，需要对相机进行内参标定：
+# 安装kalibrsudo apt install -y ros-humble-kalibr# 标定相机内参kalibr_calibrate_imu_camera --bag your_calibration.bag \    --cam camchain.yaml --imu imu.yaml \    --target april_6x6.yaml
+
+2. 提高初始化成功率
+确保相机视野中有足够的纹理和特征点
+初始化时缓慢移动相机，避免快速运动
+保持足够的照明条件
+
+3. 多机协同VINS-Fusion支持多传感器融合，可以根据需要添加：
+
+GPS传感器
+轮速计
+其他视觉传感器
+
+常见问题1. 初始化失败原因：相机运动过快或特征点不足
+解决方法：
+
+缓慢移动相机
+增加场景纹理
+调整特征检测参数
+
+2. 时间戳不同步原因：IMU和图像时间戳未对齐
+解决方法：
+
+设置 unite_imu_method:=2
+检查话题时间戳
+调整时间同步参数
+
+3. 性能问题解决方法：
+
+降低图像分辨率
+减少特征点数量
+使用更好的CPU&#x2F;GPU
+
+4. 漂移问题原因：长时间运行或纹理单一环境
+解决方法：
+
+添加闭环检测模块
+融合GPS信息
+定期重置
+
+进阶应用1. 回环检测VINS-Fusion可以集成回环检测模块：
+# 在配置文件中启用loop_closure: 1load_previous_pose_graph: 1
+
+2. 与其他系统集成VINS-Fusion可以与以下系统集成：
+
+Fast-Drone：快速无人机导航
+LIO-SAM：激光-视觉融合
+Cartographer：2D&#x2F;3D建图
+
+3. 实时性能优化# 降低特征点数量max_cnt: 150           # 特征点最大数量min_dist: 30           # 特征点最小间距# 调整窗口大小window_size: 10        # 滑动窗口大小
+
+参考资源
+VINS-Fusion GitHub
+VINS-Mono论文
+EuRoC数据集
+Kalibr标定工具
+
+总结VINS-Fusion是一个功能强大的VIO系统，适合用于：
+
+无人机自主导航
+移动机器人定位
+AR&#x2F;VR应用
+三维重建
+
+通过本文的配置，你可以快速搭建VINS-Fusion环境并开始使用。
+]]></content>
+      <categories>
+        <category>SLAM</category>
+        <category>视觉惯性导航</category>
+      </categories>
+      <tags>
+        <tag>SLAM</tag>
+        <tag>ROS2</tag>
+        <tag>VIO</tag>
+        <tag>VINS-Fusion</tag>
       </tags>
   </entry>
 </search>
