@@ -506,6 +506,380 @@ BACKEND=tmux \~/code/start_sim_px4_mid360_fastlio_ego.sh restart
       </tags>
   </entry>
   <entry>
+    <title>EGO-Planner ROS2 + MAVROS + PX4 完整教程：从仿真规划到 Offboard 桥接</title>
+    <url>/2026/05/07/EGO-Planner-ROS2%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言本文把两条链路合在一起：
+Mid-360S -&gt; FAST-LIO2 -&gt; EGO-Planner -&gt; MAVROS -&gt; PX4 Offboard
+
+目标分三步：
+
+先跑通 EGO-Planner 官方仿真。
+再接入 Mid-360S + FAST-LIO2，只在 RViz 中看规划。
+最后把 /drone_0_planning/pos_cmd 桥接到 MAVROS Offboard setpoint。
+
+
+
+第一次真机测试不要装桨。先看 setpoint，再切 Offboard，最后才低高度短距离飞行。
+一、整体链路完整链路如下：
+Mid-360S  -&gt; livox_ros_driver2  -&gt; FAST-LIO2  -&gt; /Odometry + /cloud_registered  -&gt; EGO-Planner  -&gt; /drone_0_planning/pos_cmd  -&gt; ego_to_mavros  -&gt; /uav1/setpoint_raw/local  -&gt; MAVROS  -&gt; PX4 Offboard
+
+如果 MAVROS 没有使用命名空间，把 /uav1/... 改成 /mavros/...。
+二、安全顺序建议按下面顺序推进：
+1. 官方仿真2. 真实雷达 + FAST-LIO23. EGO-Planner 只看 RViz4. PX4 Position 模式悬停5. 不装桨检查 Offboard setpoint6. 不装桨手动切 Offboard7. 装桨低高度短距离测试
+
+第一次真机参数建议：
+
+
+
+项目
+建议值
+
+
+
+最大水平速度
+0.3 ~ 0.5 m/s
+
+
+最大高度
+1.0 ~ 1.2 m
+
+
+目标距离
+1 ~ 2 m
+
+
+障碍物
+先不放，后面再用软质障碍物
+
+
+不要一开始自动解锁。遥控器要随时能切回 Position &#x2F; Altitude &#x2F; Stabilized。
+三、准备环境本文使用：
+Ubuntu 22.04ROS 2 HumbleLivox Mid-360SFAST_LIO_ROS2MAVROS ROS2EGO-Planner ROS2
+
+安装常用依赖：
+sudo apt updatesudo apt install -y \  git \  cmake \  build-essential \  python3-colcon-common-extensions \  python3-rosdep \  libeigen3-dev \  libpcl-dev \  libopencv-dev \  ros-humble-pcl-ros \  ros-humble-cv-bridge \  ros-humble-rviz2 \  ros-humble-rmw-cyclonedds-cpp
+
+建议统一使用 CycloneDDS：
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+确认：
+echo $RMW_IMPLEMENTATION
+
+如果确认稳定，可以写入 ~/.bashrc。
+四、编译工作区下文统一使用 ~/ros2_ws：
+mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
+
+需要准备这些包：
+
+
+
+包
+作用
+
+
+
+ego-planner-swarm
+EGO-Planner ROS2
+
+
+external_odom_to_mavros
+/Odometry 到 MAVROS 外部视觉
+
+
+ego_to_mavros
+EGO pos_cmd 到 MAVROS setpoint
+
+
+编译：
+cd ~/ros2_wssource /opt/ros/humble/setup.bashrosdep install --from-paths src --ignore-src -ycolcon build --symlink-installsource install/setup.bash
+
+检查：
+ros2 pkg executables ego_plannerros2 pkg executables ego_to_mavrosros2 pkg executables external_odom_to_mavros
+
+ego_to_mavros 只需要已经在工作区中可用。本文不展开源码。
+五、先跑官方仿真先确认 EGO-Planner 本体能跑。
+终端 1：
+source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner rviz.launch.py
+
+终端 2：
+source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner single_run_in_sim.launch.py use_mockamap:=True use_dynamic:=False
+
+检查规划话题：
+ros2 topic list | grep planning
+
+常见输出：
+/drone_0_planning/bspline/drone_0_planning/pos_cmd/drone_0_planning/data_display
+
+RViz 中能看到障碍物、无人机模型和轨迹，说明仿真通过。
+六、确认 FAST-LIO2 输出启动 Mid-360S 和 FAST-LIO2 后，先检查两个话题：
+ros2 topic info /Odometryros2 topic info /cloud_registeredros2 topic hz /Odometryros2 topic hz /cloud_registered
+
+推荐结果：
+
+
+
+话题
+类型
+频率
+
+
+
+/Odometry
+nav_msgs/msg/Odometry
+约 30Hz 或更高
+
+
+/cloud_registered
+sensor_msgs/msg/PointCloud2
+5Hz 到 20Hz 均可先测试
+
+
+第一次不要用 /Laser_map 做避障输入。/Laser_map 是累计地图，点太多，容易卡。
+七、启动真机定位链路终端 1：启动 Mid-360S。
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+终端 2：启动 FAST-LIO2。
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+
+终端 3：启动 MAVROS。
+source /opt/ros/humble/setup.bashros2 launch mavros px4.launch \  fcu_url:=&quot;/dev/ttyACM0:921600&quot; \  namespace:=&quot;uav1&quot; \  tgt_system:=1
+
+终端 4：把 FAST-LIO2 里程计送给 PX4。
+source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=odometry \  input_topic:=/Odometry \  output_topic:=/uav1/vision_pose/pose \  output_frame_id:=map \  publish_rate:=30.0
+
+检查：
+ros2 topic hz /uav1/vision_pose/poseros2 topic echo /uav1/state --onceros2 topic echo /uav1/local_position/odom --once
+
+重点看：
+connected: true
+
+如果 PX4 不能进入 Position 模式，先不要继续接 EGO-Planner。
+八、启动真实数据规划终端 5：启动 RViz。
+source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner rviz.launch.py
+
+终端 6：启动 EGO-Planner。
+source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner fastlio_mid360.launch.py \  odom_topic:=/Odometry \  cloud_topic:=/cloud_registered \  max_vel:=0.5 \  max_acc:=0.8 \  map_resolution:=0.15 \  inflation:=0.30 \  virtual_ceil:=2.0
+
+检查输出：
+ros2 topic list | grep planningros2 topic echo /drone_0_planning/pos_cmd --once
+
+没发送目标点前，/drone_0_planning/pos_cmd 可能没有持续输出，这是正常的。
+九、发送目标点第一次目标点不要远：
+source /opt/ros/humble/setup.bashros2 topic pub --once /move_base_simple/goal geometry_msgs/msg/PoseStamped \  &quot;&#123;header: &#123;frame_id: &#x27;world&#x27;&#125;, pose: &#123;position: &#123;x: 1.0, y: 0.0, z: 1.0&#125;, orientation: &#123;w: 1.0&#125;&#125;&#125;&quot;
+
+规划成功时，EGO-Planner 终端通常会出现：
+Triggered![TRIG]: from WAIT_TARGET to GEN_NEW_TRAJ[FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
+
+RViz 中应看到：
+局部地图目标点初始轨迹优化后的 B-spline 轨迹
+
+十、检查坐标方向先看 /Odometry：
+ros2 topic echo /Odometry --once
+
+手动移动飞机，推荐表现如下：
+
+
+
+动作
+ROS ENU 中推荐表现
+
+
+
+向机头方向移动
+x 增大
+
+
+向机体左侧移动
+y 增大
+
+
+抬高无人机
+z 增大
+
+
+再检查 EGO 输出：
+ros2 topic echo /drone_0_grid/grid_map/occupancy_inflate --onceros2 topic echo /drone_0_planning/bspline --onceros2 topic echo /drone_0_planning/pos_cmd --once
+
+如果方向不对，先修坐标系，不要切 Offboard。
+十一、启动 EGO 到 MAVROS 桥接确认 RViz 规划正常后，再启动桥接。
+第一次不要自动切 Offboard，不要自动解锁：
+source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashros2 run ego_to_mavros pos_cmd_bridge --ros-args \  -p pos_cmd_topic:=/drone_0_planning/pos_cmd \  -p odom_topic:=/Odometry \  -p setpoint_topic:=/uav1/setpoint_raw/local \  -p mavros_state_topic:=/uav1/state \  -p set_mode_service:=/uav1/set_mode \  -p arm_service:=/uav1/cmd/arming \  -p publish_rate:=30.0 \  -p max_vel_xy:=0.3 \  -p max_vel_z:=0.2 \  -p max_acc_xy:=0.6 \  -p max_acc_z:=0.5 \  -p min_z:=0.2 \  -p max_z:=1.2 \  -p max_position_step:=0.5 \  -p auto_offboard:=false \  -p auto_arm:=false
+
+检查 setpoint：
+ros2 topic hz /uav1/setpoint_raw/localros2 topic echo /uav1/setpoint_raw/local --once
+
+建议频率：
+20Hz 以上
+
+如果没有 MAVROS 命名空间，把命令中的 /uav1 改成 /mavros。
+十二、不装桨 Offboard 测试保持桥接节点运行，先不装桨。
+手动切 Offboard：
+ros2 service call /uav1/set_mode mavros_msgs/srv/SetMode \  &quot;&#123;base_mode: 0, custom_mode: &#x27;OFFBOARD&#x27;&#125;&quot;
+
+查看状态：
+ros2 topic echo /uav1/state --once
+
+正常应看到：
+mode: OFFBOARD
+
+如果切不进去，优先检查：
+ros2 topic hz /uav1/setpoint_raw/localros2 topic echo /uav1/state --onceros2 topic echo /uav1/local_position/odom --once
+
+PX4 进入 Offboard 前必须已经持续收到 setpoint。
+十三、低高度真机测试低高度测试建议流程：
+
+手动起飞到 0.8 ~ 1.0m。
+进入 Position &#x2F; Hold，确认悬停稳定。
+启动 EGO-Planner 和桥接节点。
+确认 /uav1/setpoint_raw/local 连续输出。
+手动切 Offboard。
+发送 1m 内目标点。
+遥控器随时准备切回 Position &#x2F; Altitude &#x2F; Stabilized。
+
+第一次不要放障碍物。先确认方向、速度、高度都正确。
+十四、参数建议EGO-Planner 常用参数：
+
+
+
+参数
+建议值
+说明
+
+
+
+max_vel
+0.3 ~ 0.5
+真机第一次低速
+
+
+max_acc
+0.6 ~ 1.0
+降低轨迹激进程度
+
+
+map_resolution
+0.15 ~ 0.20
+算力紧张就调大
+
+
+inflation
+0.30 ~ 0.40
+轨迹太贴障碍物就调大
+
+
+virtual_ceil
+1.5 ~ 2.0
+防止规划到过高位置
+
+
+桥接节点常用参数：
+
+
+
+参数
+建议值
+说明
+
+
+
+max_vel_xy
+0.3
+水平限速
+
+
+max_vel_z
+0.2
+垂直限速
+
+
+max_z
+1.2
+真机第一次限高
+
+
+max_position_step
+0.5
+防止 setpoint 突跳
+
+
+auto_offboard
+false
+先手动切模式
+
+
+auto_arm
+false
+不建议早期开启
+
+
+十五、常见问题1. EGO-Planner 提示没有 odom检查：
+ros2 topic hz /Odometryros2 topic info /Odometry
+
+确认 EGO 启动参数里 odom_topic:=/Odometry。
+2. 有 odom，但没有局部地图检查：
+ros2 topic hz /cloud_registeredros2 topic info /cloud_registered
+
+确认 EGO 启动参数里 cloud_topic:=/cloud_registered。
+3. 发送目标点后没有规划检查目标点：
+ros2 topic echo /move_base_simple/goal --once
+
+再看 EGO 终端是否出现 Triggered!。
+4. 没有 /drone_0_planning/pos_cmd检查：
+ros2 topic list | grep pos_cmd
+
+如果 drone_id 不是 0，话题名会变成 /drone_1_planning/pos_cmd 等。
+5. /uav1/setpoint_raw/local 没有输出桥接节点需要先收到 /Odometry。
+检查：
+ros2 topic hz /Odometryros2 topic echo /Odometry --once
+
+6. PX4 切不进 Offboard检查：
+ros2 topic hz /uav1/setpoint_raw/localros2 topic echo /uav1/state --onceros2 topic echo /uav1/local_position/odom --once
+
+重点看：
+connected: true
+
+以及 setpoint 是否已经持续发布。
+7. 飞机方向反了立刻切回手动稳定模式。
+优先检查：
+ros2 topic echo /Odometry --onceros2 topic echo /uav1/setpoint_raw/local --once
+
+确认 FAST-LIO2、RViz、EGO-Planner、MAVROS 输入都在同一套坐标理解下。
+8. 轨迹太贴障碍物优先增大：
+inflationoptimization/dist0
+
+同时降低：
+max_velmax_acc
+
+9. 高度异常检查：
+FAST-LIO2 /Odometry 的 zEGO virtual_ceil桥接节点 max_z目标点 z
+
+第一次建议 virtual_ceil:=2.0，桥接 max_z:=1.2。
+十六、推荐最终启动顺序1. Livox 驱动2. FAST-LIO23. MAVROS4. external_odom_to_mavros5. EGO-Planner RViz6. EGO-Planner7. ego_to_mavros8. 发送目标点9. 不装桨 Offboard 测试10. 低高度真机测试
+
+参考资料
+EGO-Planner ROS2 分支：https://github.com/ZJU-FAST-Lab/ego-planner-swarm/tree/ros2_version
+EGO-Planner 论文项目：https://github.com/ZJU-FAST-Lab/ego-planner
+FAST-LIO 官方仓库：https://github.com/hku-mars/FAST_LIO
+FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
+MAVROS 文档：https://mavros.readthedocs.io/en/latest/
+PX4 Offboard 模式文档：https://docs.px4.io/main/en/flight_modes/offboard.html
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+        <category>无人机</category>
+      </categories>
+      <tags>
+        <tag>PX4</tag>
+        <tag>ROS2</tag>
+        <tag>FAST-LIO2</tag>
+        <tag>EGO-Planner</tag>
+        <tag>MAVROS</tag>
+        <tag>Mid-360S</tag>
+        <tag>Offboard</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>FAST-LIO2 从 0 跑通教程</title>
     <url>/2026/05/06/FAST-LIO2%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[前言前面已经跑通了 Mid-360S，接下来把 /livox/lidar 和 /livox/imu 接入 FAST-LIO2，实现实时激光惯性里程计和建图。
@@ -922,422 +1296,6 @@ MAVROS文档
       </tags>
   </entry>
   <entry>
-    <title>Gazebo 仿真环境搭建</title>
-    <url>/2026/05/13/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[本文记录 Gazebo + PX4 SITL 仿真环境的基础启动流程，包括加载仓库世界、启动普通无人机、启动搭载 MID360 的无人机，以及将 MID360 点云桥接到 ROS 2。
-
-
-一、启动 Gazebo 世界打开第一个终端，进入 PX4 工程并加载 Gazebo 环境：
-cd ~/PX4-Autopilotsource build/px4_sitl_default/rootfs/gz_env.shgz sim -r Tools/simulation/gz/worlds/warehouse_world.sdf
-
-该命令会启动 warehouse_world 仓库仿真场景。
-二、启动普通无人机打开第二个终端，启动带下视相机的 X500 无人机：
-cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
-
-其中 PX4_GZ_STANDALONE=1 表示 Gazebo 已经单独启动，PX4 只负责加载模型并运行 SITL。
-三、启动搭载 MID360 的无人机如果需要激光雷达点云数据，改用搭载 MID360 的无人机模型：
-cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_GZ_MODELS=$PWD/Tools/simulation/gz/worlds \PX4_GZ_WORLDS=$PWD/Tools/simulation/gz/worlds \GZ_SIM_RESOURCE_PATH=$PWD/Tools/simulation/gz/worlds:$PWD/Tools/simulation/gz/models:$GZ_SIM_RESOURCE_PATH \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down_mid360 \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \PX4_PARAM_NAV_DLL_ACT=0 \./build/px4_sitl_default/bin/px4 -i 0
-
-这里需要额外配置 PX4_GZ_MODELS、PX4_GZ_WORLDS 和 GZ_SIM_RESOURCE_PATH，确保 Gazebo 能找到自定义世界和模型资源。
-四、桥接 MID360 点云打开第三个终端，将 Gazebo 中的 MID360 点云桥接到 ROS 2：
-GZ_LIDAR_TOPIC=/world/warehouse_world/model/x500_mono_cam_down_mid360_0/link/lidar_sensor_link/sensor/lidar/scan/pointsros2 run ros_gz_bridge parameter_bridge \  &quot;$&#123;GZ_LIDAR_TOPIC&#125;@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked&quot; \  --ros-args -r &quot;$&#123;GZ_LIDAR_TOPIC&#125;:=/mid360/points&quot;
-
-桥接成功后，ROS 2 中会得到点云话题：
-/mid360/points
-
-可以用下面的命令确认话题是否正常发布：
-ros2 topic list | grep mid360ros2 topic echo /mid360/points --once
-
-五、启动顺序推荐按下面的顺序启动：
-1. 启动 Gazebo 世界2. 启动 PX4 SITL 无人机3. 桥接 MID360 点云4. 启动后续算法节点，例如 FAST-LIO2、EGO-Planner
-]]></content>
-      <categories>
-        <category>技术分享</category>
-        <category>无人机</category>
-      </categories>
-      <tags>
-        <tag>PX4</tag>
-        <tag>Gazebo</tag>
-        <tag>ROS2</tag>
-        <tag>Mid-360S</tag>
-        <tag>无人机仿真</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>EGO-Planner ROS2 + MAVROS + PX4 完整教程：从仿真规划到 Offboard 桥接</title>
-    <url>/2026/05/07/EGO-Planner-ROS2%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言本文把两条链路合在一起：
-Mid-360S -&gt; FAST-LIO2 -&gt; EGO-Planner -&gt; MAVROS -&gt; PX4 Offboard
-
-目标分三步：
-
-先跑通 EGO-Planner 官方仿真。
-再接入 Mid-360S + FAST-LIO2，只在 RViz 中看规划。
-最后把 /drone_0_planning/pos_cmd 桥接到 MAVROS Offboard setpoint。
-
-
-
-第一次真机测试不要装桨。先看 setpoint，再切 Offboard，最后才低高度短距离飞行。
-一、整体链路完整链路如下：
-Mid-360S  -&gt; livox_ros_driver2  -&gt; FAST-LIO2  -&gt; /Odometry + /cloud_registered  -&gt; EGO-Planner  -&gt; /drone_0_planning/pos_cmd  -&gt; ego_to_mavros  -&gt; /uav1/setpoint_raw/local  -&gt; MAVROS  -&gt; PX4 Offboard
-
-如果 MAVROS 没有使用命名空间，把 /uav1/... 改成 /mavros/...。
-二、安全顺序建议按下面顺序推进：
-1. 官方仿真2. 真实雷达 + FAST-LIO23. EGO-Planner 只看 RViz4. PX4 Position 模式悬停5. 不装桨检查 Offboard setpoint6. 不装桨手动切 Offboard7. 装桨低高度短距离测试
-
-第一次真机参数建议：
-
-
-
-项目
-建议值
-
-
-
-最大水平速度
-0.3 ~ 0.5 m/s
-
-
-最大高度
-1.0 ~ 1.2 m
-
-
-目标距离
-1 ~ 2 m
-
-
-障碍物
-先不放，后面再用软质障碍物
-
-
-不要一开始自动解锁。遥控器要随时能切回 Position &#x2F; Altitude &#x2F; Stabilized。
-三、准备环境本文使用：
-Ubuntu 22.04ROS 2 HumbleLivox Mid-360SFAST_LIO_ROS2MAVROS ROS2EGO-Planner ROS2
-
-安装常用依赖：
-sudo apt updatesudo apt install -y \  git \  cmake \  build-essential \  python3-colcon-common-extensions \  python3-rosdep \  libeigen3-dev \  libpcl-dev \  libopencv-dev \  ros-humble-pcl-ros \  ros-humble-cv-bridge \  ros-humble-rviz2 \  ros-humble-rmw-cyclonedds-cpp
-
-建议统一使用 CycloneDDS：
-export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-
-确认：
-echo $RMW_IMPLEMENTATION
-
-如果确认稳定，可以写入 ~/.bashrc。
-四、编译工作区下文统一使用 ~/ros2_ws：
-mkdir -p ~/ros2_ws/srccd ~/ros2_ws/src
-
-需要准备这些包：
-
-
-
-包
-作用
-
-
-
-ego-planner-swarm
-EGO-Planner ROS2
-
-
-external_odom_to_mavros
-/Odometry 到 MAVROS 外部视觉
-
-
-ego_to_mavros
-EGO pos_cmd 到 MAVROS setpoint
-
-
-编译：
-cd ~/ros2_wssource /opt/ros/humble/setup.bashrosdep install --from-paths src --ignore-src -ycolcon build --symlink-installsource install/setup.bash
-
-检查：
-ros2 pkg executables ego_plannerros2 pkg executables ego_to_mavrosros2 pkg executables external_odom_to_mavros
-
-ego_to_mavros 只需要已经在工作区中可用。本文不展开源码。
-五、先跑官方仿真先确认 EGO-Planner 本体能跑。
-终端 1：
-source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner rviz.launch.py
-
-终端 2：
-source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner single_run_in_sim.launch.py use_mockamap:=True use_dynamic:=False
-
-检查规划话题：
-ros2 topic list | grep planning
-
-常见输出：
-/drone_0_planning/bspline/drone_0_planning/pos_cmd/drone_0_planning/data_display
-
-RViz 中能看到障碍物、无人机模型和轨迹，说明仿真通过。
-六、确认 FAST-LIO2 输出启动 Mid-360S 和 FAST-LIO2 后，先检查两个话题：
-ros2 topic info /Odometryros2 topic info /cloud_registeredros2 topic hz /Odometryros2 topic hz /cloud_registered
-
-推荐结果：
-
-
-
-话题
-类型
-频率
-
-
-
-/Odometry
-nav_msgs/msg/Odometry
-约 30Hz 或更高
-
-
-/cloud_registered
-sensor_msgs/msg/PointCloud2
-5Hz 到 20Hz 均可先测试
-
-
-第一次不要用 /Laser_map 做避障输入。/Laser_map 是累计地图，点太多，容易卡。
-七、启动真机定位链路终端 1：启动 Mid-360S。
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-终端 2：启动 FAST-LIO2。
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-
-终端 3：启动 MAVROS。
-source /opt/ros/humble/setup.bashros2 launch mavros px4.launch \  fcu_url:=&quot;/dev/ttyACM0:921600&quot; \  namespace:=&quot;uav1&quot; \  tgt_system:=1
-
-终端 4：把 FAST-LIO2 里程计送给 PX4。
-source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=odometry \  input_topic:=/Odometry \  output_topic:=/uav1/vision_pose/pose \  output_frame_id:=map \  publish_rate:=30.0
-
-检查：
-ros2 topic hz /uav1/vision_pose/poseros2 topic echo /uav1/state --onceros2 topic echo /uav1/local_position/odom --once
-
-重点看：
-connected: true
-
-如果 PX4 不能进入 Position 模式，先不要继续接 EGO-Planner。
-八、启动真实数据规划终端 5：启动 RViz。
-source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner rviz.launch.py
-
-终端 6：启动 EGO-Planner。
-source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashexport RMW_IMPLEMENTATION=rmw_cyclonedds_cppros2 launch ego_planner fastlio_mid360.launch.py \  odom_topic:=/Odometry \  cloud_topic:=/cloud_registered \  max_vel:=0.5 \  max_acc:=0.8 \  map_resolution:=0.15 \  inflation:=0.30 \  virtual_ceil:=2.0
-
-检查输出：
-ros2 topic list | grep planningros2 topic echo /drone_0_planning/pos_cmd --once
-
-没发送目标点前，/drone_0_planning/pos_cmd 可能没有持续输出，这是正常的。
-九、发送目标点第一次目标点不要远：
-source /opt/ros/humble/setup.bashros2 topic pub --once /move_base_simple/goal geometry_msgs/msg/PoseStamped \  &quot;&#123;header: &#123;frame_id: &#x27;world&#x27;&#125;, pose: &#123;position: &#123;x: 1.0, y: 0.0, z: 1.0&#125;, orientation: &#123;w: 1.0&#125;&#125;&#125;&quot;
-
-规划成功时，EGO-Planner 终端通常会出现：
-Triggered![TRIG]: from WAIT_TARGET to GEN_NEW_TRAJ[FSM]: from GEN_NEW_TRAJ to EXEC_TRAJ
-
-RViz 中应看到：
-局部地图目标点初始轨迹优化后的 B-spline 轨迹
-
-十、检查坐标方向先看 /Odometry：
-ros2 topic echo /Odometry --once
-
-手动移动飞机，推荐表现如下：
-
-
-
-动作
-ROS ENU 中推荐表现
-
-
-
-向机头方向移动
-x 增大
-
-
-向机体左侧移动
-y 增大
-
-
-抬高无人机
-z 增大
-
-
-再检查 EGO 输出：
-ros2 topic echo /drone_0_grid/grid_map/occupancy_inflate --onceros2 topic echo /drone_0_planning/bspline --onceros2 topic echo /drone_0_planning/pos_cmd --once
-
-如果方向不对，先修坐标系，不要切 Offboard。
-十一、启动 EGO 到 MAVROS 桥接确认 RViz 规划正常后，再启动桥接。
-第一次不要自动切 Offboard，不要自动解锁：
-source /opt/ros/humble/setup.bashsource ~/ros2_ws/install/setup.bashros2 run ego_to_mavros pos_cmd_bridge --ros-args \  -p pos_cmd_topic:=/drone_0_planning/pos_cmd \  -p odom_topic:=/Odometry \  -p setpoint_topic:=/uav1/setpoint_raw/local \  -p mavros_state_topic:=/uav1/state \  -p set_mode_service:=/uav1/set_mode \  -p arm_service:=/uav1/cmd/arming \  -p publish_rate:=30.0 \  -p max_vel_xy:=0.3 \  -p max_vel_z:=0.2 \  -p max_acc_xy:=0.6 \  -p max_acc_z:=0.5 \  -p min_z:=0.2 \  -p max_z:=1.2 \  -p max_position_step:=0.5 \  -p auto_offboard:=false \  -p auto_arm:=false
-
-检查 setpoint：
-ros2 topic hz /uav1/setpoint_raw/localros2 topic echo /uav1/setpoint_raw/local --once
-
-建议频率：
-20Hz 以上
-
-如果没有 MAVROS 命名空间，把命令中的 /uav1 改成 /mavros。
-十二、不装桨 Offboard 测试保持桥接节点运行，先不装桨。
-手动切 Offboard：
-ros2 service call /uav1/set_mode mavros_msgs/srv/SetMode \  &quot;&#123;base_mode: 0, custom_mode: &#x27;OFFBOARD&#x27;&#125;&quot;
-
-查看状态：
-ros2 topic echo /uav1/state --once
-
-正常应看到：
-mode: OFFBOARD
-
-如果切不进去，优先检查：
-ros2 topic hz /uav1/setpoint_raw/localros2 topic echo /uav1/state --onceros2 topic echo /uav1/local_position/odom --once
-
-PX4 进入 Offboard 前必须已经持续收到 setpoint。
-十三、低高度真机测试低高度测试建议流程：
-
-手动起飞到 0.8 ~ 1.0m。
-进入 Position &#x2F; Hold，确认悬停稳定。
-启动 EGO-Planner 和桥接节点。
-确认 /uav1/setpoint_raw/local 连续输出。
-手动切 Offboard。
-发送 1m 内目标点。
-遥控器随时准备切回 Position &#x2F; Altitude &#x2F; Stabilized。
-
-第一次不要放障碍物。先确认方向、速度、高度都正确。
-十四、参数建议EGO-Planner 常用参数：
-
-
-
-参数
-建议值
-说明
-
-
-
-max_vel
-0.3 ~ 0.5
-真机第一次低速
-
-
-max_acc
-0.6 ~ 1.0
-降低轨迹激进程度
-
-
-map_resolution
-0.15 ~ 0.20
-算力紧张就调大
-
-
-inflation
-0.30 ~ 0.40
-轨迹太贴障碍物就调大
-
-
-virtual_ceil
-1.5 ~ 2.0
-防止规划到过高位置
-
-
-桥接节点常用参数：
-
-
-
-参数
-建议值
-说明
-
-
-
-max_vel_xy
-0.3
-水平限速
-
-
-max_vel_z
-0.2
-垂直限速
-
-
-max_z
-1.2
-真机第一次限高
-
-
-max_position_step
-0.5
-防止 setpoint 突跳
-
-
-auto_offboard
-false
-先手动切模式
-
-
-auto_arm
-false
-不建议早期开启
-
-
-十五、常见问题1. EGO-Planner 提示没有 odom检查：
-ros2 topic hz /Odometryros2 topic info /Odometry
-
-确认 EGO 启动参数里 odom_topic:=/Odometry。
-2. 有 odom，但没有局部地图检查：
-ros2 topic hz /cloud_registeredros2 topic info /cloud_registered
-
-确认 EGO 启动参数里 cloud_topic:=/cloud_registered。
-3. 发送目标点后没有规划检查目标点：
-ros2 topic echo /move_base_simple/goal --once
-
-再看 EGO 终端是否出现 Triggered!。
-4. 没有 /drone_0_planning/pos_cmd检查：
-ros2 topic list | grep pos_cmd
-
-如果 drone_id 不是 0，话题名会变成 /drone_1_planning/pos_cmd 等。
-5. /uav1/setpoint_raw/local 没有输出桥接节点需要先收到 /Odometry。
-检查：
-ros2 topic hz /Odometryros2 topic echo /Odometry --once
-
-6. PX4 切不进 Offboard检查：
-ros2 topic hz /uav1/setpoint_raw/localros2 topic echo /uav1/state --onceros2 topic echo /uav1/local_position/odom --once
-
-重点看：
-connected: true
-
-以及 setpoint 是否已经持续发布。
-7. 飞机方向反了立刻切回手动稳定模式。
-优先检查：
-ros2 topic echo /Odometry --onceros2 topic echo /uav1/setpoint_raw/local --once
-
-确认 FAST-LIO2、RViz、EGO-Planner、MAVROS 输入都在同一套坐标理解下。
-8. 轨迹太贴障碍物优先增大：
-inflationoptimization/dist0
-
-同时降低：
-max_velmax_acc
-
-9. 高度异常检查：
-FAST-LIO2 /Odometry 的 zEGO virtual_ceil桥接节点 max_z目标点 z
-
-第一次建议 virtual_ceil:=2.0，桥接 max_z:=1.2。
-十六、推荐最终启动顺序1. Livox 驱动2. FAST-LIO23. MAVROS4. external_odom_to_mavros5. EGO-Planner RViz6. EGO-Planner7. ego_to_mavros8. 发送目标点9. 不装桨 Offboard 测试10. 低高度真机测试
-
-参考资料
-EGO-Planner ROS2 分支：https://github.com/ZJU-FAST-Lab/ego-planner-swarm/tree/ros2_version
-EGO-Planner 论文项目：https://github.com/ZJU-FAST-Lab/ego-planner
-FAST-LIO 官方仓库：https://github.com/hku-mars/FAST_LIO
-FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
-MAVROS 文档：https://mavros.readthedocs.io/en/latest/
-PX4 Offboard 模式文档：https://docs.px4.io/main/en/flight_modes/offboard.html
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-        <category>无人机</category>
-      </categories>
-      <tags>
-        <tag>PX4</tag>
-        <tag>ROS2</tag>
-        <tag>FAST-LIO2</tag>
-        <tag>EGO-Planner</tag>
-        <tag>MAVROS</tag>
-        <tag>Mid-360S</tag>
-        <tag>Offboard</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
     <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
     <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
@@ -1576,6 +1534,48 @@ git commit -m &quot;chore: initial commit&quot;
         <tag>GitHub</tag>
         <tag>版本控制</tag>
         <tag>教程</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Gazebo 仿真环境搭建</title>
+    <url>/2026/05/13/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录 Gazebo + PX4 SITL 仿真环境的基础启动流程，包括加载仓库世界、启动普通无人机、启动搭载 MID360 的无人机，以及将 MID360 点云桥接到 ROS 2。
+
+
+一、启动 Gazebo 世界打开第一个终端，进入 PX4 工程并加载 Gazebo 环境：
+cd ~/PX4-Autopilotsource build/px4_sitl_default/rootfs/gz_env.shgz sim -r Tools/simulation/gz/worlds/warehouse_world.sdf
+
+该命令会启动 warehouse_world 仓库仿真场景。
+二、启动普通无人机打开第二个终端，启动带下视相机的 X500 无人机：
+cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
+
+其中 PX4_GZ_STANDALONE=1 表示 Gazebo 已经单独启动，PX4 只负责加载模型并运行 SITL。
+三、启动搭载 MID360 的无人机如果需要激光雷达点云数据，改用搭载 MID360 的无人机模型：
+cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_GZ_MODELS=$PWD/Tools/simulation/gz/worlds \PX4_GZ_WORLDS=$PWD/Tools/simulation/gz/worlds \GZ_SIM_RESOURCE_PATH=$PWD/Tools/simulation/gz/worlds:$PWD/Tools/simulation/gz/models:$GZ_SIM_RESOURCE_PATH \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down_mid360 \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \PX4_PARAM_NAV_DLL_ACT=0 \./build/px4_sitl_default/bin/px4 -i 0
+
+这里需要额外配置 PX4_GZ_MODELS、PX4_GZ_WORLDS 和 GZ_SIM_RESOURCE_PATH，确保 Gazebo 能找到自定义世界和模型资源。
+四、桥接 MID360 点云打开第三个终端，将 Gazebo 中的 MID360 点云桥接到 ROS 2：
+GZ_LIDAR_TOPIC=/world/warehouse_world/model/x500_mono_cam_down_mid360_0/link/lidar_sensor_link/sensor/lidar/scan/pointsros2 run ros_gz_bridge parameter_bridge \  &quot;$&#123;GZ_LIDAR_TOPIC&#125;@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked&quot; \  --ros-args -r &quot;$&#123;GZ_LIDAR_TOPIC&#125;:=/mid360/points&quot;
+
+桥接成功后，ROS 2 中会得到点云话题：
+/mid360/points
+
+可以用下面的命令确认话题是否正常发布：
+ros2 topic list | grep mid360ros2 topic echo /mid360/points --once
+
+五、启动顺序推荐按下面的顺序启动：
+1. 启动 Gazebo 世界2. 启动 PX4 SITL 无人机3. 桥接 MID360 点云4. 启动后续算法节点，例如 FAST-LIO2、EGO-Planner
+]]></content>
+      <categories>
+        <category>技术分享</category>
+        <category>无人机</category>
+      </categories>
+      <tags>
+        <tag>PX4</tag>
+        <tag>Gazebo</tag>
+        <tag>ROS2</tag>
+        <tag>Mid-360S</tag>
+        <tag>无人机仿真</tag>
       </tags>
   </entry>
   <entry>
@@ -2356,6 +2356,67 @@ Mid-360(S) 通信协议：https://livox-wiki-en.readthedocs.io/en/latest/
       </tags>
   </entry>
   <entry>
+    <title>OpenVINS搭建与测试</title>
+    <url>/2026/05/13/OpenVINS%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[环境
+系统：Ubuntu 22.04
+ROS2：Humble
+源码仓库：https://github.com/dreamer198/open_vins.git
+
+源码下载mkdir -p ~/ros2_ws/srccd ~/ros2_ws/srcgit clone https://github.com/dreamer198/open_vins.git
+
+依赖安装source /opt/ros/humble/setup.bashsudo apt-get updatesudo apt-get install -y \  libeigen3-dev \  libboost-all-dev \  libceres-dev \  python3-colcon-common-extensions \  ros-humble-ros2bag \  ros-humble-rosbag2*
+
+编译进入工作空间根目录：
+cd ~/ros2_ws
+
+直接使用 colcon build 可能会因为并行编译占用内存过高而卡死，建议限制并行度：
+MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf
+
+如果在 Jetson Orin NX 上遇到 OpenCV 缺少 aruco 模块的问题，可以关闭 ArUco Tag 支持后重新编译：
+MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf \  --cmake-args -DENABLE_ARUCO_TAGS=OFF
+
+编译完成后加载环境：
+source ~/ros2_ws/install/setup.bash
+
+公开数据集测试下载数据集数据集下载地址：OpenVINS EuRoC 数据集说明
+推荐先下载 Vicon Room 1 01，也就是 V1_01_easy。
+运行测试终端 1：启动 OpenVINS。
+cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf subscribe.launch.py config:=euroc_mav
+
+终端 2：播放数据集。
+ros2 bag play V1_01_easy
+
+终端 3：打开 RViz2 可视化。
+rviz2 -d ~/ros2_ws/src/open_vins/ov_msckf/launch/display_ros2.rviz
+
+RealSense D455测试启动相机终端 1：发布双目红外图像和 IMU 数据。
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_gyro:=true \  enable_accel:=true \  unite_imu_method:=1 \  depth_module.infra_profile:=640,480,30 \  gyro_fps:=200 \  accel_fps:=200
+
+可以通过 rqt 查看红外图像中是否有红外斑点。如果有，关闭相机发射器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+启动 OpenVINS终端 2：运行 D455 配置。
+cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf d455.launch.py enable_rviz:=true enable_mavros:=true
+
+常见问题
+编译卡死：降低 MAKEFLAGS 或 CMAKE_BUILD_PARALLEL_LEVEL。
+Jetson 缺少 aruco：编译时添加 --cmake-args -DENABLE_ARUCO_TAGS=OFF。
+红外图像有斑点：关闭 depth_module.emitter_enabled。
+
+]]></content>
+      <categories>
+        <category>SLAM</category>
+        <category>视觉惯性导航</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>SLAM</tag>
+        <tag>OpenVINS</tag>
+        <tag>VIO</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
     <url>/2025/11/11/Onboard-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[本文记录在 Jetson Orin NX 上，从系统准备到 ROS 2 Humble、PX4 仿真与 MAVROS 的完整环境搭建的可复制流程，并列出常见问题与排查方法。力求做到：结构清晰、命令可直接粘贴、出现异常可快速定位。
@@ -2453,67 +2514,6 @@ GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
         <tag>Jetson</tag>
         <tag>环境配置</tag>
         <tag>无人机</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>OpenVINS搭建与测试</title>
-    <url>/2026/05/13/OpenVINS%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[环境
-系统：Ubuntu 22.04
-ROS2：Humble
-源码仓库：https://github.com/dreamer198/open_vins.git
-
-源码下载mkdir -p ~/ros2_ws/srccd ~/ros2_ws/srcgit clone https://github.com/dreamer198/open_vins.git
-
-依赖安装source /opt/ros/humble/setup.bashsudo apt-get updatesudo apt-get install -y \  libeigen3-dev \  libboost-all-dev \  libceres-dev \  python3-colcon-common-extensions \  ros-humble-ros2bag \  ros-humble-rosbag2*
-
-编译进入工作空间根目录：
-cd ~/ros2_ws
-
-直接使用 colcon build 可能会因为并行编译占用内存过高而卡死，建议限制并行度：
-MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf
-
-如果在 Jetson Orin NX 上遇到 OpenCV 缺少 aruco 模块的问题，可以关闭 ArUco Tag 支持后重新编译：
-MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf \  --cmake-args -DENABLE_ARUCO_TAGS=OFF
-
-编译完成后加载环境：
-source ~/ros2_ws/install/setup.bash
-
-公开数据集测试下载数据集数据集下载地址：OpenVINS EuRoC 数据集说明
-推荐先下载 Vicon Room 1 01，也就是 V1_01_easy。
-运行测试终端 1：启动 OpenVINS。
-cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf subscribe.launch.py config:=euroc_mav
-
-终端 2：播放数据集。
-ros2 bag play V1_01_easy
-
-终端 3：打开 RViz2 可视化。
-rviz2 -d ~/ros2_ws/src/open_vins/ov_msckf/launch/display_ros2.rviz
-
-RealSense D455测试启动相机终端 1：发布双目红外图像和 IMU 数据。
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_gyro:=true \  enable_accel:=true \  unite_imu_method:=1 \  depth_module.infra_profile:=640,480,30 \  gyro_fps:=200 \  accel_fps:=200
-
-可以通过 rqt 查看红外图像中是否有红外斑点。如果有，关闭相机发射器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-
-启动 OpenVINS终端 2：运行 D455 配置。
-cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf d455.launch.py enable_rviz:=true enable_mavros:=true
-
-常见问题
-编译卡死：降低 MAKEFLAGS 或 CMAKE_BUILD_PARALLEL_LEVEL。
-Jetson 缺少 aruco：编译时添加 --cmake-args -DENABLE_ARUCO_TAGS=OFF。
-红外图像有斑点：关闭 depth_module.emitter_enabled。
-
-]]></content>
-      <categories>
-        <category>SLAM</category>
-        <category>视觉惯性导航</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>SLAM</tag>
-        <tag>OpenVINS</tag>
-        <tag>VIO</tag>
       </tags>
   </entry>
   <entry>
@@ -2634,6 +2634,98 @@ ROS Gazebo Bridge
         <tag>Gazebo</tag>
         <tag>ROS2</tag>
         <tag>无人机仿真</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ROS2 自定义消息接口</title>
+    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
+
+
+适用环境（示例命令为 Linux + bash）：
+
+ROS 2 Humble
+已创建工作空间 ~/ros2_ws 并包含 src 目录
+构建工具：colcon；构建类型：ament_cmake
+
+五步法总览
+创建接口包（ament_cmake + rosidl）
+在 msg/ 目录编写消息（.msg）
+配置 CMakeLists.txt
+配置 package.xml
+编译并验证接口
+
+
+1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
+–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
+进入包目录并创建接口文件夹：
+cd onboard_msgsmkdir -p msg
+
+
+2) 定义消息（.msg）2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。根据无人机集群业务，定义两类消息：命令与多机状态。msg/OnboardCommand.msg在 msg/OnboardCommand.msg 中：
+uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
+uint16 target_id	# 目标无人机编号在 msg/OnboardState.msg 中：
+uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
+
+建议的包结构（节选）：
+onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
+
+3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
+cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
+
+
+4) 配置 package.xml确保依赖与接口生成组声明完整：
+&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
+
+
+5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
+cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
+
+验证接口是否可见：
+ros2 interface list | grep onboard_msgs
+
+查看具体定义：
+ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
+
+
+CLI 快速试用（发布&#x2F;回显）使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
+发布一条命令到 /uav/cmd：
+ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
+
+回显无人机状态（若已有节点发布到 /uav/state）：
+ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
+
+提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
+
+在其他包中使用该接口（CMake 示例）若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
+find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
+
+并在 package.xml 中添加：
+&lt;depend&gt;onboard_msgs&lt;/depend&gt;
+
+
+常见错误与排查
+忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
+未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
+构建后未 source install/setup.bash → 终端会找不到接口定义。
+CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
+多机&#x2F;多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
+
+
+参考
+ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
+Tutorials: https://docs.ros2.org
+
+]]></content>
+      <categories>
+        <category>技术分享</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>无人机</tag>
+        <tag>集群通信</tag>
+        <tag>接口</tag>
+        <tag>自定义消息</tag>
       </tags>
   </entry>
   <entry>
@@ -2853,98 +2945,6 @@ Sutton &amp; Barto. Reinforcement Learning: An Introduction
       <tags>
         <tag>强化学习</tag>
         <tag>机器学习</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ROS2 自定义消息接口</title>
-    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic&#x2F;message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
-
-
-适用环境（示例命令为 Linux + bash）：
-
-ROS 2 Humble
-已创建工作空间 ~/ros2_ws 并包含 src 目录
-构建工具：colcon；构建类型：ament_cmake
-
-五步法总览
-创建接口包（ament_cmake + rosidl）
-在 msg/ 目录编写消息（.msg）
-配置 CMakeLists.txt
-配置 package.xml
-编译并验证接口
-
-
-1) 创建接口包cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
-–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
-进入包目录并创建接口文件夹：
-cd onboard_msgsmkdir -p msg
-
-
-2) 定义消息（.msg）2) 定义消息（.msg）根据无人机集群业务，定义三个消息：命令、参数、多机状态。根据无人机集群业务，定义两类消息：命令与多机状态。msg/OnboardCommand.msg在 msg/OnboardCommand.msg 中：
-uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
-uint16 target_id	# 目标无人机编号在 msg/OnboardState.msg 中：
-uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
-
-建议的包结构（节选）：
-onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
-
-3) 配置 CMakeLists.txt在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
-cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
-
-
-4) 配置 package.xml确保依赖与接口生成组声明完整：
-&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
-
-
-5) 编译与环境加载在工作空间根目录编译该包，并加载环境：
-cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
-
-验证接口是否可见：
-ros2 interface list | grep onboard_msgs
-
-查看具体定义：
-ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
-
-
-CLI 快速试用（发布&#x2F;回显）使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
-发布一条命令到 /uav/cmd：
-ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
-
-回显无人机状态（若已有节点发布到 /uav/state）：
-ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
-
-提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
-
-在其他包中使用该接口（CMake 示例）若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
-find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
-
-并在 package.xml 中添加：
-&lt;depend&gt;onboard_msgs&lt;/depend&gt;
-
-
-常见错误与排查
-忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
-未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
-构建后未 source install/setup.bash → 终端会找不到接口定义。
-CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
-多机&#x2F;多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
-
-
-参考
-ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
-Tutorials: https://docs.ros2.org
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>无人机</tag>
-        <tag>集群通信</tag>
-        <tag>接口</tag>
-        <tag>自定义消息</tag>
       </tags>
   </entry>
   <entry>
