@@ -1,0 +1,815 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Vim编辑器使用教程 | Dreamer Island</title><meta name="author" content="Dreamer"><meta name="copyright" content="Dreamer"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f6f8fb"><meta name="description" content="前言Vim 是 Linux 终端里非常常用的文本编辑器。平时修改配置文件、写脚本、在服务器或 Docker 容器里临时改代码，经常都会用到它。 刚开始接触 Vim 时，最容易卡住的地方不是“怎么高效编辑”，而是“怎么进入编辑、怎么保存、怎么退出”。所以这篇文章先从最基本的生存命令开始，再逐步整理移动、复制粘贴、查找替换、多文件编辑和常用配置。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vim编辑器使用教程">
+<meta property="og:url" content="https://dreamer198.top/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+<meta property="og:site_name" content="Dreamer Island">
+<meta property="og:description" content="前言Vim 是 Linux 终端里非常常用的文本编辑器。平时修改配置文件、写脚本、在服务器或 Docker 容器里临时改代码，经常都会用到它。 刚开始接触 Vim 时，最容易卡住的地方不是“怎么高效编辑”，而是“怎么进入编辑、怎么保存、怎么退出”。所以这篇文章先从最基本的生存命令开始，再逐步整理移动、复制粘贴、查找替换、多文件编辑和常用配置。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900">
+<meta property="article:published_time" content="2026-06-03T06:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-03T06:00:00.000Z">
+<meta property="article:author" content="Dreamer">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Vim">
+<meta property="article:tag" content="终端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Vim编辑器使用教程",
+  "url": "https://dreamer198.top/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/",
+  "image": "https://picsum.photos/seed/ziqian-blog-fk72em/1600/900",
+  "datePublished": "2026-06-03T06:00:00.000Z",
+  "dateModified": "2026-06-03T06:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Dreamer",
+      "url": "https://github.com/dreamer198"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://dreamer198.top/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="//busuanzi.ibruce.info"><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0f141a')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f6f8fb')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":650,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.12.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Vim编辑器使用教程',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css?v=20260609-tags-starmap"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://picsum.photos/seed/ziqian-blog-fk72em/1600/900);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Dreamer Island</span></a><a class="nav-page-title" href="/"><span class="site-name">Vim编辑器使用教程</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Vim编辑器使用教程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-03T06:00:00.000Z" title="发表于 2026-06-03 14:00:00">2026-06-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-06-03T06:00:00.000Z" title="更新于 2026-06-03 14:00:00">2026-06-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7/">开发工具</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">2.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id data-flag-title><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Vim 是 Linux 终端里非常常用的文本编辑器。平时修改配置文件、写脚本、在服务器或 Docker 容器里临时改代码，经常都会用到它。</p>
+<p>刚开始接触 Vim 时，最容易卡住的地方不是“怎么高效编辑”，而是“怎么进入编辑、怎么保存、怎么退出”。所以这篇文章先从最基本的生存命令开始，再逐步整理移动、复制粘贴、查找替换、多文件编辑和常用配置。</p>
+<span id="more"></span>
+
+<h2 id="一、安装-Vim"><a href="#一、安装-Vim" class="headerlink" title="一、安装 Vim"></a>一、安装 Vim</h2><p>在 Ubuntu &#x2F; Debian 系统中安装：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install -y vim</span><br></pre></td></tr></table></figure>
+
+<p>查看版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim --version</span><br></pre></td></tr></table></figure>
+
+<p>如果只是临时使用，系统里也可能已经有 <code>vi</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vi 文件名</span><br></pre></td></tr></table></figure>
+
+<p>不过日常更推荐安装并使用 <code>vim</code>。</p>
+<h2 id="二、打开和创建文件"><a href="#二、打开和创建文件" class="headerlink" title="二、打开和创建文件"></a>二、打开和创建文件</h2><p>打开一个已有文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim test.txt</span><br></pre></td></tr></table></figure>
+
+<p>如果 <code>test.txt</code> 不存在，Vim 会在保存时创建这个文件。</p>
+<p>打开某个系统配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> vim /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>打开后，默认处于普通模式，此时直接敲键盘不会像普通编辑器一样输入文字。</p>
+<h2 id="三、理解-Vim-的几种模式"><a href="#三、理解-Vim-的几种模式" class="headerlink" title="三、理解 Vim 的几种模式"></a>三、理解 Vim 的几种模式</h2><p>Vim 最重要的特点是“模式编辑”。常用模式有下面几种：</p>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>作用</th>
+<th>进入方式</th>
+<th>退出方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>普通模式</td>
+<td>移动光标、复制、删除、保存退出</td>
+<td>打开文件后默认进入</td>
+<td>按 <code>i</code>、<code>a</code>、<code>o</code> 等进入插入模式</td>
+</tr>
+<tr>
+<td>插入模式</td>
+<td>正常输入文字</td>
+<td>在普通模式按 <code>i</code>、<code>a</code>、<code>o</code></td>
+<td>按 <code>Esc</code> 回到普通模式</td>
+</tr>
+<tr>
+<td>命令模式</td>
+<td>保存、退出、查找替换等</td>
+<td>普通模式按 <code>:</code></td>
+<td>执行命令后自动返回普通模式</td>
+</tr>
+<tr>
+<td>可视模式</td>
+<td>选择一段文本</td>
+<td>普通模式按 <code>v</code>、<code>V</code>、<code>Ctrl + v</code></td>
+<td>按 <code>Esc</code> 回到普通模式</td>
+</tr>
+</tbody></table>
+<p>最常用的流程可以记成：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">普通模式 -&gt; 按 i -&gt; 插入模式 -&gt; 输入内容 -&gt; 按 Esc -&gt; 普通模式 -&gt; 输入 :wq 保存退出</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、最重要的保存和退出"><a href="#四、最重要的保存和退出" class="headerlink" title="四、最重要的保存和退出"></a>四、最重要的保存和退出</h2><p>这些命令都需要先按 <code>Esc</code> 回到普通模式，再输入 <code>:</code> 进入命令模式。</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>保存文件</td>
+<td><code>:w</code></td>
+</tr>
+<tr>
+<td>退出 Vim</td>
+<td><code>:q</code></td>
+</tr>
+<tr>
+<td>保存并退出</td>
+<td><code>:wq</code></td>
+</tr>
+<tr>
+<td>保存并退出</td>
+<td><code>:x</code></td>
+</tr>
+<tr>
+<td>不保存强制退出</td>
+<td><code>:q!</code></td>
+</tr>
+<tr>
+<td>强制保存</td>
+<td><code>:w!</code></td>
+</tr>
+</tbody></table>
+<p>刚开始最常用的是：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">wq</span></span><br></pre></td></tr></table></figure>
+
+<p>如果改乱了，不想保存：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:q!</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、进入插入模式"><a href="#五、进入插入模式" class="headerlink" title="五、进入插入模式"></a>五、进入插入模式</h2><p>在普通模式下，可以通过下面这些按键进入插入模式：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>i</code></td>
+<td>在当前光标前插入</td>
+</tr>
+<tr>
+<td><code>a</code></td>
+<td>在当前光标后插入</td>
+</tr>
+<tr>
+<td><code>I</code></td>
+<td>在当前行开头插入</td>
+</tr>
+<tr>
+<td><code>A</code></td>
+<td>在当前行末尾插入</td>
+</tr>
+<tr>
+<td><code>o</code></td>
+<td>在当前行下方新建一行并插入</td>
+</tr>
+<tr>
+<td><code>O</code></td>
+<td>在当前行上方新建一行并插入</td>
+</tr>
+</tbody></table>
+<p>最开始只记两个就够：</p>
+<ul>
+<li><code>i</code>：开始编辑当前内容。</li>
+<li><code>o</code>：新开一行继续写。</li>
+</ul>
+<h2 id="六、移动光标"><a href="#六、移动光标" class="headerlink" title="六、移动光标"></a>六、移动光标</h2><p>Vim 中可以用方向键移动，也可以用 <code>h</code>、<code>j</code>、<code>k</code>、<code>l</code> 移动：</p>
+<table>
+<thead>
+<tr>
+<th>按键</th>
+<th>方向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>h</code></td>
+<td>左</td>
+</tr>
+<tr>
+<td><code>j</code></td>
+<td>下</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td>上</td>
+</tr>
+<tr>
+<td><code>l</code></td>
+<td>右</td>
+</tr>
+</tbody></table>
+<p>常用移动命令：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>移动到行首</td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td>移动到行尾</td>
+<td><code>$</code></td>
+</tr>
+<tr>
+<td>移动到文件第一行</td>
+<td><code>gg</code></td>
+</tr>
+<tr>
+<td>移动到文件最后一行</td>
+<td><code>G</code></td>
+</tr>
+<tr>
+<td>移动到第 20 行</td>
+<td><code>20G</code> 或 <code>:20</code></td>
+</tr>
+<tr>
+<td>向后移动一个单词</td>
+<td><code>w</code></td>
+</tr>
+<tr>
+<td>向前移动一个单词</td>
+<td><code>b</code></td>
+</tr>
+<tr>
+<td>移动到当前单词结尾</td>
+<td><code>e</code></td>
+</tr>
+</tbody></table>
+<p>翻页操作：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>向下翻半屏</td>
+<td><code>Ctrl + d</code></td>
+</tr>
+<tr>
+<td>向上翻半屏</td>
+<td><code>Ctrl + u</code></td>
+</tr>
+<tr>
+<td>向下翻一屏</td>
+<td><code>Ctrl + f</code></td>
+</tr>
+<tr>
+<td>向上翻一屏</td>
+<td><code>Ctrl + b</code></td>
+</tr>
+</tbody></table>
+<h2 id="七、删除、修改和撤销"><a href="#七、删除、修改和撤销" class="headerlink" title="七、删除、修改和撤销"></a>七、删除、修改和撤销</h2><p>常用删除命令：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>删除当前字符</td>
+<td><code>x</code></td>
+</tr>
+<tr>
+<td>删除当前行</td>
+<td><code>dd</code></td>
+</tr>
+<tr>
+<td>删除 3 行</td>
+<td><code>3dd</code></td>
+</tr>
+<tr>
+<td>删除当前光标到行尾</td>
+<td><code>D</code></td>
+</tr>
+<tr>
+<td>删除当前单词</td>
+<td><code>dw</code></td>
+</tr>
+<tr>
+<td>删除当前光标到单词结尾</td>
+<td><code>de</code></td>
+</tr>
+</tbody></table>
+<p>常用修改命令：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>修改当前字符</td>
+<td><code>r</code> 后接新字符</td>
+</tr>
+<tr>
+<td>删除当前字符并进入插入模式</td>
+<td><code>s</code></td>
+</tr>
+<tr>
+<td>删除当前行并进入插入模式</td>
+<td><code>cc</code></td>
+</tr>
+<tr>
+<td>删除当前光标到行尾并进入插入模式</td>
+<td><code>C</code></td>
+</tr>
+</tbody></table>
+<p>撤销和重做：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>撤销上一步</td>
+<td><code>u</code></td>
+</tr>
+<tr>
+<td>重做</td>
+<td><code>Ctrl + r</code></td>
+</tr>
+</tbody></table>
+<p>如果误删了一行，可以按：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">u</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="八、复制、剪切和粘贴"><a href="#八、复制、剪切和粘贴" class="headerlink" title="八、复制、剪切和粘贴"></a>八、复制、剪切和粘贴</h2><p>在 Vim 里，删除操作很多时候也可以理解成“剪切”。</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>复制当前行</td>
+<td><code>yy</code></td>
+</tr>
+<tr>
+<td>复制 3 行</td>
+<td><code>3yy</code></td>
+</tr>
+<tr>
+<td>剪切当前行</td>
+<td><code>dd</code></td>
+</tr>
+<tr>
+<td>粘贴到当前行下方</td>
+<td><code>p</code></td>
+</tr>
+<tr>
+<td>粘贴到当前行上方</td>
+<td><code>P</code></td>
+</tr>
+</tbody></table>
+<p>例如复制当前行并粘贴到下一行：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yy</span><br><span class="line"><span class="keyword">p</span></span><br></pre></td></tr></table></figure>
+
+<p>剪切当前行并粘贴到其他位置：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dd</span><br><span class="line">移动光标</span><br><span class="line"><span class="keyword">p</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="九、可视模式选择文本"><a href="#九、可视模式选择文本" class="headerlink" title="九、可视模式选择文本"></a>九、可视模式选择文本</h2><p>普通模式下按 <code>v</code> 进入字符选择，按 <code>V</code> 进入整行选择。</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>字符选择</td>
+<td><code>v</code></td>
+</tr>
+<tr>
+<td>整行选择</td>
+<td><code>V</code></td>
+</tr>
+<tr>
+<td>块选择</td>
+<td><code>Ctrl + v</code></td>
+</tr>
+<tr>
+<td>复制选中内容</td>
+<td><code>y</code></td>
+</tr>
+<tr>
+<td>删除选中内容</td>
+<td><code>d</code></td>
+</tr>
+<tr>
+<td>粘贴</td>
+<td><code>p</code></td>
+</tr>
+</tbody></table>
+<p>如果想复制一整段内容：</p>
+<ol>
+<li>按 <code>V</code> 进入整行选择。</li>
+<li>使用 <code>j</code> &#x2F; <code>k</code> 选择多行。</li>
+<li>按 <code>y</code> 复制。</li>
+<li>移动到目标位置后按 <code>p</code> 粘贴。</li>
+</ol>
+<h2 id="十、查找和替换"><a href="#十、查找和替换" class="headerlink" title="十、查找和替换"></a>十、查找和替换</h2><h3 id="1-查找文本"><a href="#1-查找文本" class="headerlink" title="1. 查找文本"></a>1. 查找文本</h3><p>向下查找：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/关键词</span><br></pre></td></tr></table></figure>
+
+<p>向上查找：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">?关键词</span><br></pre></td></tr></table></figure>
+
+<p>查找后继续跳转：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>下一个匹配</td>
+<td><code>n</code></td>
+</tr>
+<tr>
+<td>上一个匹配</td>
+<td><code>N</code></td>
+</tr>
+</tbody></table>
+<h3 id="2-替换文本"><a href="#2-替换文本" class="headerlink" title="2. 替换文本"></a>2. 替换文本</h3><p>替换当前行第一个匹配：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:s/旧内容/新内容/</span><br></pre></td></tr></table></figure>
+
+<p>替换当前行所有匹配：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:s/旧内容/新内容/g</span><br></pre></td></tr></table></figure>
+
+<p>替换全文所有匹配：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:%s/旧内容/新内容/g</span><br></pre></td></tr></table></figure>
+
+<p>替换全文并逐个确认：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:%s/旧内容/新内容/gc</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ul>
+<li><code>%</code> 表示全文。</li>
+<li><code>s</code> 表示 substitute，也就是替换。</li>
+<li><code>g</code> 表示当前行内所有匹配项。</li>
+<li><code>c</code> 表示 confirm，每次替换前确认。</li>
+</ul>
+<h2 id="十一、显示行号和常用临时设置"><a href="#十一、显示行号和常用临时设置" class="headerlink" title="十一、显示行号和常用临时设置"></a>十一、显示行号和常用临时设置</h2><p>在 Vim 中可以临时开启行号：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">set</span> <span class="keyword">number</span></span><br></pre></td></tr></table></figure>
+
+<p>关闭行号：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">set</span> nonumber</span><br></pre></td></tr></table></figure>
+
+<p>开启搜索高亮：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">set</span> hlsearch</span><br></pre></td></tr></table></figure>
+
+<p>关闭搜索高亮：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">nohlsearch</span></span><br></pre></td></tr></table></figure>
+
+<p>开启自动缩进：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">set</span> autoindent</span><br></pre></td></tr></table></figure>
+
+<p>显示当前文件名和状态：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">f</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="十二、编辑多个文件"><a href="#十二、编辑多个文件" class="headerlink" title="十二、编辑多个文件"></a>十二、编辑多个文件</h2><p>一次打开多个文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim file1.txt file2.txt</span><br></pre></td></tr></table></figure>
+
+<p>查看缓冲区列表：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">ls</span></span><br></pre></td></tr></table></figure>
+
+<p>切换到下一个文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">bn</span></span><br></pre></td></tr></table></figure>
+
+<p>切换到上一个文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">bp</span></span><br></pre></td></tr></table></figure>
+
+<p>打开另一个文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">e</span> another.txt</span><br></pre></td></tr></table></figure>
+
+<p>保存全部文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">wa</span></span><br></pre></td></tr></table></figure>
+
+<p>退出全部文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">qa</span></span><br></pre></td></tr></table></figure>
+
+<p>保存并退出全部文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">wqa</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="十三、分屏编辑"><a href="#十三、分屏编辑" class="headerlink" title="十三、分屏编辑"></a>十三、分屏编辑</h2><p>横向分屏打开文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">split</span> <span class="keyword">file</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>也可以简写：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">sp</span> <span class="keyword">file</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>纵向分屏打开文件：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">vsplit</span> <span class="keyword">file</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>也可以简写：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:vsp <span class="keyword">file</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>分屏后常用快捷键：</p>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>切换到左侧窗口</td>
+<td><code>Ctrl + w</code> 后按 <code>h</code></td>
+</tr>
+<tr>
+<td>切换到下方窗口</td>
+<td><code>Ctrl + w</code> 后按 <code>j</code></td>
+</tr>
+<tr>
+<td>切换到上方窗口</td>
+<td><code>Ctrl + w</code> 后按 <code>k</code></td>
+</tr>
+<tr>
+<td>切换到右侧窗口</td>
+<td><code>Ctrl + w</code> 后按 <code>l</code></td>
+</tr>
+<tr>
+<td>关闭当前窗口</td>
+<td><code>:q</code></td>
+</tr>
+</tbody></table>
+<h2 id="十四、没有权限保存怎么办"><a href="#十四、没有权限保存怎么办" class="headerlink" title="十四、没有权限保存怎么办"></a>十四、没有权限保存怎么办</h2><p>有时打开系统文件时忘了加 <code>sudo</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>编辑完保存时可能提示没有权限。可以在 Vim 中执行：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:<span class="keyword">w</span> !sudo tee %</span><br></pre></td></tr></table></figure>
+
+<p>执行后输入当前用户密码，文件就会通过 <code>sudo tee</code> 写回去。</p>
+<p>这个命令的含义是：</p>
+<ul>
+<li><code>:w</code>：把当前缓冲区内容写出。</li>
+<li><code>!sudo tee %</code>：把内容交给外部命令 <code>sudo tee</code>。</li>
+<li><code>%</code>：表示当前文件名。</li>
+</ul>
+<p>保存成功后，如果 Vim 提示文件已改变，可以输入：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">:e!</span><br></pre></td></tr></table></figure>
+
+<p>重新加载当前文件。</p>
+<h2 id="十五、配置-vimrc"><a href="#十五、配置-vimrc" class="headerlink" title="十五、配置 vimrc"></a>十五、配置 vimrc</h2><p>如果希望每次打开 Vim 都自动显示行号、开启语法高亮，可以编辑用户配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.vimrc</span><br></pre></td></tr></table></figure>
+
+<p>一个简单的配置示例：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&quot; 显示行号</span></span><br><span class="line"><span class="keyword">set</span> <span class="keyword">number</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 开启语法高亮</span></span><br><span class="line"><span class="keyword">syntax</span> <span class="keyword">on</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 开启文件类型检测</span></span><br><span class="line"><span class="keyword">filetype</span> plugin <span class="built_in">indent</span> <span class="keyword">on</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 搜索时忽略大小写，输入大写字母时自动区分大小写</span></span><br><span class="line"><span class="keyword">set</span> ignorecase</span><br><span class="line"><span class="keyword">set</span> smartcase</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 搜索时边输入边高亮</span></span><br><span class="line"><span class="keyword">set</span> incsearch</span><br><span class="line"><span class="keyword">set</span> hlsearch</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; Tab 显示为 4 个空格宽度</span></span><br><span class="line"><span class="keyword">set</span> tabstop=<span class="number">4</span></span><br><span class="line"><span class="keyword">set</span> <span class="built_in">shiftwidth</span>=<span class="number">4</span></span><br><span class="line"><span class="keyword">set</span> softtabstop=<span class="number">4</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 按 Tab 输入空格</span></span><br><span class="line"><span class="keyword">set</span> expandtab</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 自动缩进</span></span><br><span class="line"><span class="keyword">set</span> autoindent</span><br><span class="line"><span class="keyword">set</span> smartindent</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 显示当前光标所在行</span></span><br><span class="line"><span class="keyword">set</span> cursorline</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 底部显示命令</span></span><br><span class="line"><span class="keyword">set</span> showcmd</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 显示模式</span></span><br><span class="line"><span class="keyword">set</span> showmode</span><br><span class="line"></span><br><span class="line"><span class="comment">&quot; 支持鼠标</span></span><br><span class="line"><span class="keyword">set</span> mouse=<span class="keyword">a</span></span><br></pre></td></tr></table></figure>
+
+<p>保存后重新打开 Vim 即可生效。</p>
+<p>如果不想使用鼠标，可以删除：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> mouse=<span class="keyword">a</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="十六、常用命令速查"><a href="#十六、常用命令速查" class="headerlink" title="十六、常用命令速查"></a>十六、常用命令速查</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>打开文件</td>
+<td><code>vim 文件名</code></td>
+</tr>
+<tr>
+<td>进入插入模式</td>
+<td><code>i</code></td>
+</tr>
+<tr>
+<td>退出插入模式</td>
+<td><code>Esc</code></td>
+</tr>
+<tr>
+<td>保存</td>
+<td><code>:w</code></td>
+</tr>
+<tr>
+<td>退出</td>
+<td><code>:q</code></td>
+</tr>
+<tr>
+<td>保存并退出</td>
+<td><code>:wq</code></td>
+</tr>
+<tr>
+<td>不保存退出</td>
+<td><code>:q!</code></td>
+</tr>
+<tr>
+<td>撤销</td>
+<td><code>u</code></td>
+</tr>
+<tr>
+<td>重做</td>
+<td><code>Ctrl + r</code></td>
+</tr>
+<tr>
+<td>删除当前行</td>
+<td><code>dd</code></td>
+</tr>
+<tr>
+<td>复制当前行</td>
+<td><code>yy</code></td>
+</tr>
+<tr>
+<td>粘贴</td>
+<td><code>p</code></td>
+</tr>
+<tr>
+<td>查找</td>
+<td><code>/关键词</code></td>
+</tr>
+<tr>
+<td>全文替换</td>
+<td><code>:%s/旧内容/新内容/g</code></td>
+</tr>
+<tr>
+<td>显示行号</td>
+<td><code>:set number</code></td>
+</tr>
+<tr>
+<td>跳到文件开头</td>
+<td><code>gg</code></td>
+</tr>
+<tr>
+<td>跳到文件末尾</td>
+<td><code>G</code></td>
+</tr>
+<tr>
+<td>跳到第 20 行</td>
+<td><code>20G</code></td>
+</tr>
+</tbody></table>
+<h2 id="十七、推荐练习顺序"><a href="#十七、推荐练习顺序" class="headerlink" title="十七、推荐练习顺序"></a>十七、推荐练习顺序</h2><p>刚开始不要一口气背太多命令，可以按下面顺序练：</p>
+<ol>
+<li>用 <code>vim test.txt</code> 打开文件。</li>
+<li>按 <code>i</code> 输入几行文字。</li>
+<li>按 <code>Esc</code> 回到普通模式。</li>
+<li>用 <code>:w</code> 保存。</li>
+<li>用 <code>dd</code> 删除一行，再用 <code>u</code> 撤销。</li>
+<li>用 <code>yy</code> 复制一行，再用 <code>p</code> 粘贴。</li>
+<li>用 <code>/关键词</code> 查找内容。</li>
+<li>用 <code>:%s/旧内容/新内容/gc</code> 练习确认替换。</li>
+<li>最后用 <code>:wq</code> 保存退出。</li>
+</ol>
+<p>熟悉这些以后，日常修改配置文件、编辑脚本、在服务器里处理文本基本就够用了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Vim 的学习重点不是一次记住所有快捷键，而是先建立“模式”的概念：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">普通模式负责操作，插入模式负责输入，命令模式负责保存退出和高级命令。</span><br></pre></td></tr></table></figure>
+
+<p>新手最先需要掌握的是：</p>
+<ul>
+<li><code>i</code>：进入编辑。</li>
+<li><code>Esc</code>：回到普通模式。</li>
+<li><code>:wq</code>：保存退出。</li>
+<li><code>:q!</code>：放弃修改退出。</li>
+<li><code>dd</code>、<code>yy</code>、<code>p</code>、<code>u</code>：完成基础编辑。</li>
+</ul>
+<p>等这些命令用熟之后，再逐渐学习查找替换、分屏、多文件和 <code>.vimrc</code> 配置，Vim 就会从“容易退出不了的编辑器”变成一个非常顺手的终端工具。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/dreamer198">Dreamer</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dreamer198.top/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">https://dreamer198.top/2026/06/03/vim编辑器使用教程/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dreamer198.top" target="_blank">Dreamer Island</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/Vim/">Vim</a><a class="post-meta__tags" href="/tags/%E7%BB%88%E7%AB%AF/">终端</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-mdl32z/1600/900" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</div></div><div class="info-2"><div class="info-item-1">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么   论文：NavRL: Learning Safe Flight in Dynamic Environments期刊：IEEE RA-L 2025作者：Zhefan Xu, Xinming Han, Haoyu Shen, Hanyu Jin, Kenji Shimada代码：https://github.com/Zhefan-Xu/NavRL  这篇论文最值得看的地方，不是“用了 PPO”这件事，而是作者把一个能落到真机上的动态环境局部导...</div></div></div></a><a class="pagination-related" href="/2026/06/02/Docker-ROS1-DiffPlanner-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/" title="Docker ROS1 Diff-Planner PX4 真机部署教程"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1dhfjsu/1600/900" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Docker ROS1 Diff-Planner PX4 真机部署教程</div></div><div class="info-2"><div class="info-item-1">前言本文记录在 Jetson 上通过 Docker 跑通 ROS1 真机链路： 123456789101112131415161718Mid-360S  -&gt; livox_ros_driver2  -&gt; FAST-LIO  -&gt; /Odometry + /cloud_registered  -&gt; odom_to_base.py  -&gt; /Odometry_base  -&gt; odom_to_pose.py  -&gt; /mavros/vision_pose/pose  -&...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/04/30/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Docker使用教程"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-b9nr7m/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-04-30</div><div class="info-item-2">Docker使用教程</div></div><div class="info-2"><div class="info-item-1">前言Docker 是日常开发里很常用的容器工具，可以把程序和运行环境打包在一起，减少“换台机器就跑不起来”的问题。 这篇文章先整理 Docker 的基本概念和常用命令，再给出一个 ROS Noetic 图形化容器的实际示例，方便后续继续搭建自己的仿真环境。   一、先理解镜像和容器可以先把两者理解成下面这个关系： 1镜像 -&gt; 创建 -&gt; 容器   镜像（Image）：一个静态模板，里面包含程序代码、依赖库和运行环境。 容器（Container）：由镜像创建出来的运行实例，可以直接启动和使用。  ...</div></div></div></a><a class="pagination-related" href="/2026/05/06/ssh%E8%BF%9C%E6%8E%A7%E7%94%B5%E8%84%91/" title="使用 SSH 远控局域网中的其他电脑"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1v17l9b/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-06</div><div class="info-item-2">使用 SSH 远控局域网中的其他电脑</div></div><div class="info-2"><div class="info-item-1">前言在机器人调试、ROS 开发、服务器维护或多台 Ubuntu 电脑协同时，经常需要从一台电脑登录另一台电脑执行命令。 SSH（Secure Shell）可以让我们通过网络安全地登录远程终端。只要两台电脑在同一个局域网，并且被控电脑开启了 SSH 服务，就可以在本机终端中远程操作它。   一、准备本文约定： 12电脑 A：控制端，当前操作的电脑电脑 B：被控端，需要远程登录的电脑  使用 SSH 前需要确认：  两台电脑在同一个局域网内。 电脑 B 已安装并启动 SSH 服务。 电脑 A 能访问电脑 B 的 ...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Dreamer</div><div class="author-info-description">Welcome to Dreamer Island, a space for learning, creating, and dreaming.</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dreamer198"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dreamer198" target="_blank" title="Github"><i class="fab fa-github" style="color: #909090;"></i></a><span class="social-icon qr-social-icon qq-qr-icon" title="QQ" role="img" aria-label="QQ" tabindex="0"><i class="fab fa-qq" style="color: #12B7F5;"></i></span><span class="social-icon qr-social-icon wechat-qr-icon" title="WeChat" role="img" aria-label="WeChat" tabindex="0"><i class="fab fa-weixin" style="color: #07C160;"></i></span><a class="social-icon" href="mailto:huangziqian@whu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%AE%89%E8%A3%85-Vim"><span class="toc-number">2.</span> <span class="toc-text">一、安装 Vim</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%89%93%E5%BC%80%E5%92%8C%E5%88%9B%E5%BB%BA%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">二、打开和创建文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%90%86%E8%A7%A3-Vim-%E7%9A%84%E5%87%A0%E7%A7%8D%E6%A8%A1%E5%BC%8F"><span class="toc-number">4.</span> <span class="toc-text">三、理解 Vim 的几种模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E4%BF%9D%E5%AD%98%E5%92%8C%E9%80%80%E5%87%BA"><span class="toc-number">5.</span> <span class="toc-text">四、最重要的保存和退出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E8%BF%9B%E5%85%A5%E6%8F%92%E5%85%A5%E6%A8%A1%E5%BC%8F"><span class="toc-number">6.</span> <span class="toc-text">五、进入插入模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E7%A7%BB%E5%8A%A8%E5%85%89%E6%A0%87"><span class="toc-number">7.</span> <span class="toc-text">六、移动光标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%88%A0%E9%99%A4%E3%80%81%E4%BF%AE%E6%94%B9%E5%92%8C%E6%92%A4%E9%94%80"><span class="toc-number">8.</span> <span class="toc-text">七、删除、修改和撤销</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E5%A4%8D%E5%88%B6%E3%80%81%E5%89%AA%E5%88%87%E5%92%8C%E7%B2%98%E8%B4%B4"><span class="toc-number">9.</span> <span class="toc-text">八、复制、剪切和粘贴</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%8F%AF%E8%A7%86%E6%A8%A1%E5%BC%8F%E9%80%89%E6%8B%A9%E6%96%87%E6%9C%AC"><span class="toc-number">10.</span> <span class="toc-text">九、可视模式选择文本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E3%80%81%E6%9F%A5%E6%89%BE%E5%92%8C%E6%9B%BF%E6%8D%A2"><span class="toc-number">11.</span> <span class="toc-text">十、查找和替换</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9F%A5%E6%89%BE%E6%96%87%E6%9C%AC"><span class="toc-number">11.1.</span> <span class="toc-text">1. 查找文本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9B%BF%E6%8D%A2%E6%96%87%E6%9C%AC"><span class="toc-number">11.2.</span> <span class="toc-text">2. 替换文本</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%80%E3%80%81%E6%98%BE%E7%A4%BA%E8%A1%8C%E5%8F%B7%E5%92%8C%E5%B8%B8%E7%94%A8%E4%B8%B4%E6%97%B6%E8%AE%BE%E7%BD%AE"><span class="toc-number">12.</span> <span class="toc-text">十一、显示行号和常用临时设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%8C%E3%80%81%E7%BC%96%E8%BE%91%E5%A4%9A%E4%B8%AA%E6%96%87%E4%BB%B6"><span class="toc-number">13.</span> <span class="toc-text">十二、编辑多个文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%89%E3%80%81%E5%88%86%E5%B1%8F%E7%BC%96%E8%BE%91"><span class="toc-number">14.</span> <span class="toc-text">十三、分屏编辑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%9B%9B%E3%80%81%E6%B2%A1%E6%9C%89%E6%9D%83%E9%99%90%E4%BF%9D%E5%AD%98%E6%80%8E%E4%B9%88%E5%8A%9E"><span class="toc-number">15.</span> <span class="toc-text">十四、没有权限保存怎么办</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%BA%94%E3%80%81%E9%85%8D%E7%BD%AE-vimrc"><span class="toc-number">16.</span> <span class="toc-text">十五、配置 vimrc</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E5%85%AD%E3%80%81%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5"><span class="toc-number">17.</span> <span class="toc-text">十六、常用命令速查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%81%E4%B8%83%E3%80%81%E6%8E%A8%E8%8D%90%E7%BB%83%E4%B9%A0%E9%A1%BA%E5%BA%8F"><span class="toc-number">18.</span> <span class="toc-text">十七、推荐练习顺序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">19.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/uav-autonomy-all-in-one/forest.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"></a><div class="content"><a class="title" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架">UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</a><time datetime="2026-08-06T14:13:35.000Z" title="发表于 2026-08-06 22:13:35">2026-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-bn2h3y/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker 容器内 Fast-Planner 下载、编译与测试"></a><div class="content"><a class="title" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试">Docker 容器内 Fast-Planner 下载、编译与测试</a><time datetime="2026-07-13T02:00:00.000Z" title="发表于 2026-07-13 10:00:00">2026-07-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-mdl32z/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"></a><div class="content"><a class="title" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</a><time datetime="2026-06-08T14:00:00.000Z" title="发表于 2026-06-08 22:00:00">2026-06-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vim编辑器使用教程"></a><div class="content"><a class="title" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程">Vim编辑器使用教程</a><time datetime="2026-06-03T06:00:00.000Z" title="发表于 2026-06-03 14:00:00">2026-06-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/02/Docker-ROS1-DiffPlanner-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/" title="Docker ROS1 Diff-Planner PX4 真机部署教程"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1dhfjsu/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker ROS1 Diff-Planner PX4 真机部署教程"></a><div class="content"><a class="title" href="/2026/06/02/Docker-ROS1-DiffPlanner-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/" title="Docker ROS1 Diff-Planner PX4 真机部署教程">Docker ROS1 Diff-Planner PX4 真机部署教程</a><time datetime="2026-06-02T09:00:00.000Z" title="发表于 2026-06-02 17:00:00">2026-06-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Dreamer</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"></div><script src="/js/visitor-config.js"></script><script src="/js/visitor-tracker.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.1"></script></div></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z\d\-\.\+]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(t.test(e.href)||r.test(e.href))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>

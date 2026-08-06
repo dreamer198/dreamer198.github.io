@@ -1,57 +1,1200 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Docker使用教程</title>
-    <url>/2026/04/30/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言Docker 是一种常用的容器化工具，可以把应用程序和运行环境打包到容器中，方便在不同机器上部署和运行。
-镜像和容器的关系镜像可以理解为容器的模板，里面包含程序运行需要的代码、依赖和环境。镜像本身是静态的，不能直接运行。
-容器是由镜像创建出来的运行实例。一个镜像可以创建多个容器，每个容器之间相互独立。
-例如，使用 ubuntu 镜像可以创建一个 Ubuntu 容器：
-docker run -it ubuntu bash
+    <title>博客搭建过程记录</title>
+    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
+    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
+本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
 
-可以简单理解为：
-镜像 -&gt; 创建 -&gt; 容器
+1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
+2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
+3. 技术栈与主题美化
+框架：Hexo
+主题：Butterfly
+美化动作：
+调整主题主色与背景图片
+自定义个人简介页面（借助 GPT 快速生成前端结构）
+优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
+Tag 页面与 Category 页面样式微调
 
-平时使用 Docker 时，通常先拉取或构建镜像，然后基于镜像启动容器。
-常用命令查看 Docker 系统信息docker info
 
-docker info 用来查看当前 Docker 的整体运行状态，例如 Docker 版本、容器数量、镜像数量、存储目录、系统环境等。
-这个命令通常用于检查 Docker 是否安装成功、Docker 服务是否正常启动。如果执行时提示无法连接 Docker daemon，可以检查 Docker 服务状态：
-sudo systemctl status docker
 
-如果服务没有启动，可以执行：
-sudo systemctl start docker
+4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
 
-查看本地镜像docker images
+额外运维成本与时间投入不划算
+博客主要是“自用记录”，对性能与动态能力需求低
+服务器费用不必要
 
-docker images 用来查看本机已经下载或构建好的镜像。
-查看所有容器docker ps -a
+最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
 
-docker ps -a 用来查看宿主机上的所有容器，包括正在运行的容器和已经停止的容器。
-常用来确认容器是否创建成功、当前是否还在运行。如果容器状态是 Exited，说明容器已经退出，可以通过日志查看原因：
-docker logs &lt;容器ID或容器名称&gt;
+缺点：图片首次加载稍慢
+优点：免服务器、配置简单、可持续维护
 
-如果想重新启动已经停止的容器，可以执行：
-docker start &lt;容器ID或容器名称&gt;
+5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
 
-停止容器docker stop &lt;容器ID或容器名称&gt;
+建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
+每次写新文章：生成、部署后，再推送源码仓库保持同步
 
-docker stop 用来停止正在运行的容器。
-删除容器docker rm &lt;容器ID或容器名称&gt;
+虽然步骤多一点，但可用性与安全性更高。
+6. 当前写作与发布流程写新博客的操作顺序：
 
-docker rm 用来删除已经停止的容器。如果容器还在运行，需要先使用 docker stop 停止容器。
-删除镜像docker rmi &lt;镜像名或镜像ID&gt;
+在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
+准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
+在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
+本地预览或直接生成 + 部署
 
-docker rmi 用来删除本地镜像。如果镜像正在被容器使用，需要先删除对应的容器。
-]]></content>
+7. 常用命令合集分步骤执行：
+hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
+
+一行整合版本：
+cd /home/ziqian/blog/myblogshexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
       <categories>
-        <category>Docker</category>
-        <category>使用教程</category>
+        <category>博客建站</category>
       </categories>
       <tags>
-        <tag>Docker</tag>
-        <tag>容器</tag>
-        <tag>Linux</tag>
+        <tag>Hexo</tag>
+        <tag>Butterfly</tag>
+        <tag>GitHub Pages</tag>
+        <tag>域名</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>《动手学强化学习》阅读笔记</title>
+    <url>/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。
+
+
+第一章 强化学习基础什么是强化学习？强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。
+环境与随机性用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：
+
+动作选择的随机性（策略的随机性）
+环境状态转移的随机性（$P(s’\mid s,a)$ 的采样）
+
+目标：最大化策略价值强化学习的优化目标是最大化在与环境交互过程中的策略价值（长期累积奖励的期望）。
+数据从何而来数据并非来自固定数据集，而是在智能体与环境的交互过程中不断产生，且会随策略更新而改变分布。
+占用度量（Occupancy Measure）
+定义：某策略与环境交互时，采样到状态-动作对 $(s,a)$ 的概率分布。
+性质：当且仅当两个策略诱导的占用度量完全相同时，这两个策略等价；策略变化会引起占用度量变化。
+关联：策略价值等价于在该占用度量下的奖励期望，因此“找最优策略 ≈ 找最优占用度量”。
+
+与有监督学习的区别
+有监督学习：给定数据分布，最小化损失的期望。
+强化学习：通过交互诱导数据分布，最大化奖励的期望。
+关键差异：RL 的数据分布随策略变化，非 i.i.d.
+
+
+第二章 多臂老虎机：探索 vs 利用多臂老虎机（Multi-Armed Bandit, MAB）刻画“探索未知”和“利用已知”的权衡：既要尝试可能更优的臂（探索），又要选择当前估计最优的臂（利用）。
+目标与懊悔（Regret）
+时刻 $t$ 的即时懊悔：$r_t &#x3D; \mu^* - \mu_{a_t}$。
+累积懊悔：$R_T &#x3D; \sum_{t&#x3D;1}^{T} (\mu^* - \mu_{a_t})$。
+目标等价：最大化累积奖励 ⇔ 最小化累积懊悔。
+
+期望奖励的估计对某一拉杆（动作）$a$ 的经验期望奖励估计：
+$$\hat{\mu}a &#x3D; \frac{1}{n_a} \sum{i&#x3D;1}^{n_a} r_i$$
+其中 $n_a$ 为选择臂 $a$ 的次数，$r_i$ 为获得的奖励。
+三类经典策略
+ε-贪心（$\varepsilon$-greedy）：
+
+以概率 $1-\varepsilon$ 选择当前估计最优的臂（利用），以概率 $\varepsilon$ 随机选择（探索）。
+常用做法：随时间衰减 $\varepsilon_t$（例如 $\varepsilon_t &#x3D; c&#x2F;t$ 或分段衰减）。
+
+
+上置信界（UCB）：
+
+利用“乐观估计”促进探索。常见形式： $$ a_t &#x3D; \arg\max_a \Big( \hat{\mu}_a + c\sqrt{\frac{2\ln t}{n_a}} \Big) $$
+思想：不确定性越大（$n_a$ 越小），上置信界越宽，更值得探索。
+
+
+汤普森采样（Thompson Sampling）：
+
+将每个臂的奖励建模为后验分布（如 Beta 分布），按后验进行一次采样并选择样本最大的臂。
+兼顾探索与利用，实践中表现优异、实现简单。
+
+
+
+小结：MAB 不改变环境状态，可视为“无状态”RL 的特例。
+
+第三章 马尔可夫决策过程（MDP）与价值马尔可夫过程与马尔可夫奖励过程（MRP）
+马尔可夫性质：$P(S_{t+1}\mid S_{0:t}) &#x3D; P(S_{t+1}\mid S_t)$。
+状态转移矩阵的每行和为 1。
+在马尔可夫过程中加入奖励与折扣因子 $\gamma\in(0,1]$ 得到 MRP。
+折扣动机：考虑不确定性与时间偏好；$\gamma$ 越接近 1 越重视长期。
+
+回报（从时刻 $t$ 出发的累积折扣奖励）：
+$$G_t &#x3D; \sum_{k&#x3D;0}^{T-t-1} \gamma^k, R_{t+k+1}$$
+状态价值函数（MRP）：
+$$V(s) &#x3D; \mathbb{E}[G_t\mid S_t&#x3D;s] &#x3D; R(s) + \gamma, \sum_{s’} P(s’\mid s), V(s’)$$
+常见求解：动态规划（DP）、蒙特卡洛（MC）、时序差分（TD）。
+马尔可夫决策过程（MDP）在 MRP 基础上加入动作 $a$ 与策略 $\pi(a\mid s)$：
+
+状态价值：$V^\pi(s) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s,]$。
+动作价值：$Q^\pi(s,a) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s, A_t&#x3D;a,]$。
+期望型贝尔曼方程：
+
+$$V^\pi(s) &#x3D; \sum_a \pi(a\mid s) \sum_{s’} P(s’\mid s,a)\big[ R(s,a,s’) + \gamma V^\pi(s’) \big]$$
+占用度量（在 MDP 下）策略的占用度量描述在策略 $\pi$ 与动力学 $P$ 下，状态-动作对 $(s,a)$ 被访问的频率分布。它直接决定了奖励期望与策略价值，是连接“采样分布”和“最优性”的桥梁。
+
+关键要点速记
+RL 的核心在于“交互诱导的数据分布”和“长期最优”。
+MAB：ε-贪心、UCB、汤普森采样是三大基石；目标是最小化累积懊悔。
+MRP&#x2F;MDP：价值函数与贝尔曼方程是算法设计的基础；DP&#x2F;MC&#x2F;TD 各有适用场景。
+占用度量提供了从策略到数据分布、再到价值最大化的统一视角。
+
+参考资料
+《动手学强化学习》
+Sutton &amp; Barto. Reinforcement Learning: An Introduction
+
+]]></content>
+      <categories>
+        <category>论文学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
+    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
+    <content><![CDATA[
+适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
+
+
+
+一、准备工作
+一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
+USB Type‑C 数据线（支持数据传输）
+Jetson SDK Manager（NVIDIA 官方工具）
+Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
+
+软件下载：
+
+SDK Manager: https://developer.nvidia.com/sdk-manager
+需登录 NVIDIA 账号（没有先注册）
+
+二、安装 SDK Manager
+下载 .deb 包后双击安装，或执行：
+
+sudo apt install ./sdkmanager_*_amd64.deb
+
+启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
+
+三、进入恢复模式（Recovery）
+用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
+断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
+此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
+
+常见位置提示：
+
+REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
+
+四、SDK Manager 配置与烧录
+Select Product Category: Jetson
+Hardware Configuration: 选择 Jetson Orin NX
+Target Operating System: Linux for Tegra
+Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
+选择 Host&#x2F;Target 组件（默认即可）
+点击 Continue，按引导下载镜像与依赖 → 开始 Flash
+
+烧录阶段注意：
+
+全程保持 USB 连接稳定，避免移动触碰
+若网络慢，建议先开代理或稳定网络
+出现权限提示时，按指引使用 sudo 重试
+
+五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
+
+设置语言、时区、用户名&#x2F;密码
+进入桌面后建议先运行：
+
+sudo apt update &amp;&amp; sudo apt upgrade -y
+
+六、常见问题排查（FAQ）
+PC 不识别设备（lsusb 看不到 NVIDIA）：
+
+
+检查是否严格按“按住 REC → 上电”顺序
+更换 USB‑C 线（必须支持数据）与 USB 口
+更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
+
+
+SDK Manager 卡在下载&#x2F;校验：
+
+
+切换网络或配置代理后重试
+退出后重新登录 SDK Manager，会复用已下载数据
+
+
+烧录成功但无法进桌面：
+
+
+尝试重启；检查电源&#x2F;显示器连接
+若持续异常，可重新进入 Recovery 再次烧录
+
+七、后续建议（可选）
+安装基础工具：
+
+sudo apt install -y git curl vim htop tmux
+
+使用 ToDesk&#x2F;向日葵等远程工具便于维护
+后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
+
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>Jetson</tag>
+        <tag>系统烧录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</title>
+    <url>/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么
+
+
+论文：NavRL: Learning Safe Flight in Dynamic Environments期刊：IEEE RA-L 2025作者：Zhefan Xu, Xinming Han, Haoyu Shen, Hanyu Jin, Kenji Shimada代码：https://github.com/Zhefan-Xu/NavRL
+
+这篇论文最值得看的地方，不是“用了 PPO”这件事，而是作者把一个能落到真机上的动态环境局部导航系统拆成了三层：可迁移的状态表示、可学习的局部速度策略、可解释的安全屏蔽层。它不是那种纯 end-to-end 的“图像进、动作出”工作，而是明显更偏工程部署导向。
+对于面向动态未知环境的无人机强化学习局部导航与真实部署这一研究方向，这篇论文的相关性非常直接：它已经把“动态障碍感知 + RL 决策 + 安全兜底 + Jetson 真机部署”这条链路走通了一遍。它的长处和短板，也基本对应了后续最容易继续往前推进的切入点。
+一页速览
+
+
+维度
+结论
+
+
+
+研究任务
+无人机在动态未知环境中做局部导航，既避开静态障碍，也避开移动障碍，并尽量实现零样本真机迁移。
+
+
+方法骨架
+状态表示 + PPO 速度策略 + VO-inspired safety shield
+
+
+输入表示
+目标相对状态、静态障碍射线距离图、动态障碍对象级状态
+
+
+最值得借鉴的点
+不直接吃原始图像，而是先把状态做成更利于 sim-to-real 的几何表示
+
+
+最强结果
+在动态和混合场景下碰撞次数明显低于对比方法，Jetson Orin NX 上可实时运行
+
+
+最大短板
+对动态障碍感知质量依赖强，安全屏蔽层在密集动态场景可能偏保守
+
+
+对相关研究方向的意义
+很适合作为“动态环境 RL 局部导航 + 真机部署”的复现基线与对标对象
+
+
+
+一句话判断： NavRL 不是最花哨的学习导航论文，但很像一个真正能上机的动态局部导航基线。
+
+0. 先说结论：这篇论文和相关研究方向有什么关系？这篇论文和上述研究方向是强相关的，原因有四个：
+
+它研究的就是局部导航，不是全局路径规划，也不是纯控制跟踪。
+它明确处理了动态障碍，而不是只在静态障碍里做强化学习。
+它非常强调真实部署，包括 Jetson Orin NX、RealSense D435i、真实行人干扰和零样本 sim-to-real。
+它已经意识到“纯神经网络不够安全”，所以加入了一个 VO-inspired safety shield。
+
+但它也没有把这个方向彻底做完。更准确地说，它提供了一个很好的可复现基线和问题清单：
+
+怎样设计状态表示，才能减少 sim-to-real gap；
+怎样在动态障碍下让 RL 真的学到反应式避障；
+怎样给黑盒策略加一个足够轻量、又能上机跑的安全层；
+真机部署时，瓶颈到底在策略网络，还是在前端感知和安全约束。
+
+因此，如果后续要围绕这一方向继续做论文创新，这篇文章更像是一个很实用的起点，而不是终点。
+1. 这篇论文解决什么问题？这篇论文关注的场景，是无人机在未知或部分未知的动态环境中进行局部自主导航：一边向目标点前进，一边避开静态障碍和移动障碍。现有方法里，传统优化&#x2F;规划方法往往要把系统拆成预测、建图、轨迹优化等多个模块，参数多、调参重，对环境变化也比较敏感；而一些学习方法虽然有更强的适应性，但要么依赖图像直接输入导致 sim-to-real 很难，要么缺少安全机制，不适合直接上真机。作者想解决的核心痛点，其实就一句话：能不能训练一个强化学习局部导航策略，让它既能躲静态障碍，也能躲动态障碍，还能比较稳地迁移到真实无人机上，并且在策略失误时有一个轻量安全兜底。
+2. 方法的核心思路是什么？整体思路NavRL 的整体方法并不复杂，但工程组合很有针对性。它先不用原始 RGB 图像直接喂给策略网络，而是把环境整理成两类中间表示：静态障碍的射线距离表示和动态障碍的目标级状态表示。然后用 PPO 学一个目标导向的局部速度策略，输出目标坐标系下的三维速度指令。最后在部署时，不直接相信网络输出，而是用一个基于 Velocity Obstacle 思想的安全屏蔽层，对不安全动作做一次线性规划投影。
+换句话说，这篇论文的核心不是“更强的网络”，而是：先把状态表示做对，再让 RL 学反应式避障，最后用几何安全层兜底。
+流程梳理输入 -&gt; 关键模块 -&gt; 输出
+RGB-D + 自身状态 + 目标点-&gt; 静态障碍建图与射线表示-&gt; 动态障碍检测/跟踪/测速-&gt; 状态编码 + PPO 策略网络-&gt; VO-inspired safety shield-&gt; 无人机速度指令
+
+
+
+环节
+具体做法
+作用
+是否属于本文重点亮点
+
+
+
+静态障碍建模
+occupancy voxel map + 3D ray casting
+把复杂静态环境压缩成局部可通行性表示
+是
+
+
+动态障碍建模
+检测、分类、跟踪、测速
+显式保留动态目标的位置、速度和尺寸
+是
+
+
+策略学习
+PPO + actor-critic + Beta 动作分布
+学习目标驱动的局部速度控制
+是
+
+
+安全修正
+VO-inspired action projection
+对网络失误进行轻量几何纠偏
+是
+
+
+大规模训练
+Isaac Sim 并行训练 1024 架四旋翼
+加快收敛，增强数据多样性
+是
+
+
+每个关键模块的作用1. 静态障碍表示作者先用深度图在线构建 3D occupancy voxel map，然后不把整张体素地图直接送进网络，而是从无人机位置做 3D ray casting，把各个方向上“离障碍有多远”编码成一个二维矩阵。
+这个模块的作用是：把复杂的三维静态环境压缩成一个适合策略学习、又比较容易 sim-to-real 的几何表示。
+这部分是有价值的设计，因为它避免了直接依赖图像纹理，也避免了整张体素地图过大、过稀疏的问题。
+2. 动态障碍表示动态障碍不进 occupancy map，而是单独检测和跟踪。作者用 U-depth detector、DBSCAN detector、YOLO 分类器和 Kalman filter，最终得到每个动态障碍的相对位置、距离、速度、尺寸。
+这个模块的作用是：把“会动的东西”显式建模成目标级对象状态，而不是混进静态地图里。
+这里要注意一个细节：这部分动态检测与跟踪主要继承自作者前一篇工作，并不是 NavRL 这篇 paper 的核心算法创新，但它对真实部署非常重要。
+3. 状态编码与策略学习静态障碍矩阵和动态障碍矩阵分别经过 CNN 提取特征，再和无人机内部状态拼接，送入 actor-critic 结构，用 PPO 训练。
+这个模块的作用是：让网络学会在目标驱动下输出局部反应速度，而不是显式解轨迹优化问题。
+真正值得注意的创新，不是 PPO 本身，而是：
+
+状态分成静态&#x2F;动态两条支路；
+全部都转到 goal coordinate frame；
+动作空间是有边界的速度命令，不是姿态、电机或离散动作。
+
+4. 安全屏蔽层网络输出一个候选速度 V_rl。如果这个速度不会落入任何 velocity obstacle 区域，就直接执行；如果会引发潜在碰撞，就求解一个小规模线性约束优化，把动作投影到最近的安全区域。
+这个模块的作用是：在不重做完整规划的前提下，给黑盒 RL 策略加一个可解释、可实时运行的安全补丁。
+这一块是全文最有“部署味”的部分，也是最贴近上述研究方向的地方。
+哪些部分是作者真正的创新？如果说得严格一点，这篇论文的创新更像系统创新而不是理论创新：
+
+创新 1：面向 sim-to-real 的状态表示设计不用原始图像，改用静态射线图 + 动态目标状态。
+
+创新 2：面向局部导航的动作设计直接输出目标坐标系下的三维速度，并用 Beta 分布处理有界连续动作。
+
+创新 3：VO-inspired safety shield在 RL 输出之后做几何安全投影，降低黑盒策略失误带来的碰撞风险。
+
+创新 4：大规模并行训练 + 真机验证链路用 Isaac Sim 同时训练上千架四旋翼，并完成 zero-shot real deployment。
+
+
+反过来说，PPO、CNN 编码器、Kalman 跟踪本身都不是新东西。
+3. 需要重点理解哪些公式？这篇论文的公式不算多，但有几组必须抓住。重点不是会不会推导，而是要明白这些公式在系统里各自干什么。
+
+
+
+公式 &#x2F; 对象
+在系统里的作用
+真正需要理解的点
+
+
+
+MDP 目标公式 (1)
+定义 RL 的总体优化目标
+这是逐时刻局部决策，不是整条轨迹优化
+
+
+内部状态 (2)
+告诉策略“目标在哪、自己怎么动”
+用 goal frame 降低坐标系依赖，提升迁移性
+
+
+动态障碍状态 (3)(4)
+显式描述最近的动态目标
+关键不是看见障碍，而是知道障碍怎么动
+
+
+静态障碍状态 (5)
+用射线长度编码局部几何
+把地图变成局部可通行性表示
+
+
+动作公式 (6)
+输出有界连续速度
+动作是速度而不是低层控制，更适合 sim-to-real
+
+
+奖励公式 (7)-(12)
+平衡前进、安全、平滑、高度约束
+防止只会躲障碍、不往前走，或靠乱飞取巧
+
+
+安全屏蔽公式 (13)
+把危险动作投影到安全区域
+尽量少改 RL 动作，但不能让它撞上去
+
+
+3.1 强化学习目标论文把问题写成一个标准 MDP，目标是最大化累计折扣回报：
+π* = arg max E[ Σ γ^t R(s_t, a_t) ]
+
+这没有太多新意，但它说明作者把这个问题当成反应式局部决策来学，而不是轨迹优化问题。也就是说，网络不负责生成整条轨迹，而是每个时刻都根据当前感知状态输出一个速度动作。
+3.2 输入状态如何定义作者设计的状态由三部分组成。
+1. 无人机内部状态S_int = [目标方向单位向量, 到目标距离, 当前速度]
+
+更具体地说，是把“机器人到目标点的相对位置”拆成方向 + 距离，再加上当前速度。这样做的实际意义是：网络不用自己从大坐标差值里再去学“方向归一化”这件事，优化会更稳定一些。
+而且这些量都放在 goal coordinate frame 下。这个设计很关键，因为它弱化了绝对世界坐标的影响，让策略更像“朝目标前进时如何避障”的通用技能，更利于迁移。
+2. 动态障碍状态D_i = [相对方向单位向量, 相对距离, 障碍速度, 障碍尺寸]S_dyn = [D_1, D_2, ..., D_Nd]
+
+这意味着动态障碍不是一堆像素，而是一组带运动属性的对象。实际含义很直接：策略不仅知道前面有东西，还知道它往哪儿动、动多快、占多大。
+对这一研究方向来说，这个设计很值得借鉴，因为动态局部导航的关键往往不是“看到障碍”，而是“知道它在怎么动”。
+3. 静态障碍状态S_stat = [R_θ0, R_θ1, ..., R_θNv]
+
+这里每个 R_θi 都是一组射线长度，表示不同方向上与静态障碍的距离。它本质上是一个稠密的局部几何可通行性描述。
+这个表示的实际意义是：网络拿到的不是地图本身，而是“周围哪些方向更空旷”。这对局部反应式策略很友好。
+3.3 输出动作是什么作者不是直接让网络输出真实速度，而是先输出一个归一化速度，再映射到最大速度范围内：
+V_ctrl^G = v_lim * (2 * V_hat_ctrl^G - 1),    V_hat_ctrl^G ∈ [0, 1]
+
+这里最关键的不是这个线性映射，而是背后的动作设计思想：
+
+输出的是速度，不是低层控制量；
+速度有明确边界；
+策略是在目标坐标系下输出速度；
+网络参数化的是 Beta distribution，适合有界连续动作空间。
+
+实际含义就是：作者希望动作既好学，又容易跨平台迁移，也方便人理解和监督。
+3.4 奖励函数在鼓励什么总奖励写成：
+r = λ1 r_vel + λ2 r_ss + λ3 r_ds + λ4 r_smooth + λ5 r_height
+
+看起来简单，但每一项都对应一个很现实的飞行偏好。
+1. 速度奖励 r_velr_vel = goal方向单位向量 · 当前速度
+
+它鼓励无人机沿着目标方向高速前进。通俗讲，就是“别磨蹭，往目标方向走”。
+2. 静态安全奖励 r_ssr_ss = 平均 log(射线距离)
+
+离静态障碍越远，奖励越大。这里用 log 而不是线性距离，意味着作者希望“离得很近时惩罚更敏感，离得已经够远时边际收益变小”。
+3. 动态安全奖励 r_dsr_ds = 平均 log(与动态障碍的距离)
+
+它和静态安全奖励类似，但针对会动的障碍。实际含义是：策略会倾向于和动态目标保持间距。
+4. 平滑奖励 r_smoothr_smooth = - ||v_t - v_(t-1)||
+
+这在真实无人机上很重要。没有这项，RL 很容易学出抖动控制，看起来会“能躲，但飞得很难受”。
+5. 高度奖励 r_height作者额外惩罚无人机过度上升，防止它通过“往高处飞”来投机避障。这个设计虽然简单，但很实用，因为很多 RL 策略确实会钻这种空子。
+3.5 安全约束在做什么部署阶段最重要的是下面这个投影问题：
+min ||V_safe - V_rl||s.t.  V_safe 落在各个 velocity obstacle 外侧      V_min &lt;= V_safe &lt;= V_max
+
+它的实际含义很清楚：尽量少改网络动作，但如果网络动作会撞，就把它推到最近的安全速度上。
+这里最值得理解的不是公式本身，而是它代表的安全哲学：
+
+RL 负责“好用”；
+safety shield 负责“别出大事”；
+两者不是互斥，而是串联。
+
+这很适合真实部署，因为真机系统里往往不敢把最后控制权完全交给神经网络。
+4. 实验说明了什么？
+
+
+维度
+内容
+
+
+
+训练平台
+NVIDIA Isaac Sim，RTX 4090，约 10 小时，并行训练 1024 架四旋翼
+
+
+仿真测试
+Gazebo，包含走廊场景以及高密度静态 &#x2F; 动态 &#x2F; 混合障碍环境
+
+
+真机平台
+自定义四旋翼 + Jetson Orin NX + Intel RealSense D435i + LIO
+
+
+对比方法
+EGO-Planner、ViGO、NavRL without safety shield
+
+
+核心指标
+训练成功率、训练回报、平均碰撞次数、各模块时延
+
+
+使用了哪些场景、平台和硬件？作者的实验分三层：
+
+训练：NVIDIA Isaac Sim使用 RTX 4090，约训练 10 小时，同时并行训练 1024 架四旋翼。
+
+仿真测试：Gazebo包括走廊类场景，以及高密度静态&#x2F;动态&#x2F;混合障碍环境。
+
+真实飞行测试：自定义四旋翼平台机载计算为 Jetson Orin NX，传感器使用 Intel RealSense D435i，状态估计使用 LIO。
+
+
+与哪些方法进行了对比？主要对比了三类对象：
+
+EGO-Planner：经典静态局部规划器；
+ViGO：作者之前做的 vision-aided dynamic planner；
+NavRL without safety shield：看安全屏蔽层是否真的有用。
+
+这个对比组合有意义，但也有明显不足：缺少更强的 RL baseline，所以它更像“证明自己能部署且比这两个工程基线更抗动态障碍”，而不是证明自己在 RL 领域绝对最强。
+使用了哪些指标？作者主要看了四类指标：
+
+训练成功率定义为从起点安全到达目标点且无碰撞。
+
+训练回报曲线
+
+平均碰撞次数在 20 次运行上统计。
+
+各模块运行时延
+
+
+最重要的实验结果是什么？下面这些数字最值得记住。
+
+
+
+结果点
+关键数字
+说明
+
+
+
+Curriculum learning 提升成功率
+74.51% -&gt; 82.71%、62.30% -&gt; 80.96%、54.98% -&gt; 68.65%
+动态障碍越多，课程学习越重要
+
+
+动态环境碰撞数
+ViGO 3.15 vs NavRL 0.85
+NavRL 在动态避障上明显更强
+
+
+混合环境碰撞数
+ViGO 4.40 vs NavRL 2.10
+说明对“静态 + 动态并存”更有优势
+
+
+safety shield 增益
+0.85 vs 2.70、2.10 vs 4.60
+去掉安全层后，动态与混合环境碰撞显著变多
+
+
+机载时延
+15 ms + 27 ms + 7 ms + 16 ms
+Orin NX 上总时延约 65 ms，约 15 Hz，可实时运行
+
+
+1. Curriculum learning 确实有效训练环境大小为 50m x 50m，动态障碍数量从 60 -&gt; 80 -&gt; 100 -&gt; 120 逐步提升。在固定训练时间下：
+
+dynamic=80 时，成功率从 74.51% 提升到 82.71%
+dynamic=100 时，从 62.30% 提升到 80.96%
+dynamic=120 时，从 54.98% 提升到 68.65%
+
+这说明对于动态障碍局部导航，课程学习不是装饰项，而是训练能不能稳定起来的重要条件。
+2. 大规模并行训练有用作者比较了不同机器人数量下的训练回报，结论是：机器人越多，收敛越快，最终回报也越高。
+这个结果很有参考价值，因为如果后续也做 Isaac Sim 或 Omnidrones 一类的大规模并行训练，训练吞吐量很可能决定能不能把“动态交互策略”真正学出来。
+3. 真正的优势体现在动态和混合环境在 20m x 40m 的高密度测试图上，平均碰撞次数如下：
+
+静态环境
+
+EGO: 0.45
+ViGO: 0.80
+NavRL w&#x2F;o shield: 0.95
+NavRL: 0.65
+
+
+纯动态环境
+
+ViGO: 3.15
+NavRL w&#x2F;o shield: 2.70
+NavRL: 0.85
+
+
+混合环境
+
+ViGO: 4.40
+NavRL w&#x2F;o shield: 4.60
+NavRL: 2.10
+
+
+
+这个结果非常说明问题：NavRL 的主要价值不是把静态环境做到极致，而是在动态和混合场景里显著降低碰撞。
+4. Safety shield 不是可有可无从上面的数字也能看出来，去掉 safety shield 后：
+
+纯动态环境碰撞从 0.85 上升到 2.70
+混合环境碰撞从 2.10 上升到 4.60
+
+这说明仅靠 RL 策略本身还不够稳，安全屏蔽层在动态环境里几乎是决定性组件。
+5. 真机运行时延是可以接受的Jetson Orin NX 上的运行时间：
+
+Static perception: 15 ms
+Dynamic perception: 27 ms
+RL policy: 7 ms
+Safety shield: 16 ms
+
+总和大约 65 ms，对应约 15 Hz。这说明它确实可以上机实时跑，但也说明一个事实：瓶颈并不在策略网络，而在前端感知和安全层。
+是否有真实无人机实验？有。作者做了真实室内飞行实验，设置静态障碍，并让行人朝无人机运动，测试其避障与到达目标能力。论文给出的结论是：无人机能够零样本从仿真迁移到真实平台，并在有行人扰动的场景中安全到达目标。
+实验是否足以支持作者的结论？本文认为，它足以支持“这是一个可部署、在动态环境中有效的 RL 局部导航系统”这个结论，但还不足以支持“这是动态无人机导航的通用最优方案”。
+原因是：
+
+baseline 不够丰富，特别缺少更强的 RL 和 hybrid 方法；
+真实实验展示了可行性，但规模仍然有限；
+主要指标是碰撞次数，缺少更细的效率、舒适性、死锁率、TTC 裕度等分析；
+最大速度只有 2.0 m/s，更偏安全导航，不是高速敏捷飞行。
+
+5. 这个方法有哪些局限性？
+
+
+局限性
+为什么会出现
+可能失败的场景
+是否可验证
+
+
+
+对前端感知质量依赖强
+策略直接依赖动态障碍检测、关联与速度估计
+多人交错、遮挡、低光、深度噪声大、目标突然加速
+可以，做漏检率、测速噪声、感知时延消融
+
+
+动态障碍模型过于简化
+主要把障碍抽象成 bounding box &#x2F; sphere，并用局部几何近似处理
+非刚体目标、人群交互、急转弯目标、多障碍博弈
+可以，构造不同运动模型场景测试 shield 触发率与碰撞率
+
+
+Safety shield 偏保守
+只做局部动作投影，不理解长期通行结构
+密集人群、窄门会车、短时堵塞环境
+可以，统计 deadlock rate、等待时间、到达时间
+
+
+状态表示压缩掉部分信息
+射线图和对象级状态高效，但丢失纹理、语义与细几何
+复杂立体场景、细长障碍、语义约束强的环境
+可以，与 richer map &#x2F; semantic state 做消融
+
+
+实验覆盖面仍有限
+论文重点是先证明能飞、能避障、能上机
+室外强光、大场景长航程、高速飞行、密集近距离交互
+可以，扩展到更复杂真实环境和长期测试
+
+
+
+最关键的一条： 这篇论文最大的风险不是“策略学不会”，而是“真实部署时前端感知和安全层一起决定了上限”。
+
+6. 可以如何在此基础上创新？如果后续想围绕这篇论文做研究，优先考虑那些真的能解决部署问题、而且能靠实验验证的方向，而不是只换个 backbone。
+
+
+
+方向
+针对原方法的不足
+可以采用的思路
+难度
+是否适合作为论文创新点
+
+
+
+感知不确定性感知的安全屏蔽层
+shield 默认感知可信，但真实检测和测速都有噪声
+把检测框、速度估计和跟踪协方差引入 VO 约束，做 risk-aware &#x2F; chance-constrained shield
+中等偏高
+很适合，且非常贴合真实部署
+
+
+遮挡与短时失踪鲁棒的历史记忆策略
+当前策略对遮挡后重现的目标未必稳
+加入 track history、短时记忆或显式意图预测
+中等
+适合，尤其适合复杂人流场景
+
+
+防卡死的 RL + 短时规划混合框架
+reactive policy + shield 在密集动态环境里可能保守甚至卡住
+RL 给局部意图，再由 MPC &#x2F; sampling &#x2F; trajectory optimizer 生成短时可执行轨迹
+高
+非常适合，论文潜力高
+
+
+面向真实部署的 sim-to-real 鲁棒训练
+论文证明了能迁移，但迁移边界分析不足
+把真实日志噪声、时延、漏检、模糊回灌训练，做多种 randomization
+中等
+很适合，尤其适合真机导向工作
+
+
+人类动态障碍意图建模
+目前只处理“障碍在动”，没有建模“障碍想怎么动”
+引入 pedestrian intent prediction、social navigation 约束
+高
+适合，但需要更系统的人机交互实验
+
+
+更推荐的组合感知不确定性建模 + 安全屏蔽层升级 + 真实部署鲁棒训练
+这条线最能击中 NavRL 的真实薄弱处，而且最容易形成“动态未知环境 + 真机部署”的清晰论文故事。
+7. 最后给出一份简短笔记
+
+
+项目
+内容
+
+
+
+论文解决的问题
+让无人机在动态未知环境中进行安全局部导航，同时尽量实现从仿真到真实平台的零样本迁移
+
+
+核心方法
+静态障碍射线图 + 动态障碍目标状态作为输入，PPO 学局部速度策略，再用 VO-inspired safety shield 修正不安全动作
+
+
+输入
+目标相对状态、当前速度、静态障碍射线距离矩阵、动态障碍的位置 &#x2F; 速度 &#x2F; 尺寸状态
+
+
+输出
+目标坐标系下的三维速度指令
+
+
+主要创新
+可迁移状态表示、Beta 有界速度动作设计、VO 风格安全屏蔽层、大规模并行训练到真机部署链路
+
+
+关键实验结论
+NavRL 在动态和混合环境中的碰撞次数明显低于对比方法；安全屏蔽层对动态场景非常关键；Jetson Orin NX 上可实时运行
+
+
+最大局限性
+对动态障碍感知与跟踪质量依赖很强，且 safety shield 在密集动态场景中可能偏保守、容易卡住
+
+
+最值得尝试的创新方向
+感知不确定性感知的安全屏蔽层，以及考虑时延、漏检和遮挡的真实部署鲁棒训练
+
+
+是否值得复现
+值得，尤其适合作为“动态环境 RL 局部导航 + 真机部署”的强基线
+
+
+复现时优先看哪些模块
+状态表示构造、ray casting 静态编码、动态目标跟踪接口、奖励函数实现、VO safety shield、Isaac Sim 并行训练配置、PX4 &#x2F; Jetson 部署链路
+
+
+总体评价如果只从算法新颖性看，NavRL 不是那种会让人惊呼“方法太新了”的论文；但如果从真实系统能不能落地这个角度看，它是很有价值的。它真正回答的问题不是“RL 能不能在论文里跑通”，而是“RL 能不能和感知、安全机制、机载计算一起组成一个能飞的动态导航系统”。
+对这一研究方向来说，这篇论文最大的价值有两个：
+
+它给出一个能对标、能复现、能上机的动态局部导航基线。
+它把后续最值得创新的痛点暴露得很清楚：感知不确定性、动态交互建模、shield 的保守性、以及复杂真实场景下的鲁棒性。
+
+因此，本文的结论是：这篇论文很值得读，也值得复现，但更值得在它暴露出来的问题上继续往前推。
+]]></content>
+      <categories>
+        <category>论文学习</category>
+      </categories>
+      <tags>
+        <tag>强化学习</tag>
+        <tag>NavRL</tag>
+        <tag>路径规划</tag>
+        <tag>局部导航</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mid-360S 使用教程</title>
+    <url>/2026/05/06/Mid360s%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言Livox Mid-360S 是一款常用于移动机器人、无人机、SLAM、建图和避障的 3D 激光雷达。它通过以太网输出数据，在 ROS 2 中通常配合 Livox-SDK2 和 livox_ros_driver2 使用。
+本文记录 Ubuntu 22.04 + ROS 2 Humble 下从硬件连接、网络配置、驱动安装到点云查看的完整流程。
+
+
+一、硬件与网络准备1. 连接设备Mid-360S  ├── 电源：DC 9~27 V  └── 网口：连接电脑网口或交换机
+
+注意事项：
+
+电脑和雷达必须在同一个网段。
+多网卡电脑要确认使用的是连接雷达的有线网卡。
+初次调试建议关闭防火墙，避免 UDP 数据被拦截。
+
+sudo ufw disable
+
+查看网卡名称：
+ip addr
+
+常见网卡名有 enp108s0、eno1、eth0 等。注意：ip addr 输出中接口名后面的冒号只是显示格式，命令里一般不要带这个冒号。
+2. 配置电脑 IP电脑 IP 只需要满足两点：
+
+和雷达 IP 在同一网段。
+不与雷达或局域网中其他设备冲突。
+
+例如雷达在 192.168.1.0/24 网段，可以把电脑网卡设置为 192.168.1.5：
+sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
+
+其中 enp108s0 需要替换为自己的有线网卡名。
+3. 确认雷达 IP如果已经知道雷达 IP，直接跳到下一步。否则可以通过以下方式获取：
+
+看设备标签、说明书或出厂配置文档。
+用官方的 Livox 工具在同网段内发现设备。
+使用 Mid-360 协议中的广播发现功能获取 lidar_ip 和 cmd_port。
+
+确认网络连通：
+ping 192.168.1.100
+
+如果 ping 不通，优先检查电源、网线、网卡名、电脑 IP 和雷达 IP 是否正确。
+二、安装 SDK 与 ROS 驱动1. 安装 Livox-SDK2Livox-SDK2 是 Livox 雷达的底层通信 SDK，livox_ros_driver2 编译时需要依赖它。
+sudo apt updatesudo apt install -y git cmake build-essentialmkdir -p ~/codecd ~/codegit clone https://github.com/Livox-SDK/Livox-SDK2.gitcd Livox-SDK2mkdir -p build &amp;&amp; cd buildcmake ..make -j$(nproc)sudo make install
+
+如果运行时报找不到动态库，将 /usr/local/lib 加入环境变量：
+echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+2. 安装 livox_ros_driver2创建工作空间并编译：
+mkdir -p ~/livox_ws/srccd ~/livox_ws/srcgit clone https://github.com/Livox-SDK/livox_ros_driver2.gitcd ~/livox_ws/src/livox_ros_driver2source /opt/ros/humble/setup.bash./build.sh humble
+
+加载 ROS 2 工作空间：
+cd ~/livox_wssource install/setup.bash
+
+也可以写入 ~/.bashrc：
+echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+三、修改 Mid-360S 配置进入驱动配置目录：
+cd ~/livox_ws/src/livox_ros_driver2/configls
+
+通常会看到 MID360_config.json、HAP_config.json、mixed_HAP_MID360_config.json 等文件。Mid-360S 可以按 Mid-360 系列流程配置；如果驱动版本提供了 MID360S_config.json 或 MID360s_config.json，优先使用对应文件。
+gedit MID360s_config.json
+
+重点检查：
+
+
+
+字段
+含义
+
+
+
+host_ip
+电脑有线网卡 IP，例如 192.168.1.5
+
+
+lidar_configs[].ip
+雷达 IP，例如 192.168.1.100
+
+
+pcl_data_type
+点云数据类型，常用 1
+
+
+pattern_mode
+扫描模式，常用 0，表示非重复扫描
+
+
+extrinsic_parameter
+Livox 驱动层外参，不等同于 ROS TF
+
+
+示例配置片段：
+&#123;  &quot;MID360s&quot;: &#123;    &quot;lidar_net_info&quot;: &#123;      &quot;cmd_data_port&quot;: 56100,      &quot;push_msg_port&quot;: 56200,      &quot;point_data_port&quot;: 56300,      &quot;imu_data_port&quot;: 56400,      &quot;log_data_port&quot;: 56500    &#125;,    &quot;host_net_info&quot;: [      &#123;        &quot;host_ip&quot;: &quot;192.168.1.5&quot;,        &quot;cmd_data_port&quot;: 56101,        &quot;push_msg_port&quot;: 56201,        &quot;point_data_port&quot;: 56301,        &quot;imu_data_port&quot;: 56401,        &quot;log_data_port&quot;: 56501      &#125;    ]  &#125;,  &quot;lidar_configs&quot;: [    &#123;      &quot;ip&quot;: &quot;192.168.1.100&quot;,      &quot;pcl_data_type&quot;: 1,      &quot;pattern_mode&quot;: 0,      &quot;extrinsic_parameter&quot;: &#123;        &quot;roll&quot;: 0.0,        &quot;pitch&quot;: 0.0,        &quot;yaw&quot;: 0.0,        &quot;x&quot;: 0,        &quot;y&quot;: 0,        &quot;z&quot;: 0      &#125;    &#125;  ]&#125;
+
+extrinsic_parameter 的建议用法：
+只验证通信：保持全 0让驱动直接输出补偿后的点云：在 json 中设置外参让 ROS 系统知道雷达和机体的坐标关系：发布 TF 或在算法中设置外参
+
+不要在 MID360s_config.json、TF 和 SLAM 配置里重复补偿同一个安装角度。
+如果修改源码目录中的配置后没有生效，可能是运行时加载了 install 目录中的旧配置。建议重新编译并使用软链接安装：
+cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
+
+四、启动与验证cd ~/livox_wssource /opt/ros/humble/setup.bashsource install/setup.bash
+
+1. 启动 RViz 查看点云ros2 launch livox_ros_driver2 rviz_MID360_launch.py
+
+如果有 Mid-360S 专用 launch 文件，则使用对应文件名：
+ros2 launch livox_ros_driver2 rviz_MID360s_launch.py
+
+只查看雷达原始坐标系下的点云时，RViz 的 Fixed Frame 通常设置为：
+livox_frame
+
+2. 只启动数据发布节点如果不需要打开 RViz，可以启动消息发布 launch：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+具体文件名以 launch_ROS2 目录中的实际内容为准。
+3. 查看 ROS 2 话题ros2 topic list
+
+常见话题：
+/livox/lidar/livox/imu
+
+ros2 topic info /livox/lidarros2 topic info /livox/imuros2 topic hz /livox/lidarros2 topic hz /livox/imu
+
+如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，通常可以直接给 RViz、SLAM、建图或避障算法使用。
+4. 录制 rosbagmkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
+
+播放 rosbag：
+ros2 bag play &lt;bag目录&gt;
+
+如需录制所有话题：
+ros2 bag record -a
+
+五、接入算法时需要确认什么Mid-360S 常用于 FAST-LIO、LIO-SAM、VINS、YOPO 等感知或定位模块。接入算法时重点检查三件事。
+1. 话题名称pointCloudTopic: &quot;/livox/lidar&quot;imuTopic: &quot;/livox/imu&quot;
+
+2. 坐标系驱动默认 frame 常见为：
+livox_frame
+
+如果算法使用 base_link、body、camera_init 等坐标系，需要让 TF、算法配置和消息中的 frame_id 保持一致。
+3. 外参位置三类外参作用不同，不要混用：
+MID360s_config.json / extrinsic_parameter  -&gt; 影响驱动发布出来的点云坐标  -&gt; 不会发布 ROS TFROS TF / static_transform_publisher / robot_state_publisher  -&gt; 描述 ROS 坐标系之间的关系  -&gt; RViz 和部分算法会按 TF 做坐标变换SLAM / 控制算法中的 extrinsic_T、extrinsic_R  -&gt; 算法内部使用的雷达到机体或雷达到 IMU 外参
+
+如果雷达前倾 30 度、安装在机体上方 10 cm，可以选择下面两种方式之一。
+方式一：在 json 中设置 extrinsic_parameter，让驱动直接输出补偿后的点云：
+&quot;extrinsic_parameter&quot;: &#123;  &quot;roll&quot;: 0.0,  &quot;pitch&quot;: -30.0,  &quot;yaw&quot;: 0.0,  &quot;x&quot;: 0,  &quot;y&quot;: 0,  &quot;z&quot;: 100&#125;
+
+方式二：保持 json 外参为 0，单独发布静态 TF：
+ros2 run tf2_ros static_transform_publisher \  --x 0 --y 0 --z 0.10 \  --roll 0 --pitch -0.5236 --yaw 0 \  --frame-id base_link \  --child-frame-id livox_frame
+
+然后将 RViz 的 Fixed Frame 设置为：
+base_link
+
+调试阶段可以先在算法中使用零外参：
+extrinsic_T: [0.0, 0.0, 0.0]extrinsic_R: [1.0, 0.0, 0.0,              0.0, 1.0, 0.0,              0.0, 0.0, 1.0]
+
+实际运行 SLAM 或控制算法时，再根据安装位置修改。核心原则是：同一个角度或位移只补偿一次。
+六、常见问题1. ping 不通雷达
+检查雷达电源和网线。
+确认电脑 IP 和雷达 IP 在同一网段。
+确认命令里使用的是正确网卡名。
+
+ip addr
+
+必要时重新配置电脑网卡：
+sudo ip addr flush dev enp108s0sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
+
+2. 编译时报找不到 Livox-SDK2ls /usr/local/lib | grep livoxls /usr/local/include | grep livox
+
+如果没有结果，重新安装 SDK：
+cd ~/code/Livox-SDK2/buildcmake ..make -j$(nproc)sudo make install
+
+3. 运行时报找不到动态库error while loading shared libraries: liblivox_lidar_sdk_shared.so
+
+echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+4. RViz 打开后没有点云
+只看原始点云时，Fixed Frame 设为 livox_frame。
+通过 TF 看机体系点云时，Fixed Frame 设为 base_link。
+确认 /livox/lidar 存在，并且有发布频率。
+确认 host_ip 是电脑网卡 IP，lidar_configs[].ip 是雷达 IP。
+
+ros2 topic listros2 topic hz /livox/lidar
+
+5. 改了 json 外参后点云没有变化或还是歪先确认修改的是实际加载的配置文件：
+grep -n &quot;user_config_path&quot; ~/livox_ws/src/livox_ros_driver2/launch_ROS2/*.py
+
+然后重新编译并加载环境：
+cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
+
+如果通过 TF 查看点云，检查 TF 是否存在：
+ros2 run tf2_ros tf2_echo base_link livox_frame
+
+6. 点云很卡打开对应 launch 文件，适当降低 publish_freq：
+&#123;&quot;publish_freq&quot;: 5.0&#125;
+
+7. 多雷达时无法区分话题可以启用 multi_topic，让不同雷达发布到独立话题。配置思路：
+multi_topic = 1每个雷达配置不同的 lidar_ip必要时给每个雷达配置不同网段或不同网卡
+
+参考资料
+Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
+livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
+Mid-360(S) 通信协议：https://livox-wiki-en.readthedocs.io/en/latest/
+
+总结Mid-360S 的基本使用流程可以概括为：
+连接电源和网线  -&gt; 配置电脑网卡 IP  -&gt; 安装 Livox-SDK2  -&gt; 编译 livox_ros_driver2  -&gt; 修改 json 中的 host_ip 和 lidar_configs[].ip  -&gt; ros2 launch 启动  -&gt; RViz 查看点云或录制 rosbag
+
+接入 SLAM 或机器人系统时，重点关注点云话题、IMU 话题、frame_id 和雷达到机体外参。MID360s_config.json 中的 extrinsic_parameter 会影响驱动输出点云，但它不是 ROS TF。
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>Livox</tag>
+        <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>激光雷达</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RealSense D435i安装与使用教程</title>
+    <url>/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言Intel RealSense D435i 是一款带 IMU 的深度相机，常用于 SLAM、VIO、视觉导航等任务。本文记录在 Ubuntu 22.04 + ROS2 Humble 环境下的安装、启动和常见问题处理。
+一、安装驱动1. 添加软件源# 添加 GPG keysudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FB0B24895113F120sudo apt-key export FB0B24895113F120 | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/librealsense.gpg# 添加 RealSense 软件源echo &#x27;deb [signed-by=/etc/apt/trusted.gpg.d/librealsense.gpg] https://librealsense.intel.com/Debian/apt-repo jammy main&#x27; | sudo tee /etc/apt/sources.list.d/librealsense.list
+
+2. 安装 librealsensesudo apt updatesudo apt install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg
+
+3. 安装 ROS2 驱动包sudo apt install -y ros-humble-realsense2-camera
+
+4. 验证安装连接相机后运行：
+realsense-viewer
+
+如果可以看到相机图像和 IMU 数据，说明驱动安装成功。
+
+更详细的驱动安装说明可参考：CSDN教程
+
+二、ROS2 启动方式VIO 常用配置：双目红外 + IMU适合 VINS-Fusion、OpenVINS 等视觉惯性算法：
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_accel:=true \  enable_gyro:=true \  unite_imu_method:=2 \  gyro_fps:=200 \  depth_module.infra_profile:=640,480,30
+
+RGB-D 配置适合需要彩色图像和深度图像的任务：
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=true \  enable_depth:=true \  enable_infra1:=false \  enable_infra2:=false \  enable_accel:=false \  enable_gyro:=false
+
+默认配置不指定参数时，使用驱动默认配置：
+ros2 launch realsense2_camera rs_launch.py
+
+三、常用参数
+
+
+参数
+说明
+常用值
+
+
+
+enable_color
+是否启用彩色相机
+true &#x2F; false
+
+
+enable_depth
+是否启用深度相机
+true &#x2F; false
+
+
+enable_infra1
+是否启用左红外相机
+true &#x2F; false
+
+
+enable_infra2
+是否启用右红外相机
+true &#x2F; false
+
+
+enable_accel
+是否启用加速度计
+true &#x2F; false
+
+
+enable_gyro
+是否启用陀螺仪
+true &#x2F; false
+
+
+unite_imu_method
+IMU 融合方式：0 不融合，1 线性插值，2 拷贝
+2
+
+
+gyro_fps
+陀螺仪采样率
+200
+
+
+accel_fps
+加速度计采样率
+200
+
+
+depth_module.infra_profile
+红外图像分辨率和帧率
+640,480,30
+
+
+四、运行时设置关闭激光发射器室外 VIO 或被动双目场景中，通常需要关闭激光投影器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+查看可用参数ros2 param list /camera/camera
+
+修改参数ros2 param set /camera/camera &lt;参数名&gt; &lt;参数值&gt;
+
+五、常用话题相机启动后，常用话题如下：
+
+
+
+话题名
+消息类型
+说明
+
+
+
+/camera/infra1/image_raw
+sensor_msgs/msg/Image
+左红外图像
+
+
+/camera/infra2/image_raw
+sensor_msgs/msg/Image
+右红外图像
+
+
+/camera/color/image_raw
+sensor_msgs/msg/Image
+彩色图像
+
+
+/camera/depth/image_rect_raw
+sensor_msgs/msg/Image
+深度图像
+
+
+/camera/accel/sample
+sensor_msgs/msg/Imu
+加速度计数据
+
+
+/camera/gyro/sample
+sensor_msgs/msg/Imu
+陀螺仪数据
+
+
+/camera/imu
+sensor_msgs/msg/Imu
+融合后的 IMU 数据
+
+
+六、RViz2 可视化启动 RViz2：
+rviz2
+
+常用显示项：
+
+Image：查看红外图像、彩色图像
+PointCloud2：查看点云，需要启用深度相机
+TF：查看相机坐标系关系
+
+七、性能优化
+按需开启数据流，不用的彩色、深度或红外数据可以关闭。
+适当降低分辨率和帧率，减少 USB 带宽和 CPU 占用。
+VIO 场景建议设置 unite_imu_method:=2，使用融合后的 IMU 话题。
+室外或被动双目场景建议关闭激光发射器。
+
+八、常见问题1. 相机无法识别检查 USB 连接和设备识别情况：
+lsusb | grep Intelrealsense-viewer
+
+优先使用 USB 3.0 接口，并避免通过低质量扩展坞连接。
+2. ROS2 无法启动相机检查 RealSense 相关包是否已安装：
+dpkg -l | grep realsense
+
+必要时重新安装 ROS2 驱动包：
+sudo apt install --reinstall ros-humble-realsense2-camera
+
+3. IMU 数据不同步启动时加入：
+unite_imu_method:=2
+
+然后重启相机节点。
+4. 帧率不稳定常见原因是 USB 带宽不足。可以尝试：
+
+使用 USB 3.0 接口
+降低图像分辨率
+降低帧率
+关闭暂时不用的数据流
+
+参考资源
+Intel RealSense官方文档
+librealsense2 GitHub
+realsense2_camera ROS2包装
+
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>RealSense</tag>
+        <tag>IMU</tag>
       </tags>
   </entry>
   <entry>
@@ -287,15 +1430,2357 @@ Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
 启动 Mid-360S：msg_MID360s_launch.py编译 FAST_LIO_ROS2使用配置文件：mid360.yaml启动 FAST-LIO2：ros2 launch fast_lio mapping.launch.py config_file:=mid360.yamlRViz2 查看 /Laser_map、/Odometry、/path
 ]]></content>
       <categories>
-        <category>技术分享</category>
-        <category>SLAM</category>
+        <category>SLAM与定位</category>
       </categories>
       <tags>
-        <tag>FAST-LIO2</tag>
-        <tag>SLAM</tag>
         <tag>Livox</tag>
         <tag>Mid-360S</tag>
         <tag>ROS2</tag>
+        <tag>FAST-LIO2</tag>
+        <tag>SLAM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mid-360S + FAST-LIO2 + MAVROS + PX4 真机部署测试</title>
+    <url>/2026/05/06/Mid360-FAST-LIO-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95/</url>
+    <content><![CDATA[前言前面已经完成了三件事：
+
+机载电脑已经连上并启动 Mid-360S。
+FAST-LIO2 已经成功运行，并输出 /Odometry。
+机载电脑上已经运行 MAVROS，可以和 PX4 飞控通信。
+
+下一步要做的事情，就是把 FAST-LIO2 的定位结果送进 PX4 的 EKF2，让 PX4 在没有 GPS 的室内也能得到稳定的本地位置估计，然后使用 Position 模式或 Offboard 模式实现悬停。
+本文先跑通最实用的一条链路：
+Mid-360S  -&gt; livox_ros_driver2  -&gt; FAST-LIO2  -&gt; /Odometry  -&gt; external_odom_to_mavros  -&gt; /uav1/vision_pose/pose  -&gt; MAVROS  -&gt; PX4 EKF2  -&gt; Position / Hold / Offboard 悬停
+
+
+
+一、整体思路PX4 本身不直接订阅 ROS 2 的 /Odometry 话题。我们需要通过 MAVROS 把外部定位转换成 MAVLink 消息，再送给 PX4。
+常见有两种接入方式：
+
+
+
+接入方式
+ROS 2 话题
+MAVLink 消息
+适合情况
+
+
+
+位姿输入
+/uav1/vision_pose/pose
+VISION_POSITION_ESTIMATE
+最简单，先跑通悬停
+
+
+里程计输入
+/uav1/odometry/out
+ODOMETRY
+可带速度和协方差，后期优化
+
+
+本文先使用 /uav1/vision_pose/pose。它只需要 geometry_msgs/msg/PoseStamped，桥接逻辑简单，更适合第一次实机调通。
+后续如果要进一步提升控制品质，可以改用 /uav1/odometry/out，但要特别注意：nav_msgs/Odometry 中的 twist 必须表达在机体系，而不是世界系。
+二、安全检查实机调定位和悬停前，先把安全检查放在第一位。
+建议顺序：
+
+第一次只上电，不装桨。
+第二次装桨但固定机体或使用保护架。
+第三次低高度、空旷室内、手动随时可切回 Stabilized 或 Altitude。
+不要一开始就直接 Offboard 自动起飞。
+
+室内定位悬停不是只看 /Odometry 有输出，还要确认坐标方向、尺度、延迟、PX4 融合状态都正确。
+三、确认 FAST-LIO2 输出启动 Mid-360S：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+启动 FAST-LIO2：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
+
+检查 /Odometry：
+ros2 topic info /Odometryros2 topic hz /Odometryros2 topic echo /Odometry --once
+
+正常情况下类型应为：
+nav_msgs/msg/Odometry
+
+重点看消息头：
+header.frame_idchild_frame_idpose.pose.positionpose.pose.orientation
+
+FAST-LIO2 的初始坐标原点一般是启动时的位置，室内悬停不要求它和真实世界坐标对齐，只要求局部坐标连续、方向正确、漂移足够小。
+四、确认坐标方向PX4 使用的是 FRD &#x2F; NED 习惯：
+机体系 FRD:X 向前Y 向右Z 向下
+
+ROS 常用的是 FLU &#x2F; ENU 习惯：
+机体系 FLU:X 向前Y 向左Z 向上世界系 ENU:X 向东或局部前方Y 向北或局部左方Z 向上
+
+MAVROS 会处理 ROS ENU&#x2F;FLU 到 PX4 NED&#x2F;FRD 的转换，所以我们发布给 /uav1/vision_pose/pose 的数据应当按 ROS 习惯来理解。
+第一次调试时，可以把无人机拿在手里缓慢移动，观察 /Odometry：
+ros2 topic echo /Odometry
+
+推荐检查：
+
+
+
+动作
+ROS ENU 中推荐表现
+
+
+
+抬高无人机
+z 增大
+
+
+向机头方向移动
+x 增大
+
+
+向机体左侧移动
+y 增大
+
+
+如果方向不一致，不要急着飞，需要先在桥接节点中做坐标转换，或者检查雷达安装方向、FAST-LIO2 外参和 TF。
+五、安装 MAVROS 相关包如果已经安装并启动 MAVROS，可以跳过这一节。
+sudo apt updatesudo apt install -y \  ros-humble-mavros \  ros-humble-mavros-extras \  ros-humble-mavros-msgs
+
+安装 GeographicLib 数据：
+ros2 run mavros install_geographiclib_datasets.sh
+
+如果你的 MAVROS 包里找不到这个脚本，也可以手动下载：
+cd /tmpwget https://raw.githubusercontent.com/mavlink/mavros/ros2/mavros/scripts/install_geographiclib_datasets.shchmod +x install_geographiclib_datasets.sh./install_geographiclib_datasets.sh
+
+启动 MAVROS：
+source /opt/ros/humble/setup.bashros2 launch mavros px4.launch \  fcu_url:=&quot;/dev/ttyUSB0:921600&quot; \  namespace:=&quot;uav1&quot; \  tgt_system:=1
+
+如果你使用的是 USB、TELEM、UDP 或自定义 launch，需要把 fcu_url 换成自己的连接方式。
+常见例子：
+串口：/dev/ttyUSB0:921600USB ACM：/dev/ttyACM0:57600SITL UDP：udp://:14540@127.0.0.1:14557
+
+检查连接：
+ros2 topic echo /uav1/state
+
+正常应看到：
+connected: true
+
+六、使用外部里程计到 MAVROS 的通用桥接包git clone https://github.com/dreamer198/external_odom_to_mavros.git
+
+编译：
+source /opt/ros/humble/setup.bashcolcon build --packages-select external_odom_to_mavros --symlink-installsource install/setup.bash
+
+FAST-LIO2 的输入话题是 /Odometry，消息类型是 nav_msgs/msg/Odometry，所以这样启动：
+ros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=odometry \  input_topic:=/Odometry \  output_topic:=/uav1/vision_pose/pose \  output_frame_id:=map \  publish_rate:=30.0
+
+检查输出：
+ros2 topic hz /uav1/vision_pose/poseros2 topic echo /uav1/vision_pose/pose --once
+
+推荐频率至少 30Hz。PX4 官方文档建议外部视觉消息以 30Hz 到 50Hz 输入，频率太低时 EKF2 可能不会融合。
+如果后续换成 VINS、OpenVINS、LIO-SAM、UWB 或动捕，只需要改 input_type 和 input_topic。
+例如输入是 PoseStamped：
+ros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=pose_stamped \  input_topic:=/external_pose \  output_topic:=/uav1/vision_pose/pose
+
+这个节点默认假设输入位姿已经符合 ROS ENU&#x2F;FLU 习惯。如果方向检查不通过，需要先修正上游定位坐标系、传感器外参，或者在桥接前增加专门的坐标转换节点。
+七、配置 PX4 EKF2 参数打开 QGroundControl：
+Vehicle Setup -&gt; Parameters
+
+重点修改下面几个参数。
+1. 开启外部视觉融合参数：
+EKF2_EV_CTRL
+
+建议先开启：
+Horizontal position fusionVertical position fusion
+
+如果 FAST-LIO2 的 yaw 方向稳定，并且坐标方向已经确认正确，再考虑开启：
+Yaw fusion
+
+如果只是先跑通室内悬停，不建议一开始就融合 velocity，因为本文使用的是 /uav1/vision_pose/pose，没有给 PX4 发送速度。
+2. 设置高度参考参数：
+EKF2_HGT_REF
+
+室内主要依赖 Mid-360S &#x2F; FAST-LIO2 定位时，可以设为：
+Vision
+
+如果你的 FAST-LIO2 垂直方向还有漂移，可以先保留 Baro 做对比测试，但最终室内定点悬停通常希望视觉&#x2F;激光定位成为主要高度来源。
+3. 设置延迟参数：
+EKF2_EV_DELAY
+
+第一次可以先设为：
+0.0
+
+如果飞行时出现明显的跟随滞后、刹车发飘、来回修正，再通过日志调这个值。这个延迟和雷达时间戳、FAST-LIO2 计算耗时、MAVROS 转发链路都有关系，每套机子都可能不同。
+4. 设置外部定位传感器相对机体的位置参数：
+EKF2_EV_POS_XEKF2_EV_POS_YEKF2_EV_POS_Z
+
+如果桥接节点发布的是无人机 base_link 或飞控中心的位姿，可以先都设为：
+0.0
+
+如果你直接发布的是雷达或 FAST-LIO IMU 坐标系的位姿，就要填雷达定位原点相对机体中心的位置。
+注意这里按 PX4 机体系 FRD 填：
+X：向前为正Y：向右为正Z：向下为正
+
+例如雷达在飞控前方 0.08m、左侧 0.02m、上方 0.05m：
+EKF2_EV_POS_X = 0.08EKF2_EV_POS_Y = -0.02EKF2_EV_POS_Z = -0.05
+
+5. 室内 GPS 处理如果室内没有 GPS，或者 GPS 信号很差，建议不要让 GPS 参与位置融合。可以检查：
+EKF2_GPS_CTRL
+
+室内纯激光定位测试时，可将 GPS 融合关闭。不同 PX4 版本参数界面略有差别，建议通过 QGroundControl 的参数说明确认当前固件对应选项。
+修改 EKF2 参数后，重启飞控。
+八、检查 PX4 是否收到外部定位启动顺序推荐如下：
+终端 1：启动雷达source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
+
+终端 2：启动 FAST-LIO2source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+
+终端 3：启动 MAVROSsource /opt/ros/humble/setup.bashros2 launch mavros px4.launch \  fcu_url:=&quot;/dev/ttyACM0:921600&quot; \  namespace:=&quot;uav1&quot; \  tgt_system:=1 \  gcs_url:=&quot;udp://:14550@10.0.30.196:14550&quot;
+
+终端 4：启动桥接节点source /opt/ros/humble/setup.bashsource ~/px4_lio_ws/install/setup.bashros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=odometry \  input_topic:=/Odometry \  output_topic:=/uav1/vision_pose/pose \  output_frame_id:=map \  publish_rate:=30.0
+
+检查 MAVROS 本地位置：
+ros2 topic echo /uav1/local_position/odom
+
+如果 PX4 已经融合外部定位，这里应当能看到比较稳定的本地位置输出。
+也可以在 QGroundControl 中查看：
+MAVLink Inspector -&gt; LOCAL_POSITION_NEDMAVLink Inspector -&gt; ODOMETRY
+
+为了让 PX4 回传收到的外部 odometry，可设置：
+MAV_ODOM_LP = 1
+
+方向和姿态检查完成后，建议再设回：
+MAV_ODOM_LP = 0
+
+然后手持无人机做方向检查：
+
+
+
+动作
+PX4 &#x2F; MAVLink NED 中推荐表现
+
+
+
+向机头方向移动
+x 增大
+
+
+向机体右侧移动
+y 增大
+
+
+抬高无人机
+z 减小
+
+
+如果这个方向不对，不要起飞。
+九、先用 Position 模式悬停最推荐的第一次室内悬停方式不是 Offboard，而是 Position 模式。
+原因是：
+
+PX4 自己负责位置控制。
+遥控器可以直接接管。
+更容易判断 EKF2 融合是否正常。
+
+操作步骤：
+
+确认 /Odometry 稳定。
+确认 /uav1/vision_pose/pose 约 30Hz。
+确认 /uav1/state 中 connected: true。
+确认 QGroundControl 没有位置估计相关的红色告警。
+切到 Position 模式。
+低高度起飞，建议先 0.3m 到 0.5m。
+摇杆回中，观察是否能定点悬停。
+
+如果 Position 模式无法进入，通常说明 PX4 认为本地位置估计还不可用。优先查：
+ros2 topic hz /uav1/vision_pose/poseros2 topic echo /uav1/local_position/odom --onceros2 topic echo /uav1/state
+
+QGroundControl 中也要看 EKF2 是否有 innovation、height、local position 相关告警。
+十、再测试 Offboard 悬停Position 模式能稳定悬停以后，再测试 Offboard。
+PX4 Offboard 有一个硬要求：进入 Offboard 前，外部控制端必须已经持续发送 setpoint，频率要大于 2Hz。实际使用建议 20Hz 或 30Hz。
+可以先用 MAVROS 的位置 setpoint 话题做简单测试：
+ros2 topic pub -r 20 /uav1/setpoint_position/local geometry_msgs/msg/PoseStamped \  &quot;&#123;header: &#123;frame_id: &#x27;map&#x27;&#125;, pose: &#123;position: &#123;x: 0.0, y: 0.0, z: 0.8&#125;, orientation: &#123;w: 1.0&#125;&#125;&#125;&quot;
+
+保持这个命令运行，再切 Offboard：
+ros2 service call /uav1/set_mode mavros_msgs/srv/SetMode \  &quot;&#123;base_mode: 0, custom_mode: &#x27;OFFBOARD&#x27;&#125;&quot;
+
+如果需要通过 MAVROS 解锁：
+ros2 service call /uav1/cmd/arming mavros_msgs/srv/CommandBool \  &quot;&#123;value: true&#125;&quot;
+
+实机第一次不建议直接用命令解锁自动飞，最好先手动起飞到低高度，确认 Position 稳定后，再让 Offboard 接管当前位置。
+十一、常见问题1. /uav1/vision_pose/pose 有数据，但 PX4 不融合检查：
+
+频率是否太低，建议 30Hz 到 50Hz。
+EKF2 参数是否已开启 external vision fusion。
+修改参数后是否重启飞控。
+坐标方向是否正确。
+时间戳是否持续更新。
+QGroundControl 是否有 EKF2 相关告警。
+
+2. 起飞后上下抖动优先检查：
+
+EKF2_HGT_REF 是否合理。
+FAST-LIO2 的 z 是否稳定。
+雷达是否看到了足够的地面、墙面或结构。
+机架震动是否影响 Mid-360S 或机载电脑。
+EKF2_EV_DELAY 是否需要调大。
+
+3. 水平位置慢慢漂移常见原因：
+
+室内环境结构太少，比如空旷大厅、玻璃墙、长直走廊。
+FAST-LIO2 外参不准。
+雷达安装不够刚性。
+飞机振动导致点云畸变或 IMU 质量变差。
+起飞前 FAST-LIO2 没有静止初始化。
+
+4. 一切正常但 Position 模式无法进入看 QGroundControl 的 Preflight &#x2F; EKF 提示。
+重点确认：
+local position estimate validlocal velocity estimate validheight estimate valid
+
+如果没有 GPS，且飞控仍然要求 GPS，检查当前固件的 arming check 和 GPS 相关参数，不要盲目关闭所有安全检查。
+5. Offboard 一切换就退出PX4 Offboard 要求 setpoint 持续输入。检查：
+ros2 topic hz /uav1/setpoint_position/local
+
+应大于 2Hz，实际建议 20Hz。
+还要检查：
+COM_OF_LOSS_TCOM_OBL_RC_ACT
+
+它们决定 Offboard 丢失后的超时和保护动作。
+十二、后续优化方向第一次能稳定悬停以后，可以继续优化：
+
+把 /uav1/vision_pose/pose 改成 /uav1/odometry/out，向 PX4 发送完整 ODOMETRY。
+加入速度估计，并确认速度表达在机体系。
+精确标定 Mid-360S &#x2F; FAST-LIO IMU 到机体中心的外参。
+调整 EKF2_EV_DELAY，降低动态飞行时的创新误差。
+录制 rosbag 和 PX4 ulog，对比 FAST-LIO2 输出与 PX4 local position。
+在 Offboard 中加入当前位置锁定、限速、失联降落和遥控器接管逻辑。
+
+参考资料
+PX4 外部视觉定位文档：https://docs.px4.io/v1.16/en/ros/external_position_estimation
+PX4 Offboard 模式文档：https://docs.px4.io/v1.16/en/flight_modes/offboard
+MAVROS ROS 2 文档：https://mavros.readthedocs.io/en/latest/
+MAVROS odometry 插件：https://mavros.readthedocs.io/en/latest/plugins/extras/odom/
+MAVROS vision_pose 插件：https://mavros.readthedocs.io/en/latest/plugins/extras/vision_pose_estimate/
+FAST-LIO 官方仓库：https://github.com/hku-mars/FAST_LIO
+FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
+
+]]></content>
+      <categories>
+        <category>SLAM与定位</category>
+      </categories>
+      <tags>
+        <tag>Livox</tag>
+        <tag>Mid-360S</tag>
+        <tag>FAST-LIO2</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>OpenVINS搭建与测试</title>
+    <url>/2026/05/13/OpenVINS%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[环境
+系统：Ubuntu 22.04
+ROS2：Humble
+源码仓库：https://github.com/dreamer198/open_vins.git
+
+源码下载mkdir -p ~/ros2_ws/srccd ~/ros2_ws/srcgit clone https://github.com/dreamer198/open_vins.git
+
+依赖安装source /opt/ros/humble/setup.bashsudo apt-get updatesudo apt-get install -y \  libeigen3-dev \  libboost-all-dev \  libceres-dev \  python3-colcon-common-extensions \  ros-humble-ros2bag \  ros-humble-rosbag2*
+
+编译进入工作空间根目录：
+cd ~/ros2_ws
+
+直接使用 colcon build 可能会因为并行编译占用内存过高而卡死，建议限制并行度：
+MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf
+
+如果在 Jetson Orin NX 上遇到 OpenCV 缺少 aruco 模块的问题，可以关闭 ArUco Tag 支持后重新编译：
+MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf \  --cmake-args -DENABLE_ARUCO_TAGS=OFF
+
+编译完成后加载环境：
+source ~/ros2_ws/install/setup.bash
+
+公开数据集测试下载数据集数据集下载地址：OpenVINS EuRoC 数据集说明
+推荐先下载 Vicon Room 1 01，也就是 V1_01_easy。
+运行测试终端 1：启动 OpenVINS。
+cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf subscribe.launch.py config:=euroc_mav
+
+终端 2：播放数据集。
+ros2 bag play V1_01_easy
+
+终端 3：打开 RViz2 可视化。
+rviz2 -d ~/ros2_ws/src/open_vins/ov_msckf/launch/display_ros2.rviz
+
+RealSense D455测试启动相机终端 1：发布双目红外图像和 IMU 数据。
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_gyro:=true \  enable_accel:=true \  unite_imu_method:=1 \  depth_module.infra_profile:=640,480,30 \  gyro_fps:=200 \  accel_fps:=200
+
+可以通过 rqt 查看红外图像中是否有红外斑点。如果有，关闭相机发射器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+启动 OpenVINS终端 2：运行 D455 配置。
+cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf d455.launch.py enable_rviz:=true enable_mavros:=true
+
+常见问题
+编译卡死：降低 MAKEFLAGS 或 CMAKE_BUILD_PARALLEL_LEVEL。
+Jetson 缺少 aruco：编译时添加 --cmake-args -DENABLE_ARUCO_TAGS=OFF。
+红外图像有斑点：关闭 depth_module.emitter_enabled。
+
+]]></content>
+      <categories>
+        <category>SLAM与定位</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>SLAM</tag>
+        <tag>OpenVINS</tag>
+        <tag>VIO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>VINS-Fusion环境搭建与使用</title>
+    <url>/2026/03/30/VINS-Fusion%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[前言VINS-Fusion是一款优秀的视觉惯性导航系统（VIO），支持多种相机配置（单目、双目、RGB-D等）和GPS融合。本文记录在ROS2环境下的搭建与使用过程。
+参考教程详细的安装步骤可以参考：CSDN教程
+环境搭建依赖安装sudo apt updatesudo apt install -y \    ros-humble-cv-bridge \    ros-humble-tf2-ros \    ros-humble-pcl-conversions \    ros-humble-nav_msgs \    ros-humble-sensor-msgs \    ros-humble-geometry-msgs
+
+编译安装# 创建工作空间mkdir -p ~/code/vins_ws/srccd ~/code/vins_ws/src# 克隆VINS-Fusion ROS2版本git clone https://github.com/HKUST-Aerial-Robotics/VINS-Fusion.git vins_fusion_ros2# 安装依赖cd vins_fusion_ros2rosdep install --from-paths . --ignore-src -r -y# 编译cd ~/code/vins_wscolcon build --symlink-install# 设置环境变量echo &quot;source ~/code/vins_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
+
+数据集测试1. 下载数据集下载EuRoC数据集（ROS2 bag格式）：
+
+数据集地址：EuRoC Data Sets
+推荐序列：V1_01_easy、V1_02_medium、MH_01_easy 等
+
+将数据下载并解压到合适的位置，例如：
+~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/
+
+2. 启动RViz2可视化在终端1中运行：
+source ~/code/vins_ws/install/setup.bashrviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
+
+3. 启动VINS-Fusion节点在终端2中运行：
+source ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
+
+4. 播放数据集在终端3中运行：
+ros2 bag play ~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/V1_01_easy.db3
+
+在RViz2中应该能看到位姿估计轨迹和特征点云。
+RealSense D435i实机测试1. 启动相机在新终端中发布双目红外图像和IMU数据：
+ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
+
+2. 关闭激光发射器在室外或使用被动双目时，建议关闭激光投影器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+
+3. 启动VINS-Fusionsource ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
+
+4. 查看结果在RViz2中可视化：
+rviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
+
+配置文件说明VINS-Fusion的配置文件位于：
+~/code/vins_ws/src/vins_fusion_ros2/config/
+
+主要配置文件：
+
+
+
+配置文件
+说明
+
+
+
+stereo_euroc_config.yaml
+EuRoC数据集双目配置
+
+
+stereo_realsense_config.yaml
+RealSense双目配置
+
+
+rgb_d_realsense_config.yaml
+RGB-D配置
+
+
+配置文件关键参数# 相机话题image0_topic: &quot;/camera/infra1/image_raw&quot;image1_topic: &quot;/camera/infra2/image_raw&quot;imu_topic: &quot;/camera/imu&quot;# 相机内参（需要标定）camera_matrix: [fx, 0.0, cx, 0.0, fy, cy, 0.0, 0.0, 1.0]# IMU到相机的外参body_T_imu: [...]# 时间同步参数acc_noise: 0.1    # 加速度计噪声gyr_noise: 0.01   # 陀螺仪噪声
+
+使用技巧1. 相机标定使用VINS-Fusion前，需要对相机进行内参标定：
+# 安装kalibrsudo apt install -y ros-humble-kalibr# 标定相机内参kalibr_calibrate_imu_camera --bag your_calibration.bag \    --cam camchain.yaml --imu imu.yaml \    --target april_6x6.yaml
+
+2. 提高初始化成功率
+确保相机视野中有足够的纹理和特征点
+初始化时缓慢移动相机，避免快速运动
+保持足够的照明条件
+
+3. 多机协同VINS-Fusion支持多传感器融合，可以根据需要添加：
+
+GPS传感器
+轮速计
+其他视觉传感器
+
+常见问题1. 初始化失败原因：相机运动过快或特征点不足
+解决方法：
+
+缓慢移动相机
+增加场景纹理
+调整特征检测参数
+
+2. 时间戳不同步原因：IMU和图像时间戳未对齐
+解决方法：
+
+设置 unite_imu_method:=2
+检查话题时间戳
+调整时间同步参数
+
+3. 性能问题解决方法：
+
+降低图像分辨率
+减少特征点数量
+使用更好的CPU&#x2F;GPU
+
+4. 漂移问题原因：长时间运行或纹理单一环境
+解决方法：
+
+添加闭环检测模块
+融合GPS信息
+定期重置
+
+进阶应用1. 回环检测VINS-Fusion可以集成回环检测模块：
+# 在配置文件中启用loop_closure: 1load_previous_pose_graph: 1
+
+2. 与其他系统集成VINS-Fusion可以与以下系统集成：
+
+Fast-Drone：快速无人机导航
+LIO-SAM：激光-视觉融合
+Cartographer：2D&#x2F;3D建图
+
+3. 实时性能优化# 降低特征点数量max_cnt: 150           # 特征点最大数量min_dist: 30           # 特征点最小间距# 调整窗口大小window_size: 10        # 滑动窗口大小
+
+参考资源
+VINS-Fusion GitHub
+VINS-Mono论文
+EuRoC数据集
+Kalibr标定工具
+
+总结VINS-Fusion是一个功能强大的VIO系统，适合用于：
+
+无人机自主导航
+移动机器人定位
+AR&#x2F;VR应用
+三维重建
+
+通过本文的配置，你可以快速搭建VINS-Fusion环境并开始使用。
+]]></content>
+      <categories>
+        <category>SLAM与定位</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>SLAM</tag>
+        <tag>VIO</tag>
+        <tag>VINS-Fusion</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker使用教程</title>
+    <url>/2026/04/30/Docker%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言Docker 是日常开发里很常用的容器工具，可以把程序和运行环境打包在一起，减少“换台机器就跑不起来”的问题。
+这篇文章先整理 Docker 的基本概念和常用命令，再给出一个 ROS Noetic 图形化容器的实际示例，方便后续继续搭建自己的仿真环境。
+
+
+一、先理解镜像和容器可以先把两者理解成下面这个关系：
+镜像 -&gt; 创建 -&gt; 容器
+
+
+镜像（Image）：一个静态模板，里面包含程序代码、依赖库和运行环境。
+容器（Container）：由镜像创建出来的运行实例，可以直接启动和使用。
+
+例如，下面这条命令会基于 ubuntu 镜像启动一个 Ubuntu 容器，并进入容器终端：
+docker run -it ubuntu bash
+
+一个镜像可以创建多个容器，而多个容器之间彼此独立。
+二、常用命令速查
+
+
+功能
+命令
+
+
+
+查看 Docker 状态
+docker info
+
+
+查看本地镜像
+docker images
+
+
+拉取镜像
+docker pull &lt;镜像名&gt;
+
+
+查看正在运行的容器
+docker ps
+
+
+查看所有容器
+docker ps -a
+
+
+查看容器日志
+docker logs &lt;容器名或容器ID&gt;
+
+
+停止容器
+docker stop &lt;容器名或容器ID&gt;
+
+
+启动并进入容器
+docker start -ai &lt;容器名或容器ID&gt;
+
+
+进入正在运行的容器
+docker exec -it &lt;容器名或容器ID&gt; bash
+
+
+删除容器
+docker rm &lt;容器名或容器ID&gt;
+
+
+删除镜像
+docker rmi &lt;镜像名或镜像ID&gt;
+
+
+下面把这些命令按使用场景简单展开一下。
+1. 查看 Docker 是否正常工作docker info
+
+这个命令可以查看 Docker 的整体运行状态，比如版本、容器数量、镜像数量、存储目录和系统信息。
+如果执行时提示无法连接 Docker daemon，可以先检查服务状态：
+sudo systemctl status docker
+
+如果 Docker 服务没有启动，再执行：
+sudo systemctl start docker
+
+2. 查看本地镜像docker images
+
+用于查看本机已经下载或构建好的镜像。
+3. 拉取镜像docker pull osrf/ros:noetic-desktop-full
+
+这条命令会下载 ROS Noetic 的桌面完整版镜像，后面运行 ROS 图形程序时会直接用到。
+如果是在 Jetson 这类 ARM64 设备上，只需要 ROS Noetic 的基础运行环境，可以拉取更轻量的 ros-base 镜像：
+docker pull --platform linux/arm64/v8 ros:noetic-ros-base-focal
+
+在 Jetson 本机上执行时，Docker 通常会自动选择 ARM64 镜像；这里加上 --platform linux/arm64/v8 是为了把架构写得更明确。需要注意的是，ros-base 不包含 RViz、Gazebo 这类桌面图形工具，后面如果要运行图形程序，仍然需要安装对应软件包或使用桌面版镜像。
+4. 查看容器查看正在运行的容器：
+docker ps
+
+查看所有容器（包括已经停止的容器）：
+docker ps -a
+
+如果容器状态是 Exited，通常说明容器已经退出，这时可以结合日志排查：
+docker logs &lt;容器名或容器ID&gt;
+
+5. 停止、重启和进入容器停止容器：
+docker stop &lt;容器名或容器ID&gt;
+
+容器停止后，重新启动并直接进入：
+docker start -ai &lt;容器名或容器ID&gt;
+
+如果容器已经在运行，想在新的终端里再进入一次：
+docker exec -it &lt;容器名或容器ID&gt; bash
+
+6. 删除容器和镜像删除已经停止的容器：
+docker rm &lt;容器名或容器ID&gt;
+
+删除本地镜像：
+docker rmi &lt;镜像名或镜像ID&gt;
+
+如果镜像仍被某个容器占用，需要先删除对应容器。
+三、创建一个 ROS Noetic 图形化容器这一节给一个比较常见的使用方式：在 Docker 里运行 ROS Noetic，同时把宿主机的图形界面和整个 /root 目录挂载进去。
+1. 允许容器访问宿主机图形界面xhost +SI:localuser:root
+
+这一步的作用是允许本机 root 用户访问当前图形显示服务，容器里的 RViz、rqt、Gazebo 等图形程序才能在宿主机屏幕上显示出来。
+相比 xhost +local:root，这里更推荐 xhost +SI:localuser:root，因为它只放行本机的 root 用户，范围更收敛一些。很多 ROS &#x2F; Gazebo 镜像默认就是以 root 身份运行，所以通常够用。
+2. 创建并进入容器在执行 docker run 之前，建议先在宿主机上创建挂载目录：
+mkdir -p ~/docker/ros_root
+
+这样可以避免路径写错时被 Docker 悄悄新建成空目录，也更方便你确认权限和目录位置。
+docker run -it \  --name ros_noetic \  --network host \  --ipc host \  --gpus all \  -e DISPLAY=$DISPLAY \  -e XAUTHORITY=/root/.Xauthority \  -e QT_X11_NO_MITSHM=1 \  -e NVIDIA_DRIVER_CAPABILITIES=all \  -v /tmp/.X11-unix:/tmp/.X11-unix \  -v $HOME/.Xauthority:/root/.Xauthority:ro \  -v ~/docker/ros_root:/root \  osrf/ros:noetic-desktop-full \  bash
+
+这条命令会创建并进入一个名为 ros_noetic 的容器。几个关键参数的作用如下：
+
+--network host：共享宿主机网络，ROS 通信更省事。
+--ipc host：共享 IPC，某些图形和仿真程序更稳定。
+--gpus all：把 GPU 暴露给容器；如果机器没有 NVIDIA 环境，可以先去掉这一项。
+-e DISPLAY=$DISPLAY 和 -v /tmp/.X11-unix:/tmp/.X11-unix：让容器里的图形程序能显示到宿主机。
+-e XAUTHORITY=/root/.Xauthority 和 -v $HOME/.Xauthority:/root/.Xauthority:ro：把宿主机当前图形会话的 X11 认证信息挂进容器，很多情况下可以减少手动执行 xhost 的需要。
+-v ~/docker/ros_root:/root：把容器内整个 /root 目录挂载到宿主机，代码、配置和 home 目录下的其他文件都会一起保存。
+
+如果后续需要让容器里的程序访问宿主机串口或 USB 设备，例如 /dev/ttyACM0、/dev/ttyUSB0、/dev/ttyTHS1，通常要在创建容器时就加上 --device 参数：
+docker run -it \  --name ros_noetic \  --network host \  --ipc host \  --runtime=nvidia \  --gpus all \  --device=/dev/ttyACM0 \  --device=/dev/ttyTHS1 \  -e DISPLAY=$DISPLAY \  -e XAUTHORITY=/root/.Xauthority \  -e QT_X11_NO_MITSHM=1 \  -e NVIDIA_DRIVER_CAPABILITIES=all \  -v /tmp/.X11-unix:/tmp/.X11-unix \  -v $HOME/.Xauthority:/root/.Xauthority:ro \  -v ~/docker/ros_root:/root \  osrf/ros:noetic-desktop-full \  bash
+
+这里有几个需要注意的点：
+
+--network host 和目录挂载并不会自动让容器获得串口访问权限，设备需要单独通过 --device 暴露进去。
+--device=/dev/ttyACM0 这种写法要求宿主机上当前确实存在这个设备，否则容器创建时会报错。
+如果你创建容器时没有指定 --device，后续不能通过 docker start 或 docker exec 再补上，一般需要删除旧容器后重新创建。
+如果只是不确定设备号，可以先在宿主机执行 ls /dev/ttyUSB* /dev/ttyACM* /dev/ttyTHS* 确认实际存在的设备，再决定要不要加到启动命令里。
+
+退出容器时直接执行：
+exit
+
+3. 后续重新进入容器容器停止后，重新启动并进入：
+docker start -ai ros_noetic
+
+如果容器已经在运行，另开一个终端进入：
+docker exec -it ros_noetic bash
+
+四、在容器里编译 Diff-Planner下面以 Diff-Planner 为例，演示如何在容器里编译一个 ROS1 工程。
+依赖安装apt updateapt-get install git
+1. 进入源码目录并下载项目mkdir -p /root/catkin_ws/srccd /root/catkin_ws/srcgit clone https://github.com/DifferentialRobotics/Diff-Planner.git
+
+2. 安装依赖并编译Diff-Planner 项目本身就是一个 catkin 工作空间，因此这里直接进入项目目录编译：
+cd /root/catkin_ws/src/Diff-Plannerapt updateapt install -y \  python3-catkin-tools \  ros-noetic-cmake-modules \  ros-noetic-pcl-ros \  ros-noetic-pcl-conversions \  ros-noetic-mavros \  ros-noetic-mavros-msgs \  libarmadillo-dev \  libeigen3-dev \  libpcl-dev \  qtbase5-dev \  zshsource /opt/ros/noetic/setup.bashcatkin_make
+
+3. 启动测试cd /root/catkin_ws/src/Diff-Plannersource devel/setup.bashroslaunch diff_planner run_sim_swarm.launch
+
+如果还需要在另一个终端里触发脚本，可以新开一个终端执行：
+docker exec -it ros_noetic bashcd /root/catkin_ws/src/Diff-Plannersource devel/setup.bash./sh_files/pub_swarm_trigger.sh
+
+五、挂载 /root 的作用前面这条挂载：
+-v ~/docker/ros_root:/root
+
+表示宿主机目录 ~/docker/ros_root 和容器目录 /root 是同步的。
+也就是说：
+
+你在宿主机里修改 ~/docker/ros_root 的内容，容器里会同步变化。
+你在容器里放在 /root 下的代码、配置、日志和脚本，宿主机里也能直接看到。
+
+这样即使容器删掉了，/root 目录下的数据依然保存在宿主机，不容易丢。
+不过要注意，挂载 /root 只能保存用户目录里的内容，不能代替整个容器系统本身。比如通过 apt install 安装到 /usr、/etc、/var 下的系统级依赖，仍然属于容器环境的一部分。
+六、如何保存容器环境前面挂载 /root 可以保存代码、配置和日志，但如果你在容器里额外安装了软件包、改了系统环境，单纯保留 /root 还不够。这时候通常有两种方式保存容器环境。
+1. 用 docker commit 保存当前容器如果你已经在容器里手动装好了依赖，想先把当前状态直接保存下来，可以执行：
+docker commit ros_noetic ros_noetic_saved:latest
+
+这条命令会把当前容器 ros_noetic 保存成一个新的镜像 ros_noetic_saved:latest。
+这里要注意：docker commit 保存的是容器当前文件系统状态，但像 -v ~/docker/ros_root:/root 这种挂载到宿主机的目录，本来就不属于镜像本体，所以不会被重新打包进镜像里。不过这部分数据已经在宿主机上，一般也不需要靠 commit 再保存一次。
+之后就可以基于这个镜像重新创建容器：
+docker run -it \  --name ros_noetic \  --network host \  --ipc host \  --gpus all \  -e DISPLAY=$DISPLAY \  -e QT_X11_NO_MITSHM=1 \  -e NVIDIA_DRIVER_CAPABILITIES=all \  -v /tmp/.X11-unix:/tmp/.X11-unix \  -v ~/docker/ros_root:/root \  ros_noetic_saved:latest \  bash
+
+如果你之后需要补 --device、修改挂载目录，或者调整其他启动参数，比较常见的做法就是：
+docker commit ros_noetic ros_noetic_saved:latestdocker stop ros_noeticdocker rm ros_noetic
+
+然后再用新的 docker run 命令重新创建。
+docker commit 的优点是快，适合先把当前能跑通的环境存下来；缺点是步骤不可追踪，后面时间长了不容易回忆当初到底改过什么。
+2. 用 Dockerfile 固化环境如果这个环境后续要长期维护，或者以后要迁移到别的机器，更推荐把安装步骤写成 Dockerfile。
+例如：
+FROM osrf/ros:noetic-desktop-fullRUN apt update &amp;&amp; apt install -y \  python3-catkin-tools \  ros-noetic-cmake-modules \  ros-noetic-pcl-ros \  ros-noetic-pcl-conversions \  ros-noetic-mavros \  ros-noetic-mavros-msgs \  libarmadillo-dev \  libeigen3-dev \  libpcl-dev \  qtbase5-dev \  zsh
+
+然后执行：
+docker build -t ros_noetic_custom:latest .
+
+以后直接基于这个自定义镜像启动容器即可：
+docker run -it \  --name ros_noetic \  --network host \  --ipc host \  --gpus all \  -e DISPLAY=$DISPLAY \  -e QT_X11_NO_MITSHM=1 \  -e NVIDIA_DRIVER_CAPABILITIES=all \  -v /tmp/.X11-unix:/tmp/.X11-unix \  -v ~/docker/ros_root:/root \  ros_noetic_custom:latest \  bash
+
+Dockerfile 的优点是可复现、可维护、方便迁移；缺点是第一次整理会比 docker commit 麻烦一些。
+3. 该怎么选
+只是临时保存当前能跑通的环境：优先用 docker commit
+想长期维护，或者准备换机器复现：更推荐写 Dockerfile
+比较实用的做法是：先 docker commit 兜底，再有空把环境整理成 Dockerfile
+
+如果后面还想把镜像拷到别的机器，也可以再配合使用：
+docker save -o ros_noetic_saved.tar ros_noetic_saved:latestdocker load -i ros_noetic_saved.tar
+
+七、常见问题1. 无法连接 Docker daemon先检查 Docker 服务：
+sudo systemctl status docker
+
+如未启动：
+sudo systemctl start docker
+
+2. Gazebo 启动时报图形权限错误如果宿主机重启后，在容器里运行 gazebo 出现下面这个报错：
+Authorization required, but no authorization protocol specified
+
+说明容器当前没有权限连接宿主机显示器。重新执行一次：
+xhost +SI:localuser:root
+
+通常在宿主机重启、注销重登，或者 X &#x2F; 图形会话重启后，都需要再执行一遍。因为 xhost 授权是给当前图形会话的，不是永久系统配置。
+如果你希望每次登录图形界面后自动执行，可以把下面这行加入宿主机的登录启动脚本，例如 ~/.profile，或者桌面环境的“启动应用程序”里：
+xhost +SI:localuser:root
+
+这样做的效果更接近“半永久配置”：不是系统级永久放行，而是每次图形会话启动后自动重新授权。
+如果想再干净一点，可以在创建容器时正确挂载 X11 认证文件：
+-e DISPLAY=$DISPLAY \-e XAUTHORITY=/root/.Xauthority \-v /tmp/.X11-unix:/tmp/.X11-unix:rw \-v $HOME/.Xauthority:/root/.Xauthority:ro
+
+这种方式会把宿主机当前用户的 .Xauthority 挂到容器内，很多情况下即使不手动执行 xhost，容器里的 Gazebo、RViz 也能直接连接显示服务。
+不过在 ROS &#x2F; Gazebo 的 Docker 环境里，最省事的做法通常还是：宿主机每次开机并进入桌面后，先执行一次：
+xhost +SI:localuser:root
+
+再进入容器启动 Gazebo 或 RViz。
+3. 没有 NVIDIA 显卡怎么办如果你的机器没有配置 NVIDIA 驱动或 Docker GPU 环境，创建容器时先去掉：
+--gpus all
+
+以及：
+-e NVIDIA_DRIVER_CAPABILITIES=all
+
+总结Docker 的核心思路并不复杂：先有镜像，再由镜像创建容器。真正高频使用的内容，其实就是拉镜像、启容器、进容器、挂目录和排查图形权限这几件事。
+把这些基础操作熟悉之后，再继续搭 ROS、Gazebo、PX4 之类的开发环境会顺很多。
+]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+        <tag>Linux</tag>
+        <tag>ROS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
+    <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
+    <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
+前置条件
+已安装 Git（Linux）
+拥有 GitHub 账号
+可选：安装 GitHub CLI（gh）以命令行创建仓库
+
+# 查看 Git 版本（确认已安装）git --version
+
+一、初始化本地仓库并做首个提交
+进入项目文件夹
+
+cd /path/to/your-project
+
+
+初始化 Git 仓库
+
+git init
+
+
+设置用户名和邮箱（一次性全局设置）
+
+git config --global user.name &quot;你的名字&quot;git config --global user.email &quot;你的邮箱&quot;
+
+
+创建&#x2F;完善 .gitignore（避免把无关文件提交上去）
+
+示例（按需取用）：
+# 编译/缓存node_modules/*.log.DS_Store__pycache__/*.py[cod].env.idea/.vscode/dist/build/public/
+
+
+暂存并提交
+
+git add .git commit -m &quot;chore: initial commit&quot;
+
+
+注意：首次提交前建议检查 git status，确认不会把隐私文件、超大文件误传。
+
+二、在 GitHub 创建一个“空”仓库创建仓库时，务必保持“不要勾选”自动生成 README &#x2F; .gitignore &#x2F; License，这样远程是完全空的，推送更顺畅。
+方式 A：网页创建（GUI）
+打开 https://github.com/new  
+填写仓库名（例如：your-repo）
+可选：选择 Public &#x2F; Private
+不勾选 README &#x2F; .gitignore &#x2F; License
+Create repository
+
+创建成功后页面会显示两种远程地址：HTTPS 和 SSH，任选其一。
+方式 B：命令行创建（GitHub CLI，可选）# 进入你的项目目录后执行（交互式创建）gh repo create your-repo --public --source=. --remote=origin --push
+
+
+如果不想立即 push，可以去掉 --push，稍后自己执行 git push。
+若无 gh，可跳过本节，用网页方式创建。
+
+三、配置远程地址（HTTPS 或 SSH）你可以二选一：
+选项 1：使用 HTTPS（简单、开箱即用）git remote add origin https://github.com/&lt;your-username&gt;/&lt;your-repo&gt;.git
+推送时可能需要输入 GitHub 账号与 Token（个人访问令牌）。Token 可在 GitHub → Settings → Developer settings → Personal access tokens 中创建。
+选项 2：使用 SSH（推荐长期使用）首次使用需配置 SSH Key：
+
+生成密钥（若不存在）
+
+ssh-keygen -t ed25519 -C &quot;你的邮箱&quot;# 一路回车，默认保存在 ~/.ssh/id_ed25519 和 id_ed25519.pub
+
+启动 ssh-agent 并添加私钥
+
+eval &quot;$(ssh-agent -s)&quot;ssh-add ~/.ssh/id_ed25519
+
+复制公钥内容，添加到 GitHub → Settings → SSH and GPG keys
+
+cat ~/.ssh/id_ed25519.pub# 复制输出到 GitHub
+
+测试连接
+
+ssh -T git@github.com
+
+配置远程地址（SSH）
+
+git remote add origin git@github.com:&lt;your-username&gt;/&lt;your-repo&gt;.git
+
+四、推送到远程（默认分支 main）
+确认当前分支名（建议使用 main）
+
+git branch
+若仍是 master，可重命名：
+git branch -m master main
+
+
+首次推送并建立追踪关系
+
+git push -u origin main
+
+成功后，刷新 GitHub 仓库页面即可看到代码。
+五、后续协作的常用命令
+提交新改动：
+
+git add .git commit -m &quot;feat: 描述本次改动&quot;git push
+
+
+拉取远程更新：
+
+git pull --rebase
+
+
+查看远程：
+
+git remote -v
+
+常见问题排查（FAQ）
+推送被拒绝：rejected non-fast-forward
+
+
+原因：远程不是空仓库，可能自动生成了 README 等
+解决：
+方法 A：删除远程的自动文件，保持远程为空；
+方法 B：git pull --rebase origin main 后再 git push
+
+
+
+
+Permission denied (publickey)
+
+
+原因：SSH Key 未正确配置或未添加到 GitHub
+自查：
+
+ssh -T git@github.com
+
+检查 ~/.ssh/id_ed25519.pub 是否已添加到 GitHub → SSH keys
+
+
+需要输入账号密码&#x2F;Token
+
+
+使用 HTTPS 推送时，GitHub 需要 Token 替代密码
+建议改用 SSH 方式，长期更省心
+
+
+大文件推不动或仓库体积过大
+
+
+避免把数据集、可执行文件、编译产物提交
+必要时使用 Git LFS（Large File Storage）
+
+
+忘记 .gitignore，提交了不该上的文件
+
+# 先修改 .gitignore# 然后清除索引并重新提交git rm -r --cached .git add .git commit -m &quot;chore: apply .gitignore&quot;
+
+六、提交信息规范（推荐）为了让提交历史更清晰、可搜索，推荐遵循 Conventional Commits 规范：
+基本格式：
+&lt;type&gt;(&lt;scope&gt;): &lt;简要说明&gt;&lt;可选正文，多行&gt;&lt;可选页脚，例如 Closes #123 或 BREAKING CHANGE&gt;
+
+常用类型一览：
+
+
+
+类型
+用途
+示例
+
+
+
+feat
+新功能（feature）
+feat(bt): add new takeoff behavior
+
+
+fix
+修复 bug
+fix(mavros): correct FCU URL parsing
+
+
+chore
+非功能改动（构建脚本、依赖、初次提交）
+chore: initial commit
+
+
+docs
+文档修改
+docs: update README with usage example
+
+
+style
+代码格式（不影响功能）
+style: reformat indentation in ListenCommand.cpp
+
+
+refactor
+重构（非修复非新增）
+refactor(bt): simplify tick logic
+
+
+test
+测试相关改动
+test: add unit test for JSON parser
+
+
+perf
+性能优化
+perf(nav): improve GPS update rate
+
+
+build
+构建系统或依赖更改
+build: switch to CMake 3.22
+
+
+ci
+CI 配置更改
+ci: add GitHub Actions workflow
+
+
+小贴士：
+
+scope 可选，用于指明影响范围（例如模块名：bt、mavros、nav、planner 等）。
+提示性提交可以在正文描述动机、做法与影响面，便于 Code Review 与后续排查。
+关联问题单：在页脚使用 Closes #123 &#x2F; Refs #123，平台会自动联动。
+破坏性变更：页脚使用 BREAKING CHANGE: 说明迁移指南。
+
+示例：
+git commit -m &quot;feat(bt): add new takeoff behavior&quot;git commit -m &quot;fix(mavros): correct FCU URL parsing&quot;git commit -m &quot;refactor(nav): simplify tick logic&quot;git commit -m &quot;docs: update README with usage example&quot;git commit -m &quot;chore: initial commit&quot;
+
+结合上文流程，建议首次提交使用：
+git commit -m &quot;chore: initial commit&quot;
+
+小结
+关键在于：先本地初始化并提交 → 创建“空”的远程仓库 → 添加远程 → 首次推送。
+建议优先使用 SSH，减少认证麻烦；.gitignore 要尽早设置，避免把无关文件带上去。
+
+]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>GitHub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker-ROS1-DiffPlanner-PX4仿真环境搭建</title>
+    <url>/2026/05/28/Docker-ROS1-DiffPlanner-PX4%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[前言本文记录在 Docker 容器中搭建 PX4 SITL + ROS1 + Diff-Planner 的流程，并分别跑通深度相机和 Mid360 两条仿真链路。
+如果还没有创建 ROS Noetic 容器，可以先参考《Docker使用教程》。
+本文默认在容器内 root 用户下操作，~ 即 /root。
+
+
+一、环境说明
+Docker 容器：ros_noetic
+ROS：Noetic
+PX4：v1.14.3
+仿真：Gazebo classic
+PX4 目录：~/PX4-Autopilot
+Catkin 工作空间：~/catkin_ws
+
+整体顺序：
+
+安装并编译 PX4 SITL
+配置 ROS、Gazebo 和 MAVROS
+编译 Diff-Planner-PX4
+分别启动深度相机和 Mid360 仿真
+
+二、PX4 SITL 基础环境1. 下载 PX4apt updateapt install -y gitcd ~git clone https://github.com/PX4/PX4-Autopilot.gitcd PX4-Autopilotgit checkout -b dev v1.14.3git submodule update --init --recursive
+
+2. 安装 PX4 依赖cd ~/PX4-Autopilot/Tools/setupchmod +x ubuntu.sh./ubuntu.sh --no-nuttx --no-sim-tools
+
+这个脚本会补齐 PX4 基础依赖，首次执行会比较久。
+如果出现 pandas 和 numpy 版本冲突，例如：
+ERROR: pandas 2.0.3 has requirement numpy&gt;=1.20.3; python_version &lt; &quot;3.10&quot;, but you&#x27;ll have numpy 1.17.4 which is incompatible.
+
+可以先清理 pip 中的版本，再使用系统源安装兼容版本：
+cd ~/PX4-Autopilot/Tools/setuppython3 -m pip uninstall -y pandas numpyapt updateapt install -y python3-numpy python3-pandas./ubuntu.sh --no-nuttx --no-sim-tools
+
+3. 安装 Gazebo 相关依赖下载 Gazebo 模型：
+mkdir -p ~/.gazebo/modelscd ~git clone https://gitee.com/tyx6/gazebo_models.gitmv ./gazebo_models/* ~/.gazebo/models/
+
+因为前面使用了 --no-sim-tools，后续编译 Gazebo classic 前需要补充 GStreamer 依赖：
+apt updateapt install -y \  pkg-config \  libgstreamer1.0-dev \  libgstreamer-plugins-base1.0-dev \  gstreamer1.0-plugins-base \  gstreamer1.0-plugins-good
+
+4. 编译 PX4cd ~/PX4-Autopilotmake px4_sitl_default gazebo
+
+如果编译时报 GSTREAMER_APP_LIBRARIES 或 GSTREAMER_LIBRARIES 为 NOTFOUND，安装上面的 GStreamer 依赖后清理 Gazebo classic 缓存，再重新编译：
+cd ~/PX4-Autopilotrm -rf build/px4_sitl_default/build_gazebo-classicrm -rf build/px4_sitl_default/external/Stamp/sitl_gazebo-classicmake px4_sitl_default gazebo
+
+三、ROS 环境和 MAVROS1. 写入环境变量建议把环境变量写进 ~/.bashrc。如果容器的 /root 挂载到了宿主机，也可以直接在宿主机编辑：
+nano ~/docker/ros_root/.bashrc
+
+在文件末尾添加：
+# ROS Noetic[ -f /opt/ros/noetic/setup.bash ] &amp;&amp; source /opt/ros/noetic/setup.bash# Catkin workspace[ -f ~/catkin_ws/devel/setup.bash ] &amp;&amp; source ~/catkin_ws/devel/setup.bash# PX4 Gazebo classicif [ -f ~/PX4-Autopilot/Tools/simulation/gazebo-classic/setup_gazebo.bash ]; then  source ~/PX4-Autopilot/Tools/simulation/gazebo-classic/setup_gazebo.bash ~/PX4-Autopilot/ ~/PX4-Autopilot/build/px4_sitl_default &gt; /dev/nullfi# PX4 ROS package pathexport ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot/export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic
+
+当前终端手动加载一次：
+source ~/.bashrc
+
+2. 安装 MAVROSPX4 通过 MAVROS 和 ROS 通信。容器内默认是 root 用户，不需要加 sudo：
+apt updateapt install -y \  ros-noetic-mavros \  ros-noetic-mavros-extras \  wget
+
+安装 GeographicLib datasets：
+cd ~wget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod a+x ./install_geographiclib_datasets.sh./install_geographiclib_datasets.sh
+
+这个脚本会下载地理坐标数据集，可能需要等待一段时间。
+3. 验证 PX4 和 MAVROSroslaunch px4 mavros_posix_sitl.launch
+
+另开一个终端检查连接状态：
+rostopic echo /mavros/state | grep connected
+
+看到 connected: True 后，再继续后面的步骤。
+四、Diff-Planner-PX4 集成1. 安装依赖apt updateapt install -y \  python3-catkin-tools \  python3-rosinstall-generator \  python3-osrf-pycommon \  libgoogle-glog-dev \  libgflags-dev \  libeigen3-dev \  libarmadillo-dev \  ros-noetic-pcl-ros \  ros-noetic-tf2-geometry-msgs \  ros-noetic-laser-geometry \  ros-noetic-tf2-sensor-msgs
+
+2. 下载并编译mkdir -p ~/catkin_ws/srccd ~/catkin_ws/srcgit clone https://github.com/dreamer198/Diff-Planner-PX4.gitcd ~/catkin_wssource /opt/ros/noetic/setup.bashcatkin initcatkin build
+
+如果工作空间已经初始化过，直接执行 catkin build 即可。
+3. 复制仿真配置把 Diff-Planner-PX4 中的模型、世界文件和 launch 文件复制到 PX4 工程：
+# model and worldcp -r ~/catkin_ws/src/Diff-Planner-PX4/sitl_config/models/* ~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/cp ~/catkin_ws/src/Diff-Planner-PX4/sitl_config/worlds/* ~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/worlds/# launchcp ~/catkin_ws/src/Diff-Planner-PX4/sitl_config/outdoor_depth_camera.launch ~/PX4-Autopilot/launch/cp ~/catkin_ws/src/Diff-Planner-PX4/sitl_config/outdoor_mid360.launch ~/PX4-Autopilot/launch/cp ~/catkin_ws/src/Diff-Planner-PX4/sitl_config/px4_config.yaml ~/PX4-Autopilot/launch/
+
+如果 PX4 目录中已有同名文件，复制前可以先备份。
+五、深度相机仿真这一条链路需要三个终端：Gazebo、se3_controller、diff_planner。
+终端一：启动 Gazeboroslaunch px4 outdoor_depth_camera.launch
+
+终端二：启动控制器cd ~/catkin_wssource devel/setup.bashroslaunch se3_controller sitl_se3_controller.launch
+
+控制器启动后，通常会自动进入 offboard 模式、解锁，并起飞到 2 m。
+终端三：启动 Diff-Plannercd ~/catkin_wssource devel/setup.bashroslaunch diff_planner run_px4_sitl_gazebo.launch
+
+六、Mid360 仿真Mid360 需要额外编译 Livox Gazebo 插件，并把插件和模型复制到 PX4。
+1. 下载并编译插件cd ~/catkin_ws/srcgit clone https://github.com/Tfly6/Mid360_px4_sim_plugin.gitcd ~/catkin_wssource /opt/ros/noetic/setup.bashcatkin build
+
+2. 测试插件source ~/catkin_ws/devel/setup.bashsource ~/catkin_ws/src/Mid360_px4_sim_plugin/gazebo_setup.bashroslaunch livox_laser_simulation test_pattern.launch
+
+如果能正常看到点云，说明插件加载成功。
+3. 复制 Mid360 配置cd ~/catkin_wscp ./src/Mid360_px4_sim_plugin/livox_laser_simulation/launch/mavros_posix_sitl_mid360.launch ~/PX4-Autopilot/launch/cp ./devel/lib/liblivox_laser_simulation.so ~/PX4-Autopilot/build/px4_sitl_default/build_gazebo-classic/cp -r ./src/Mid360_px4_sim_plugin/livox_laser_simulation/models/Mid360 ~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/cp -r ./src/Mid360_px4_sim_plugin/livox_laser_simulation/models/iris_mid360 ~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/
+
+终端一：启动 Gazeboroslaunch px4 outdoor_mid360.launch
+
+终端二：启动控制器cd ~/catkin_wssource devel/setup.bashroslaunch se3_controller sitl_se3_controller.launch
+
+终端三：启动 Diff-Plannercd ~/catkin_wssource devel/setup.bashroslaunch diff_planner run_px4_sitl_gazebo_mid360.launch
+
+七、常见问题1. roslaunch 找不到 package确认当前终端已经加载环境：
+source /opt/ros/noetic/setup.bashsource ~/catkin_ws/devel/setup.bash
+
+如果已经写入 ~/.bashrc，重新打开终端或执行：
+source ~/.bashrc
+
+2. Gazebo 找不到模型检查模型是否已经复制到：
+~/.gazebo/models/~/PX4-Autopilot/Tools/simulation/gazebo-classic/sitl_gazebo-classic/models/
+
+3. Mid360 插件没加载出来重点检查：
+
+是否执行过 source ~/catkin_ws/src/Mid360_px4_sim_plugin/gazebo_setup.bash
+liblivox_laser_simulation.so 是否已经复制到 ~/PX4-Autopilot/build/px4_sitl_default/build_gazebo-classic/
+Mid360 和 iris_mid360 模型是否已经复制到 PX4 的 Gazebo models 目录
+
+4. 出现 obs Land enabled这通常是地理围栏触发，不一定是程序错误。先确认仿真流程是否还能继续，再决定是否调整参数。
+总结这套流程的关键是先跑通 PX4 SITL + MAVROS，再接入 Diff-Planner。深度相机和 Mid360 的差异主要在 Gazebo 模型、插件和对应的 launch 文件。
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>Mid-360S</tag>
+        <tag>PX4</tag>
+        <tag>Docker</tag>
+        <tag>ROS1</tag>
+        <tag>Gazebo</tag>
+        <tag>Diff-Planner</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Vim编辑器使用教程</title>
+    <url>/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言Vim 是 Linux 终端里非常常用的文本编辑器。平时修改配置文件、写脚本、在服务器或 Docker 容器里临时改代码，经常都会用到它。
+刚开始接触 Vim 时，最容易卡住的地方不是“怎么高效编辑”，而是“怎么进入编辑、怎么保存、怎么退出”。所以这篇文章先从最基本的生存命令开始，再逐步整理移动、复制粘贴、查找替换、多文件编辑和常用配置。
+
+
+一、安装 Vim在 Ubuntu &#x2F; Debian 系统中安装：
+sudo apt updatesudo apt install -y vim
+
+查看版本：
+vim --version
+
+如果只是临时使用，系统里也可能已经有 vi：
+vi 文件名
+
+不过日常更推荐安装并使用 vim。
+二、打开和创建文件打开一个已有文件：
+vim test.txt
+
+如果 test.txt 不存在，Vim 会在保存时创建这个文件。
+打开某个系统配置文件：
+sudo vim /etc/hosts
+
+打开后，默认处于普通模式，此时直接敲键盘不会像普通编辑器一样输入文字。
+三、理解 Vim 的几种模式Vim 最重要的特点是“模式编辑”。常用模式有下面几种：
+
+
+
+模式
+作用
+进入方式
+退出方式
+
+
+
+普通模式
+移动光标、复制、删除、保存退出
+打开文件后默认进入
+按 i、a、o 等进入插入模式
+
+
+插入模式
+正常输入文字
+在普通模式按 i、a、o
+按 Esc 回到普通模式
+
+
+命令模式
+保存、退出、查找替换等
+普通模式按 :
+执行命令后自动返回普通模式
+
+
+可视模式
+选择一段文本
+普通模式按 v、V、Ctrl + v
+按 Esc 回到普通模式
+
+
+最常用的流程可以记成：
+普通模式 -&gt; 按 i -&gt; 插入模式 -&gt; 输入内容 -&gt; 按 Esc -&gt; 普通模式 -&gt; 输入 :wq 保存退出
+
+四、最重要的保存和退出这些命令都需要先按 Esc 回到普通模式，再输入 : 进入命令模式。
+
+
+
+功能
+命令
+
+
+
+保存文件
+:w
+
+
+退出 Vim
+:q
+
+
+保存并退出
+:wq
+
+
+保存并退出
+:x
+
+
+不保存强制退出
+:q!
+
+
+强制保存
+:w!
+
+
+刚开始最常用的是：
+:wq
+
+如果改乱了，不想保存：
+:q!
+
+五、进入插入模式在普通模式下，可以通过下面这些按键进入插入模式：
+
+
+
+按键
+作用
+
+
+
+i
+在当前光标前插入
+
+
+a
+在当前光标后插入
+
+
+I
+在当前行开头插入
+
+
+A
+在当前行末尾插入
+
+
+o
+在当前行下方新建一行并插入
+
+
+O
+在当前行上方新建一行并插入
+
+
+最开始只记两个就够：
+
+i：开始编辑当前内容。
+o：新开一行继续写。
+
+六、移动光标Vim 中可以用方向键移动，也可以用 h、j、k、l 移动：
+
+
+
+按键
+方向
+
+
+
+h
+左
+
+
+j
+下
+
+
+k
+上
+
+
+l
+右
+
+
+常用移动命令：
+
+
+
+功能
+命令
+
+
+
+移动到行首
+0
+
+
+移动到行尾
+$
+
+
+移动到文件第一行
+gg
+
+
+移动到文件最后一行
+G
+
+
+移动到第 20 行
+20G 或 :20
+
+
+向后移动一个单词
+w
+
+
+向前移动一个单词
+b
+
+
+移动到当前单词结尾
+e
+
+
+翻页操作：
+
+
+
+功能
+命令
+
+
+
+向下翻半屏
+Ctrl + d
+
+
+向上翻半屏
+Ctrl + u
+
+
+向下翻一屏
+Ctrl + f
+
+
+向上翻一屏
+Ctrl + b
+
+
+七、删除、修改和撤销常用删除命令：
+
+
+
+功能
+命令
+
+
+
+删除当前字符
+x
+
+
+删除当前行
+dd
+
+
+删除 3 行
+3dd
+
+
+删除当前光标到行尾
+D
+
+
+删除当前单词
+dw
+
+
+删除当前光标到单词结尾
+de
+
+
+常用修改命令：
+
+
+
+功能
+命令
+
+
+
+修改当前字符
+r 后接新字符
+
+
+删除当前字符并进入插入模式
+s
+
+
+删除当前行并进入插入模式
+cc
+
+
+删除当前光标到行尾并进入插入模式
+C
+
+
+撤销和重做：
+
+
+
+功能
+命令
+
+
+
+撤销上一步
+u
+
+
+重做
+Ctrl + r
+
+
+如果误删了一行，可以按：
+u
+
+八、复制、剪切和粘贴在 Vim 里，删除操作很多时候也可以理解成“剪切”。
+
+
+
+功能
+命令
+
+
+
+复制当前行
+yy
+
+
+复制 3 行
+3yy
+
+
+剪切当前行
+dd
+
+
+粘贴到当前行下方
+p
+
+
+粘贴到当前行上方
+P
+
+
+例如复制当前行并粘贴到下一行：
+yyp
+
+剪切当前行并粘贴到其他位置：
+dd移动光标p
+
+九、可视模式选择文本普通模式下按 v 进入字符选择，按 V 进入整行选择。
+
+
+
+功能
+命令
+
+
+
+字符选择
+v
+
+
+整行选择
+V
+
+
+块选择
+Ctrl + v
+
+
+复制选中内容
+y
+
+
+删除选中内容
+d
+
+
+粘贴
+p
+
+
+如果想复制一整段内容：
+
+按 V 进入整行选择。
+使用 j &#x2F; k 选择多行。
+按 y 复制。
+移动到目标位置后按 p 粘贴。
+
+十、查找和替换1. 查找文本向下查找：
+/关键词
+
+向上查找：
+?关键词
+
+查找后继续跳转：
+
+
+
+功能
+命令
+
+
+
+下一个匹配
+n
+
+
+上一个匹配
+N
+
+
+2. 替换文本替换当前行第一个匹配：
+:s/旧内容/新内容/
+
+替换当前行所有匹配：
+:s/旧内容/新内容/g
+
+替换全文所有匹配：
+:%s/旧内容/新内容/g
+
+替换全文并逐个确认：
+:%s/旧内容/新内容/gc
+
+其中：
+
+% 表示全文。
+s 表示 substitute，也就是替换。
+g 表示当前行内所有匹配项。
+c 表示 confirm，每次替换前确认。
+
+十一、显示行号和常用临时设置在 Vim 中可以临时开启行号：
+:set number
+
+关闭行号：
+:set nonumber
+
+开启搜索高亮：
+:set hlsearch
+
+关闭搜索高亮：
+:nohlsearch
+
+开启自动缩进：
+:set autoindent
+
+显示当前文件名和状态：
+:f
+
+十二、编辑多个文件一次打开多个文件：
+vim file1.txt file2.txt
+
+查看缓冲区列表：
+:ls
+
+切换到下一个文件：
+:bn
+
+切换到上一个文件：
+:bp
+
+打开另一个文件：
+:e another.txt
+
+保存全部文件：
+:wa
+
+退出全部文件：
+:qa
+
+保存并退出全部文件：
+:wqa
+
+十三、分屏编辑横向分屏打开文件：
+:split file.txt
+
+也可以简写：
+:sp file.txt
+
+纵向分屏打开文件：
+:vsplit file.txt
+
+也可以简写：
+:vsp file.txt
+
+分屏后常用快捷键：
+
+
+
+功能
+命令
+
+
+
+切换到左侧窗口
+Ctrl + w 后按 h
+
+
+切换到下方窗口
+Ctrl + w 后按 j
+
+
+切换到上方窗口
+Ctrl + w 后按 k
+
+
+切换到右侧窗口
+Ctrl + w 后按 l
+
+
+关闭当前窗口
+:q
+
+
+十四、没有权限保存怎么办有时打开系统文件时忘了加 sudo：
+vim /etc/hosts
+
+编辑完保存时可能提示没有权限。可以在 Vim 中执行：
+:w !sudo tee %
+
+执行后输入当前用户密码，文件就会通过 sudo tee 写回去。
+这个命令的含义是：
+
+:w：把当前缓冲区内容写出。
+!sudo tee %：把内容交给外部命令 sudo tee。
+%：表示当前文件名。
+
+保存成功后，如果 Vim 提示文件已改变，可以输入：
+:e!
+
+重新加载当前文件。
+十五、配置 vimrc如果希望每次打开 Vim 都自动显示行号、开启语法高亮，可以编辑用户配置文件：
+vim ~/.vimrc
+
+一个简单的配置示例：
+&quot; 显示行号set number&quot; 开启语法高亮syntax on&quot; 开启文件类型检测filetype plugin indent on&quot; 搜索时忽略大小写，输入大写字母时自动区分大小写set ignorecaseset smartcase&quot; 搜索时边输入边高亮set incsearchset hlsearch&quot; Tab 显示为 4 个空格宽度set tabstop=4set shiftwidth=4set softtabstop=4&quot; 按 Tab 输入空格set expandtab&quot; 自动缩进set autoindentset smartindent&quot; 显示当前光标所在行set cursorline&quot; 底部显示命令set showcmd&quot; 显示模式set showmode&quot; 支持鼠标set mouse=a
+
+保存后重新打开 Vim 即可生效。
+如果不想使用鼠标，可以删除：
+set mouse=a
+
+十六、常用命令速查
+
+
+场景
+命令
+
+
+
+打开文件
+vim 文件名
+
+
+进入插入模式
+i
+
+
+退出插入模式
+Esc
+
+
+保存
+:w
+
+
+退出
+:q
+
+
+保存并退出
+:wq
+
+
+不保存退出
+:q!
+
+
+撤销
+u
+
+
+重做
+Ctrl + r
+
+
+删除当前行
+dd
+
+
+复制当前行
+yy
+
+
+粘贴
+p
+
+
+查找
+/关键词
+
+
+全文替换
+:%s/旧内容/新内容/g
+
+
+显示行号
+:set number
+
+
+跳到文件开头
+gg
+
+
+跳到文件末尾
+G
+
+
+跳到第 20 行
+20G
+
+
+十七、推荐练习顺序刚开始不要一口气背太多命令，可以按下面顺序练：
+
+用 vim test.txt 打开文件。
+按 i 输入几行文字。
+按 Esc 回到普通模式。
+用 :w 保存。
+用 dd 删除一行，再用 u 撤销。
+用 yy 复制一行，再用 p 粘贴。
+用 /关键词 查找内容。
+用 :%s/旧内容/新内容/gc 练习确认替换。
+最后用 :wq 保存退出。
+
+熟悉这些以后，日常修改配置文件、编辑脚本、在服务器里处理文本基本就够用了。
+总结Vim 的学习重点不是一次记住所有快捷键，而是先建立“模式”的概念：
+普通模式负责操作，插入模式负责输入，命令模式负责保存退出和高级命令。
+
+新手最先需要掌握的是：
+
+i：进入编辑。
+Esc：回到普通模式。
+:wq：保存退出。
+:q!：放弃修改退出。
+dd、yy、p、u：完成基础编辑。
+
+等这些命令用熟之后，再逐渐学习查找替换、分屏、多文件和 .vimrc 配置，Vim 就会从“容易退出不了的编辑器”变成一个非常顺手的终端工具。
+]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>Vim</tag>
+        <tag>终端</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用 SSH 远控局域网中的其他电脑</title>
+    <url>/2026/05/06/ssh%E8%BF%9C%E6%8E%A7%E7%94%B5%E8%84%91/</url>
+    <content><![CDATA[前言在机器人调试、ROS 开发、服务器维护或多台 Ubuntu 电脑协同时，经常需要从一台电脑登录另一台电脑执行命令。
+SSH（Secure Shell）可以让我们通过网络安全地登录远程终端。只要两台电脑在同一个局域网，并且被控电脑开启了 SSH 服务，就可以在本机终端中远程操作它。
+
+
+一、准备本文约定：
+电脑 A：控制端，当前操作的电脑电脑 B：被控端，需要远程登录的电脑
+
+使用 SSH 前需要确认：
+
+两台电脑在同一个局域网内。
+电脑 B 已安装并启动 SSH 服务。
+电脑 A 能访问电脑 B 的 IP 地址。
+已知道电脑 B 的用户名和登录密码。
+
+在电脑 B 上查看用户名：
+whoami
+
+查看局域网 IP：
+hostname -I
+
+输出中类似 192.168.1.23、192.168.31.88、10.0.0.15 的地址，一般就是局域网 IP。
+二、安装并启动 SSH 服务以下命令在电脑 B 上执行。
+安装 openssh-server：
+sudo apt updatesudo apt install -y openssh-server
+
+启动 SSH 服务，并设置开机自启：
+sudo systemctl enable --now ssh
+
+查看服务状态：
+systemctl status ssh
+
+如果看到 active (running)，说明 SSH 服务已经正常运行。
+少数系统的服务名可能是 sshd，如果 ssh 不生效，可以尝试：
+systemctl status sshd
+
+三、远程登录假设电脑 B 的信息如下：
+用户名：dreamerIP 地址：192.168.1.23
+
+在电脑 A 上登录电脑 B：
+ssh dreamer@192.168.1.23
+
+第一次连接时，终端会询问是否继续连接，输入 yes 后回车，再输入电脑 B 的用户密码即可。
+登录成功后，当前终端执行的命令都运行在电脑 B 上。可以用下面的命令确认当前主机名：
+hostname
+
+退出远程登录：
+exit
+
+四、测试网络连通性如果 SSH 连接不上，先在电脑 A 上测试能否访问电脑 B：
+ping 192.168.1.23
+
+如果能持续收到回复，说明两台电脑网络基本连通。
+如果没有回复，优先检查：
+
+两台电脑是否在同一个局域网。
+IP 地址是否写错。
+电脑 B 是否连接到了正确的 WiFi 或网口。
+网线、交换机、路由器是否正常。
+是否有多个网卡，导致看错了 IP。
+
+五、常用优化设置固定 IP如果电脑 B 使用 DHCP 自动获取 IP，重启或换网络后 IP 可能变化。建议给电脑 B 设置固定 IP，后续连接会更方便。
+推荐在路由器后台设置：
+DHCP 静态分配 / 地址保留 / IP-MAC 绑定
+
+把电脑 B 的 MAC 地址绑定到固定 IP。这样不用修改系统网络配置，也不容易把网络改乱。
+如果需要在 Ubuntu 桌面版中手动设置，可以进入：
+设置 -&gt; 网络 -&gt; 有线/无线 -&gt; IPv4 -&gt; 手动
+
+示例：
+地址：192.168.1.23子网掩码：255.255.255.0网关：192.168.1.1DNS：8.8.8.8 或 114.114.114.114
+
+注意：固定 IP 不能和局域网内其他设备重复，否则会产生 IP 冲突。
+配置免密登录每次登录都输入密码比较麻烦，可以在电脑 A 上配置 SSH 密钥。
+生成密钥：
+ssh-keygen -t ed25519
+
+一路回车即可。默认会生成：
+~/.ssh/id_ed25519~/.ssh/id_ed25519.pub
+
+把公钥复制到电脑 B：
+ssh-copy-id dreamer@192.168.1.23
+
+之后再次登录：
+ssh dreamer@192.168.1.23
+
+如果配置成功，就不需要再输入密码。
+设置主机别名IP 地址不好记，可以在电脑 A 上编辑 SSH 配置文件：
+nano ~/.ssh/config
+
+添加：
+Host robot    HostName 192.168.1.23    User dreamer    Port 22
+
+以后可以直接登录：
+ssh robot
+
+六、传输文件SSH 也可以配合 scp 在两台电脑之间传文件。
+从电脑 A 复制文件到电脑 B：
+scp local_file.txt dreamer@192.168.1.23:~/
+
+从电脑 B 复制文件到电脑 A：
+scp dreamer@192.168.1.23:~/remote_file.txt ./
+
+复制整个文件夹：
+scp -r my_folder dreamer@192.168.1.23:~/
+
+如果已经设置别名，可以写得更简单：
+scp -r my_folder robot:~/
+
+七、常见问题
+
+
+报错
+常见原因
+处理方法
+
+
+
+Connection refused
+网络能找到电脑 B，但 SSH 服务未启动或 22 端口未开放
+在电脑 B 上执行 sudo systemctl status ssh，必要时执行 sudo systemctl start ssh
+
+
+No route to host
+网络不通，或 IP 地址写错
+在电脑 A 上执行 ping 192.168.1.23，检查网络和 IP
+
+
+Permission denied
+用户名、密码或密钥不正确
+在电脑 B 上用 whoami 确认用户名，再用 ssh 用户名@IP地址 登录
+
+
+REMOTE HOST IDENTIFICATION HAS CHANGED
+电脑 B 重装系统或主机指纹变化
+在电脑 A 上执行 ssh-keygen -R 192.168.1.23 后重新连接
+
+
+八、安全建议
+不要使用过于简单的系统密码。
+优先使用 SSH 密钥登录。
+不需要远程控制时，可以关闭 SSH 服务。
+不要随便把 SSH 端口暴露到公网。
+如果必须公网访问，建议先用 VPN、Tailscale、ZeroTier 等方式组网，再使用 SSH 登录。
+
+关闭 SSH 服务：
+sudo systemctl stop ssh
+
+禁止开机自启：
+sudo systemctl disable ssh
+
+总结局域网中使用 SSH 远控电脑的核心流程：
+
+在被控电脑上安装并启动 openssh-server。
+查看被控电脑的用户名和局域网 IP。
+在控制端使用 ssh 用户名@IP地址 登录。
+按需配置固定 IP、免密登录和主机别名。
+使用 scp 在两台电脑之间传输文件。
+
+配置完成后，远程调试机器人、编译代码、查看 ROS 节点或启动程序都会方便很多。
+]]></content>
+      <categories>
+        <category>开发工具</category>
+      </categories>
+      <tags>
+        <tag>Linux</tag>
+        <tag>SSH</tag>
+        <tag>局域网</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker ROS1 Diff-Planner PX4 真机部署教程</title>
+    <url>/2026/06/02/Docker-ROS1-DiffPlanner-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言本文记录在 Jetson 上通过 Docker 跑通 ROS1 真机链路：
+Mid-360S  -&gt; livox_ros_driver2  -&gt; FAST-LIO  -&gt; /Odometry + /cloud_registered  -&gt; odom_to_base.py  -&gt; /Odometry_base  -&gt; odom_to_pose.py  -&gt; /mavros/vision_pose/pose  -&gt; PX4 EKF2/Odometry_base + /cloud_registered  -&gt; Diff-Planner  -&gt; /drone_0_planning/pos_cmd  -&gt; trajectory_msg_converter.py  -&gt; /command/trajectory  -&gt; se3_controller  -&gt; /mavros/setpoint_raw/attitude  -&gt; PX4 Offboard
+
+环境：
+机载电脑：Jetson Orin NX宿主系统：Ubuntu 22.04容器镜像：ros:noetic-ros-base-focal飞控：PX4雷达：Livox Mid-360S算法：FAST-LIO + Diff-Planner
+
+
+宿主机只负责 Docker、雷达网口、PX4 串口。
+ROS1 全部放进容器。
+真机默认不自动切 Offboard，不自动解锁，始终保留遥控器接管能力。
+第一次建议先不装桨；装桨后先在 0.3 ~ 0.5 m 高度测试。
+最新 Dockerfile 部署仓库：https://github.com/dreamer198/diff-planner-px4-deployment
+
+
+
+代码链路总览这套真机方案分成三部分：Jetson 宿主机负责启动和硬件访问，ROS1 节点跑在容器内，本机负责 RViz 可视化和发目标点。
+目前推荐直接使用整理好的 Dockerfile 部署仓库：
+https://github.com/dreamer198/diff-planner-px4-deployment
+
+
+Jetson 推荐路径：/home/jetson2/diff-planner-px4-deployment
+Jetson 宿主机启动入口：scripts/start_real_px4_mid360_fastlio.sh
+本机 RViz 启动入口：scripts/start_jetson_ros1_rviz.sh
+ROS1 容器名：ros_noetic_realflight
+容器内工作区：~/livox_ws（Livox 驱动）、~/catkin_ws（FAST-LIO、Diff-Planner、控制相关代码）
+
+启动脚本运行在 Jetson 宿主机，不在容器内执行。它通过 tmux + docker exec 依次拉起下面这条链路：
+Jetson 宿主机  -&gt; scripts/start_real_px4_mid360_fastlio.sh  -&gt; docker exec 进入 ros_noetic_realflight 容器容器内感知链路：  livox_ros_driver2    -&gt; /livox/lidar + /livox/imu  FAST-LIO    -&gt; /Odometry + /cloud_registered  odom_to_base.py    -&gt; /Odometry_base  odom_to_pose.py    -&gt; /mavros/vision_pose/pose  MAVROS    -&gt; PX4 EKF2容器内规划控制链路：  /Odometry_base + 点云/地图    -&gt; Diff-Planner    -&gt; /drone_0_planning/pos_cmd    -&gt; trajectory_msg_converter.py    -&gt; /command/trajectory    -&gt; se3_controller    -&gt; /mavros/setpoint_raw/attitude    -&gt; PX4 Offboard本机可视化链路：  scripts/start_jetson_ros1_rviz.sh    -&gt; 本机容器内 RViz + /root/jetson_real_stack.rviz + rviz_goal_to_diff_planner.py    -&gt; /move_base_simple/goal 或 /clicked_point    -&gt; /goal    -&gt; Diff-Planner
+
+各层对应代码如下：
+
+Dockerfile 部署层：docker/Dockerfile、docker/docker_run_real.sh，负责构建镜像、创建 ros_noetic_realflight 容器并挂载真机配置。
+启动调度层：scripts/start_real_px4_mid360_fastlio.sh，负责 start / stop / restart / status / attach，并在宿主机顺序拉起整条链路。
+雷达驱动层：~/livox_ws/src/livox_ros_driver2，入口 msg_MID360s.launch，配置 config/MID360s_config.json，发布 /livox/lidar、/livox/imu。
+里程计层：~/catkin_ws/src/FAST_LIO，入口 launch/mapping_mid360.launch，发布 /Odometry、&#96;&#x2F;cloud_registered&#96;&#96;；Mid-360S 倾斜安装时常改 IMU 初始化逻辑。
+机体外参补偿层：/root/catkin_ws/src/px4_realflight_tools/scripts/odom_to_base.py，把 /Odometry 转成 /Odometry_base。
+PX4 视觉桥接层：/root/catkin_ws/src/px4_realflight_tools/scripts/odom_to_pose.py，把 /Odometry_base 转成 /mavros/vision_pose/pose。
+规划层：~/catkin_ws/src/Diff-Planner-PX4/src/diff_planner，真机入口通常是 run_real_mid360_lio.launch，输出 /drone_0_planning/pos_cmd。
+轨迹格式转换层：~/catkin_ws/src/Diff-Planner-PX4/src/diff_planner/plan_manage/scripts/trajectory_msg_converter.py，把 /drone_0_planning/pos_cmd 转成 /command/trajectory。
+控制层：~/catkin_ws/src/Diff-Planner-PX4/src/se3_controller，核心节点 src/se3_controller_node.cpp，把 /command/trajectory 转成 /mavros/setpoint_raw/attitude。
+本机 RViz 层：scripts/start_jetson_ros1_rviz.sh、config/rviz/jetson_real_stack.rviz、scripts/rviz_goal_to_diff_planner.py，负责显示点云、里程计、占据地图、规划轨迹，并把 2D Nav Goal 或 Publish Point 转成 /goal。
+
+如果后面要排错，可以按这个顺序看：/livox/lidar -&gt; /Odometry -&gt; /Odometry_base -&gt; /mavros/vision_pose/pose -&gt; /drone_0_planning/pos_cmd -&gt; /command/trajectory -&gt; /mavros/setpoint_raw/attitude。
+推荐：使用 Dockerfile 部署仓库新 Jetson 迁移时，优先使用这个仓库，而不是手动一步步复制代码：
+cd /home/jetson2git clone https://github.com/dreamer198/diff-planner-px4-deployment.gitcd diff-planner-px4-deployment./docker/docker_run_real.sh buildFCU_DEVICE=/dev/ttyACM0 ./docker/docker_run_real.sh restart
+
+然后启动真机链路：
+FCU_URL=&#x27;serial:///dev/ttyACM0:57600&#x27; \GCS_URL=&#x27;udp://:14550@10.0.30.196:14550&#x27; \SE3_HOVER_PERCENT=0.90 \SE3_MAX_HOVER_PERCENT=0.95 \SE3_MAX_OUTPUT_THRUST=1.00 \SE3_ENABLE_THRUST_ESTIMATION=false \SE3_MAX_FEEDFORWARD_ACC=1.2 \DIFF_PLANNER_INFLATION_SIZE=0.2 \./scripts/start_real_px4_mid360_fastlio.sh start
+
+后面的手动安装步骤主要用于理解链路和排错；实际迁移建议直接用这个 Dockerfile 仓库。
+一、宿主机准备下面命令都在 Jetson 宿主机执行。
+1. Dockersudo systemctl status dockerdocker info
+
+如当前用户没有 Docker 权限：
+sudo usermod -aG docker $USER
+
+2. Mid-360S 网口查看网卡：
+ip addr
+
+假设雷达网卡为 eth0：
+sudo ip addr add 192.168.1.101/24 dev eth0sudo ip link set eth0 upping 192.168.1.199
+
+把上面 IP 改成你的实际值。
+3. PX4 串口ls -l /dev/ttyACM*sudo chmod 666 /dev/ttyACM0
+
+本文默认使用 /dev/ttyACM0。
+二、创建 ROS1 容器如果你已经有 ros_noetic 容器，可以跳过。
+mkdir -p ~/docker/ros_rootxhost +SI:localuser:root
+
+创建容器：
+docker run -it \  --name ros_noetic \  --network host \  --ipc host \  --privileged \  --device=/dev/ttyACM0 \  -e DISPLAY=$DISPLAY \  -e XAUTHORITY=/root/.Xauthority \  -e QT_X11_NO_MITSHM=1 \  -v /tmp/.X11-unix:/tmp/.X11-unix \  -v $HOME/.Xauthority:/root/.Xauthority:ro \  -v /dev/bus/usb:/dev/bus/usb \  -v ~/docker/ros_root:/root \  ros:noetic-ros-base-focal \  bash
+
+重新进入：
+docker start -ai ros_noeticdocker exec -it ros_noetic bash
+
+三、容器内基础环境下面命令都在容器内执行。
+安装依赖：
+apt updateapt install -y \  git wget curl vim nano \  net-tools iproute2 iputils-ping \  build-essential cmake python3-pip \  python3-catkin-tools python3-rosdep python3-osrf-pycommon \  libeigen3-dev libpcl-dev pcl-tools libopencv-dev \  libgoogle-glog-dev libgflags-dev libarmadillo-dev \  ros-noetic-cv-bridge ros-noetic-eigen-conversions \  ros-noetic-mavros ros-noetic-mavros-extras \  ros-noetic-pcl-ros ros-noetic-roslint \  ros-noetic-tf ros-noetic-tf2-ros \  ros-noetic-tf2-sensor-msgs ros-noetic-tf2-geometry-msgs \  ros-noetic-ddynamic-reconfigure ros-noetic-rviz
+
+初始化 rosdep：
+rosdep init || truerosdep update
+
+安装 GeographicLib 数据：
+cd ~wget https://gitee.com/tyx6/mytools/raw/main/mavros/install_geographiclib_datasets.shchmod +x install_geographiclib_datasets.sh./install_geographiclib_datasets.sh
+
+在 ~/.bashrc 末尾添加：
+[ -f /opt/ros/noetic/setup.bash ] &amp;&amp; source /opt/ros/noetic/setup.bash[ -f ~/livox_ws/devel/setup.bash ] &amp;&amp; source ~/livox_ws/devel/setup.bash[ -f ~/catkin_ws/devel/setup.bash ] &amp;&amp; source ~/catkin_ws/devel/setup.bashexport FCU_URL=&quot;serial:///dev/ttyACM0:57600&quot;export GCS_URL=&quot;udp://:14550@10.0.30.196:14550&quot;export DRONE_ID=0
+
+生效：
+source ~/.bashrc
+
+四、安装 Livox 驱动安装 Livox-SDK2：
+cd ~mkdir -p ~/codecd ~/codegit clone https://github.com/Livox-SDK/Livox-SDK2.gitcd Livox-SDK2mkdir -p build &amp;&amp; cd buildcmake ..make -j4make installldconfig
+
+编译 livox_ros_driver2：
+mkdir -p ~/livox_ws/srccd ~/livox_ws/srcgit clone https://github.com/Livox-SDK/livox_ros_driver2.gitcd ~/livox_ws/src/livox_ros_driver2source /opt/ros/noetic/setup.bash./build.sh ROS1source ~/livox_ws/devel/setup.bash
+
+配置 Mid-360S：
+cd ~/livox_ws/src/livox_ros_driver2/confignano MID360s_config.json
+
+重点确认：
+
+host_ip：Jetson 雷达网卡 IP
+lidar_configs[].ip：Mid-360S IP
+
+五、编译 FAST-LIO、Diff-Planner 和工具节点拉源码：
+mkdir -p ~/catkin_ws/srccd ~/catkin_ws/srcgit clone --recursive https://github.com/hku-mars/FAST_LIO.gitgit clone -b px4_sitl https://github.com/dreamer198/Diff-Planner-PX4.git
+
+更新 FAST-LIO 子模块：
+cd ~/catkin_ws/src/FAST_LIOgit submodule update --init --recursive
+
+适配 livox_ros_driver2：
+cd ~/catkin_ws/src/FAST_LIOsed -i -E &#x27;s/livox_ros_driver([^2]|$)/livox_ros_driver2\1/g&#x27; \  CMakeLists.txt \  package.xml \  src/laserMapping.cpp \  src/preprocess.cpp \  src/preprocess.h
+
+补消息依赖：
+grep -q &#x27;add_dependencies(fastlio_mapping&#x27; CMakeLists.txt || \  sed -i &#x27;/add_executable(fastlio_mapping/a add_dependencies(fastlio_mapping $&#123;$&#123;PROJECT_NAME&#125;_EXPORTED_TARGETS&#125; $&#123;catkin_EXPORTED_TARGETS&#125;)&#x27; CMakeLists.txt
+
+如果 Mid-360S 相对机体不是水平安装，建议把 FAST_LIO/src/IMU_Processing.hpp 初始化逻辑改成重力对齐版本：
+state_ikfom init_state = kf_state.get_x();init_state.grav = S2(V3D(0, 0, -G_m_s2));Eigen::Quaterniond q_init = Eigen::Quaterniond::FromTwoVectors(mean_acc, V3D(0, 0, 1));init_state.rot = SO3(q_init.w(), q_init.x(), q_init.y(), q_init.z());init_state.bg  = mean_gyr;init_state.offset_T_L_I = Lidar_T_wrt_IMU;init_state.offset_R_L_I = Lidar_R_wrt_IMU;
+
+当前环境使用两个已调通脚本：
+/root/catkin_ws/src/px4_realflight_tools/scripts/odom_to_base.py/root/catkin_ws/src/px4_realflight_tools/scripts/odom_to_pose.py
+
+默认安装外参：
+MOUNT_X=0.0MOUNT_Y=0.0MOUNT_Z=0.10MOUNT_ROLL_DEG=0.0MOUNT_PITCH_DEG=30.0MOUNT_YAW_DEG=0.0
+
+含义：Mid-360S 相对机体前倾约 30 度，高于飞控约 10 cm。
+编译：
+cd ~/catkin_wssource /opt/ros/noetic/setup.bashsource ~/livox_ws/devel/setup.bashcatkin initcatkin config --extend ~/livox_ws/develcatkin config --cmake-args -DCMAKE_BUILD_TYPE=Releasecatkin buildsource ~/catkin_ws/devel/setup.bash
+
+六、PX4 参数在 QGroundControl 中重点确认：
+MAV_1_CONFIG = TELEM 2MAV_1_MODE = OnboardSER_TEL2_BAUD = 921600EKF2_EV_CTRL = 15EKF2_HGT_REF = VisionEKF2_EV_DELAY = 0.0EKF2_EV_POS_X/Y/Z = 0.0
+
+七、一键启动脚本Jetson 宿主机脚本路径：
+/home/jetson2/diff-planner-px4-deployment/scripts/start_real_px4_mid360_fastlio.sh
+
+它会自动启动：
+
+livox_ros_driver2
+fast_lio
+odom_to_base.py
+mavros
+odom_to_pose.py
+diff_planner
+trajectory_msg_converter.py
+se3_controller
+
+常用命令：
+cd /home/jetson2/diff-planner-px4-deployment./scripts/start_real_px4_mid360_fastlio.sh start./scripts/start_real_px4_mid360_fastlio.sh status./scripts/start_real_px4_mid360_fastlio.sh attach./scripts/start_real_px4_mid360_fastlio.sh stop./scripts/start_real_px4_mid360_fastlio.sh restart
+
+现在的 restart 会先执行完整 stop，尽量清理 tmux 会话和容器残留进程，再重新启动整条链路。
+当前真机实测可用参数当前这台机体较稳定的一组参数：
+FCU_URL=&#x27;serial:///dev/ttyACM0:57600&#x27; \GCS_URL=&#x27;udp://:14550@10.0.30.196:14550&#x27; \SE3_HOVER_PERCENT=0.90 \SE3_MAX_HOVER_PERCENT=0.95 \SE3_MAX_OUTPUT_THRUST=1.00 \SE3_ENABLE_THRUST_ESTIMATION=false \SE3_MAX_FEEDFORWARD_ACC=1.2 \DIFF_PLANNER_INFLATION_SIZE=0.2 \./scripts/start_real_px4_mid360_fastlio.sh restart
+
+如果切 Offboard 仍掉高，优先微调：
+
+SE3_HOVER_PERCENT：每次调 0.02 ~ 0.03
+DIFF_PLANNER_INFLATION_SIZE
+
+如果只想测试定位和 PX4 外部视觉融合：
+START_DIFF_PLANNER=false \./scripts/start_real_px4_mid360_fastlio.sh restart
+
+八、快速检查进入容器后，最少检查下面几项：
+source ~/.bashrcrostopic type /livox/lidarrostopic hz /Odometryrostopic hz /Odometry_baserostopic echo -n 1 /mavros/staterostopic hz /mavros/vision_pose/poserostopic hz /drone_0_planning/pos_cmdrostopic hz /mavros/setpoint_raw/attitude
+
+只要满足下面几点，链路通常就已经通了：
+
+/livox/lidar 类型为 livox_ros_driver2/CustomMsg
+/Odometry、/Odometry_base、/mavros/vision_pose/pose 持续输出
+/mavros/state 中 connected: True
+/drone_0_planning/pos_cmd 和 /mavros/setpoint_raw/attitude 在发目标后有输出
+
+飞行原则也保持最简单：
+
+脚本不会自动解锁
+脚本不会自动切 Offboard
+先用遥控器起飞并悬停，再发目标点，再手动切 Offboard
+飞行中可随时切回 Position 接管
+
+九、常见问题
+容器里没有 /dev/ttyACM0：重建容器时确认加入 --device=/dev/ttyACM0
+MAVROS 未连接：检查 /dev/ttyACM0、FCU_URL、/mavros/state
+视觉位姿有数据但 PX4 不融合：检查 EKF2_EV_CTRL、EKF2_HGT_REF 和 QGC EKF 告警
+切 Offboard 立刻退出：检查 /mavros/setpoint_raw/attitude 是否持续发布，并确认 COM_OF_LOSS_T、COM_OBL_RC_ACT
+Offboard 掉高：优先微调 SE3_HOVER_PERCENT、SE3_MAX_HOVER_PERCENT、SE3_MAX_OUTPUT_THRUST
+
+参考资料
+PX4 外部视觉定位文档：https://docs.px4.io/main/en/ros/external_position_estimation.html
+PX4 Offboard 模式文档：https://docs.px4.io/main/en/flight_modes/offboard.html
+MAVROS 文档：https://mavros.readthedocs.io/en/latest/
+本文 Dockerfile 部署仓库：https://github.com/dreamer198/diff-planner-px4-deployment
+Livox ROS Driver 2：https://github.com/Livox-SDK/livox_ros_driver2
+FAST-LIO：https://github.com/hku-mars/FAST_LIO
+Diff-Planner-PX4：https://github.com/dreamer198/Diff-Planner-PX4
+
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>Jetson</tag>
+        <tag>Mid-360S</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
+        <tag>Docker</tag>
+        <tag>ROS1</tag>
+        <tag>Diff-Planner</tag>
+        <tag>FAST-LIO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker 容器内 Fast-Planner 下载、编译与测试</title>
+    <url>/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言本文是《Docker使用教程》的后续，默认已经按照其中的步骤创建了以下环境：
+
+容器名：ros_noetic
+基础镜像：osrf/ros:noetic-desktop-full
+宿主机 ~/docker/ros_root 已挂载到容器 /root
+X11 目录和认证文件已经挂载，容器可以运行 RViz
+
+这里的“全新容器”是指容器已经创建，但还没有下载 Fast-Planner，也没有安装项目依赖。本文不再重复安装 Docker、拉取 ROS 镜像或创建容器，只介绍如何在这个容器中下载、编译和测试 dreamer198&#x2F;Fast-Planner。
+
+
+本文默认容器内使用 root 用户，因此 ~ 就是 /root，安装命令不需要 sudo。没有特别说明时，命令都在容器内执行；需要在宿主机执行的命令会单独标出。
+Fast-Planner 官方验证过 Ubuntu 20.04 + ROS Noetic。本文只运行项目自带的轻量仿真，不包含 PX4、Gazebo 或真机控制。
+一、进入已经创建的容器如果创建容器后已经停在 root@... 提示符，可以直接进入下一节。
+如果容器已经退出，在宿主机执行：
+docker start -ai ros_noetic
+
+如果容器已经在后台运行，则执行：
+docker exec -it ros_noetic bash
+
+进入后确认 ROS 版本：
+source /opt/ros/noetic/setup.bashrosversion -d
+
+输出应为：
+noetic
+
+二、安装编译依赖ROS Noetic Desktop Full 已经包含 ROS 和 RViz，不需要再次安装。只补充源码编译需要的工具和库：
+apt updateapt install -y \  git \  build-essential \  cmake \  libarmadillo-dev \  libeigen3-dev \  libpcl-dev \  qtbase5-dev \  ros-noetic-cmake-modules \  ros-noetic-cv-bridge \  ros-noetic-dynamic-reconfigure \  ros-noetic-image-transport \  ros-noetic-pcl-ros
+
+安装 NLopt 2.7.1Fast-Planner 的 bspline_opt 会从 /usr/local/include 和 /usr/local/lib/libnlopt.so 查找 NLopt。按照项目 README 指定的 v2.7.1 编译安装：
+mkdir -p /root/depscd /root/depsgit clone --branch v2.7.1 --depth 1 https://github.com/stevengj/nlopt.gitcmake -S nlopt -B nlopt/build \  -DCMAKE_BUILD_TYPE=Release \  -DCMAKE_INSTALL_PREFIX=/usr/local \  -DCMAKE_INSTALL_LIBDIR=libcmake --build nlopt/build -j&quot;$(nproc)&quot;cmake --install nlopt/buildldconfig
+
+检查头文件和动态库：
+test -f /usr/local/include/nlopt.hpp &amp;&amp; echo &quot;nlopt.hpp: OK&quot;test -f /usr/local/lib/libnlopt.so &amp;&amp; echo &quot;libnlopt.so: OK&quot;
+
+两行都显示 OK 后再继续。
+三、下载 Fast-Planner新建独立的 catkin 工作空间，并将代码克隆到 src 中：
+mkdir -p /root/fast_planner_ws/srccd /root/fast_planner_ws/srcgit clone https://github.com/dreamer198/Fast-Planner.git
+
+确认下载地址并记录当前版本：
+cd /root/fast_planner_ws/src/Fast-Plannergit remote get-url origingit rev-parse --short HEAD
+
+第一条命令应输出：
+https://github.com/dreamer198/Fast-Planner.git
+
+记录第二条命令输出的 commit，后续遇到问题时可以确认使用的是不是同一版代码。
+四、编译工作空间source /opt/ros/noetic/setup.bashcd /root/fast_planner_wscatkin_make -DCMAKE_BUILD_TYPE=Release -j&quot;$(nproc)&quot;
+
+如果容器可用内存较少，编译进程可能被系统终止。此时降低并行数重新编译：
+catkin_make -DCMAKE_BUILD_TYPE=Release -j2
+
+编译完成后加载工作空间，并确认 ROS 能找到核心包：
+source /root/fast_planner_ws/devel/setup.bashrospack find plan_manage
+
+正常情况下会输出：
+/root/fast_planner_ws/src/Fast-Planner/fast_planner/plan_manage
+
+项目没有提供覆盖这些规划流程的自动化单元测试，因此下面通过仓库自带的仿真 Demo 完成功能测试。
+五、运行 Kinodynamic 规划测试该测试需要两个终端，它们都进入同一个 ros_noetic 容器。第一个终端运行 RViz，第二个终端运行规划器和轻量仿真器。
+1. 终端 1：启动 RViz如果 RViz 还没有图形显示权限，先在宿主机执行：
+xhost +SI:localuser:root
+
+然后在宿主机进入正在运行的容器：
+docker exec -it \  -e DISPLAY=&quot;$DISPLAY&quot; \  -e QT_X11_NO_MITSHM=1 \  ros_noetic bash
+
+在容器内启动 RViz：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage rviz.launch
+
+2. 终端 2：启动规划器在宿主机新开一个终端：
+docker exec -it ros_noetic bash
+
+进入容器后执行：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage kino_replan.launch
+
+3. 在 RViz 中发送目标等待 RViz 中出现随机障碍物和无人机模型，然后：
+
+确认 RViz 的 Fixed Frame 为 world。
+点击工具栏中的 2D Nav Goal。
+在地图内没有障碍物的位置点击并拖动，发送一个目标点。
+
+当前仓库的 Kinodynamic Demo 默认使用手动目标模式。目标的 X、Y 坐标来自点击位置，飞行高度默认为 1 m。正常情况下会立即生成 B-spline 轨迹，无人机随后沿轨迹飞向目标。
+六、检查测试结果在宿主机再开一个终端并进入同一容器：
+docker exec -it ros_noetic bash
+
+加载环境：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bash
+
+先确认节点已经启动：
+rosnode list
+
+列表中应能看到规划器、轨迹服务器、仿真器和点云渲染等节点。再检查里程计是否持续发布：
+rostopic hz /state_ukf/odom
+
+看到稳定频率后按 Ctrl+C 退出，再检查仿真点云：
+rostopic hz /pcl_render_node/cloud
+
+点云同样应持续更新，看到频率后按 Ctrl+C 退出。接着检查规划输出：
+rostopic echo -n 1 /planning/bspline
+
+这条命令会等待下一条轨迹消息。保持命令运行，回到 RViz 再发送一次目标；终端打印出 B-spline 消息并自动退出，说明规划器已经生成轨迹。
+在无人机执行轨迹期间，还可以检查控制指令：
+rostopic hz /planning/pos_cmd
+
+如果能看到持续更新的频率，说明“目标输入 -&gt; 路径规划 -&gt; 轨迹下发”链路已经跑通。
+七、运行 Topological 规划测试先在运行 kino_replan.launch 的终端按 Ctrl+C 停止 Kinodynamic Demo，RViz 可以继续运行。不要同时启动两个 Demo，因为它们会创建同名节点并使用相同话题。
+然后在规划器终端执行：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage topo_replan.launch
+
+这个仓库的 topo_replan.launch 已经默认使用 flight_type=1，可以直接在 RViz 中通过 2D Nav Goal 发送目标，不需要修改 launch 文件。看到多条拓扑候选路径和最终轨迹，并且无人机开始执行轨迹，即表示 Topological Demo 测试通过。
+八、后续重新运行代码和编译结果都位于 /root。按照《Docker使用教程》的挂载方式，它们会同步保存在宿主机 ~/docker/ros_root 中。apt 安装的软件和 /usr/local 下的 NLopt 属于容器文件系统；停止再启动同一个容器时仍然存在，但删除容器后不会由 /root 挂载保留。
+下次启动同一个容器后不需要重新下载和编译，只需在每个新终端加载环境：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bash
+
+然后分别启动：
+roslaunch plan_manage rviz.launch
+
+以及二选一：
+roslaunch plan_manage kino_replan.launch
+
+roslaunch plan_manage topo_replan.launch
+
+如果本次测试结束后不再运行容器中的图形程序，可以在宿主机撤销临时的 X11 授权：
+xhost -SI:localuser:root
+
+九、常见问题1. roslaunch 找不到 plan_manage说明当前终端没有加载工作空间，或者编译没有成功：
+source /opt/ros/noetic/setup.bashcd /root/fast_planner_wscatkin_make -DCMAKE_BUILD_TYPE=Release -j2source devel/setup.bashrospack find plan_manage
+
+2. 链接时找不到 libnlopt.so检查 NLopt 的安装位置并刷新缓存：
+ls -l /usr/local/include/nlopt.hppls -l /usr/local/lib/libnlopt.soldconfigldconfig -p | grep nlopt
+
+项目明确查找 /usr/local/lib/libnlopt.so。如果动态库被安装到了 /usr/local/lib64，重新执行第二节的 CMake 命令，并保留 -DCMAKE_INSTALL_LIBDIR=lib。
+3. RViz 无法打开或提示 X11 权限错误先退出到宿主机，确认容器仍然按照《Docker使用教程》挂载了 /tmp/.X11-unix 和 .Xauthority，然后执行：
+xhost +SI:localuser:root
+
+再使用第五节中带 DISPLAY 的 docker exec 命令进入容器并启动 RViz。
+4. RViz 中有地图，但点击目标后没有轨迹依次检查输入和输出：
+rostopic echo -n 1 /move_base_simple/goalrostopic echo -n 1 /waypoint_generator/waypointsrostopic echo -n 1 /planning/bspline
+
+每条命令都应先运行，再回到 RViz 发送一次新目标。同时确认目标位于地图范围内、没有落在障碍物中，并且当前只运行了一个规划 Demo。
+参考资料
+dreamer198&#x2F;Fast-Planner
+Fast-Planner 上游仓库
+NLopt v2.7.1
+
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>路径规划</tag>
+        <tag>Docker</tag>
+        <tag>ROS1</tag>
+        <tag>Fast-Planner</tag>
+        <tag>RViz</tag>
       </tags>
   </entry>
   <entry>
@@ -659,76 +4144,14 @@ PX4 Offboard 模式文档：https://docs.px4.io/main/en/flight_modes/offboard.ht
 
 ]]></content>
       <categories>
-        <category>技术分享</category>
-        <category>无人机</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>FAST-LIO2</tag>
-        <tag>Mid-360S</tag>
         <tag>ROS2</tag>
-        <tag>EGO-Planner</tag>
-        <tag>MAVROS</tag>
+        <tag>FAST-LIO2</tag>
         <tag>PX4</tag>
-        <tag>Offboard</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>博客搭建过程记录</title>
-    <url>/2025/11/01/Blog-%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E8%BF%87%E7%A8%8B/</url>
-    <content><![CDATA[博客搭建过程记录（Hexo + Butterfly）从动机、搭建、美化到部署与后续维护
-本文是对个人博客搭建与日常维护流程的系统整理，方便后续复盘与迁移到其它设备。内容包括动机、框架选择、主题美化、部署策略、写作流程、常用命令以及潜在问题展望。
-
-1. 搭建的目的本科阶段就有“做一个属于自己的网站 &#x2F; 知识库”的想法，但迟迟没有行动。求职阶段回顾过去：学了很多，也似乎留不下系统沉淀。于是决定用博客持续记录——聚焦于学习轨迹、踩坑经验、与阶段性总结。
-2. 总体搭建用时与感受网上教程非常多，原本担心复杂度较高，实际两天左右就完成了一个可用的初版。当前定位：个人学习记录，不追求花哨功能，后期只做轻量迭代（样式与体验微调）。
-3. 技术栈与主题美化
-框架：Hexo
-主题：Butterfly
-美化动作：
-调整主题主色与背景图片
-自定义个人简介页面（借助 GPT 快速生成前端结构）
-优化导航栏结构（首页 &#x2F; 分类 &#x2F; 标签 &#x2F; 关于）
-Tag 页面与 Category 页面样式微调
-
-
-
-4. 域名与部署策略选择起初考虑买服务器（例如阿里云）自行部署，但：
-
-额外运维成本与时间投入不划算
-博客主要是“自用记录”，对性能与动态能力需求低
-服务器费用不必要
-
-最终选择 GitHub Pages 部署，另购国内域名以减少访问翻墙需求。当前体验：
-
-缺点：图片首次加载稍慢
-优点：免服务器、配置简单、可持续维护
-
-5. 源码备份策略担心只放 GitHub Pages 最终生成内容，一旦本地源文件丢失难以恢复。策略：
-
-建立一个私人仓库存放 Hexo 源文件（source/、配置、主题定制等）
-每次写新文章：生成、部署后，再推送源码仓库保持同步
-
-虽然步骤多一点，但可用性与安全性更高。
-6. 当前写作与发布流程写新博客的操作顺序：
-
-在 source/_posts/ 下新建 Markdown 文件（建议文件名：YYYY-MM-DD-主题.md）
-准备封面或插图放到 source/img/（或主题要求的 img/ 目录）
-在 themes/butterfly/_config.butterfly.yml 中（必要时）配置背景或封面引用
-本地预览或直接生成 + 部署
-
-7. 常用命令合集分步骤执行：
-hexo clean      # 清理缓存与旧的 public 文件hexo g          # 生成静态文件 (hexo generate)hexo d          # 部署到 GitHub (hexo deploy)git add .git commit -m &quot;update&quot;git push        # 推送源码到私人仓库
-
-一行整合版本：
-cd /home/ziqian/blog/myblogshexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;&amp; git add . &amp;&amp; git commit -m &quot;update&quot; &amp;&amp; git push]]></content>
-      <categories>
-        <category>随思随想</category>
-      </categories>
-      <tags>
-        <tag>Blog</tag>
-        <tag>Hexo</tag>
-        <tag>Butterfly</tag>
-        <tag>GitHub Pages</tag>
-        <tag>域名</tag>
+        <tag>MAVROS</tag>
+        <tag>EGO-Planner</tag>
       </tags>
   </entry>
   <entry>
@@ -1109,18 +4532,16 @@ BACKEND=tmux \~/code/start_sim_px4_mid360_fastlio_ego.sh restart
 这就是当前稳定跑通的主流程。
 ]]></content>
       <categories>
-        <category>技术分享</category>
-        <category>无人机</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>FAST-LIO2</tag>
         <tag>Mid-360S</tag>
         <tag>ROS2</tag>
-        <tag>EGO-Planner</tag>
-        <tag>MAVROS</tag>
+        <tag>FAST-LIO2</tag>
         <tag>PX4</tag>
+        <tag>MAVROS</tag>
         <tag>Gazebo</tag>
-        <tag>无人机仿真</tag>
+        <tag>EGO-Planner</tag>
       </tags>
   </entry>
   <entry>
@@ -1284,15 +4705,13 @@ MAVROS文档
 
 ]]></content>
       <categories>
-        <category>仿真</category>
-        <category>无人机</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
         <tag>ROS2</tag>
         <tag>PX4</tag>
         <tag>Gazebo</tag>
         <tag>视觉定位</tag>
-        <tag>图像匹配</tag>
       </tags>
   </entry>
   <entry>
@@ -1326,256 +4745,13 @@ ros2 topic list | grep mid360ros2 topic echo /mid360/points --once
 1. 启动 Gazebo 世界2. 启动 PX4 SITL 无人机3. 桥接 MID360 点云4. 启动后续算法节点，例如 FAST-LIO2、EGO-Planner
 ]]></content>
       <categories>
-        <category>技术分享</category>
-        <category>无人机</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
         <tag>Mid-360S</tag>
         <tag>ROS2</tag>
         <tag>PX4</tag>
         <tag>Gazebo</tag>
-        <tag>无人机仿真</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
-    <url>/2025/11/06/Github-%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93-%3E%E8%BF%9C%E7%A8%8B/</url>
-    <content><![CDATA[这篇文章记录如何把“本地已有代码文件夹”推送到一个全新的 GitHub 仓库。默认假设：你本地已经有一个项目文件夹，但 GitHub 上还没有对应的远程仓库。
-前置条件
-已安装 Git（Linux）
-拥有 GitHub 账号
-可选：安装 GitHub CLI（gh）以命令行创建仓库
-
-# 查看 Git 版本（确认已安装）git --version
-
-一、初始化本地仓库并做首个提交
-进入项目文件夹
-
-cd /path/to/your-project
-
-
-初始化 Git 仓库
-
-git init
-
-
-设置用户名和邮箱（一次性全局设置）
-
-git config --global user.name &quot;你的名字&quot;git config --global user.email &quot;你的邮箱&quot;
-
-
-创建&#x2F;完善 .gitignore（避免把无关文件提交上去）
-
-示例（按需取用）：
-# 编译/缓存node_modules/*.log.DS_Store__pycache__/*.py[cod].env.idea/.vscode/dist/build/public/
-
-
-暂存并提交
-
-git add .git commit -m &quot;chore: initial commit&quot;
-
-
-注意：首次提交前建议检查 git status，确认不会把隐私文件、超大文件误传。
-
-二、在 GitHub 创建一个“空”仓库创建仓库时，务必保持“不要勾选”自动生成 README &#x2F; .gitignore &#x2F; License，这样远程是完全空的，推送更顺畅。
-方式 A：网页创建（GUI）
-打开 https://github.com/new  
-填写仓库名（例如：your-repo）
-可选：选择 Public &#x2F; Private
-不勾选 README &#x2F; .gitignore &#x2F; License
-Create repository
-
-创建成功后页面会显示两种远程地址：HTTPS 和 SSH，任选其一。
-方式 B：命令行创建（GitHub CLI，可选）# 进入你的项目目录后执行（交互式创建）gh repo create your-repo --public --source=. --remote=origin --push
-
-
-如果不想立即 push，可以去掉 --push，稍后自己执行 git push。
-若无 gh，可跳过本节，用网页方式创建。
-
-三、配置远程地址（HTTPS 或 SSH）你可以二选一：
-选项 1：使用 HTTPS（简单、开箱即用）git remote add origin https://github.com/&lt;your-username&gt;/&lt;your-repo&gt;.git
-推送时可能需要输入 GitHub 账号与 Token（个人访问令牌）。Token 可在 GitHub → Settings → Developer settings → Personal access tokens 中创建。
-选项 2：使用 SSH（推荐长期使用）首次使用需配置 SSH Key：
-
-生成密钥（若不存在）
-
-ssh-keygen -t ed25519 -C &quot;你的邮箱&quot;# 一路回车，默认保存在 ~/.ssh/id_ed25519 和 id_ed25519.pub
-
-启动 ssh-agent 并添加私钥
-
-eval &quot;$(ssh-agent -s)&quot;ssh-add ~/.ssh/id_ed25519
-
-复制公钥内容，添加到 GitHub → Settings → SSH and GPG keys
-
-cat ~/.ssh/id_ed25519.pub# 复制输出到 GitHub
-
-测试连接
-
-ssh -T git@github.com
-
-配置远程地址（SSH）
-
-git remote add origin git@github.com:&lt;your-username&gt;/&lt;your-repo&gt;.git
-
-四、推送到远程（默认分支 main）
-确认当前分支名（建议使用 main）
-
-git branch
-若仍是 master，可重命名：
-git branch -m master main
-
-
-首次推送并建立追踪关系
-
-git push -u origin main
-
-成功后，刷新 GitHub 仓库页面即可看到代码。
-五、后续协作的常用命令
-提交新改动：
-
-git add .git commit -m &quot;feat: 描述本次改动&quot;git push
-
-
-拉取远程更新：
-
-git pull --rebase
-
-
-查看远程：
-
-git remote -v
-
-常见问题排查（FAQ）
-推送被拒绝：rejected non-fast-forward
-
-
-原因：远程不是空仓库，可能自动生成了 README 等
-解决：
-方法 A：删除远程的自动文件，保持远程为空；
-方法 B：git pull --rebase origin main 后再 git push
-
-
-
-
-Permission denied (publickey)
-
-
-原因：SSH Key 未正确配置或未添加到 GitHub
-自查：
-
-ssh -T git@github.com
-
-检查 ~/.ssh/id_ed25519.pub 是否已添加到 GitHub → SSH keys
-
-
-需要输入账号密码&#x2F;Token
-
-
-使用 HTTPS 推送时，GitHub 需要 Token 替代密码
-建议改用 SSH 方式，长期更省心
-
-
-大文件推不动或仓库体积过大
-
-
-避免把数据集、可执行文件、编译产物提交
-必要时使用 Git LFS（Large File Storage）
-
-
-忘记 .gitignore，提交了不该上的文件
-
-# 先修改 .gitignore# 然后清除索引并重新提交git rm -r --cached .git add .git commit -m &quot;chore: apply .gitignore&quot;
-
-六、提交信息规范（推荐）为了让提交历史更清晰、可搜索，推荐遵循 Conventional Commits 规范：
-基本格式：
-&lt;type&gt;(&lt;scope&gt;): &lt;简要说明&gt;&lt;可选正文，多行&gt;&lt;可选页脚，例如 Closes #123 或 BREAKING CHANGE&gt;
-
-常用类型一览：
-
-
-
-类型
-用途
-示例
-
-
-
-feat
-新功能（feature）
-feat(bt): add new takeoff behavior
-
-
-fix
-修复 bug
-fix(mavros): correct FCU URL parsing
-
-
-chore
-非功能改动（构建脚本、依赖、初次提交）
-chore: initial commit
-
-
-docs
-文档修改
-docs: update README with usage example
-
-
-style
-代码格式（不影响功能）
-style: reformat indentation in ListenCommand.cpp
-
-
-refactor
-重构（非修复非新增）
-refactor(bt): simplify tick logic
-
-
-test
-测试相关改动
-test: add unit test for JSON parser
-
-
-perf
-性能优化
-perf(nav): improve GPS update rate
-
-
-build
-构建系统或依赖更改
-build: switch to CMake 3.22
-
-
-ci
-CI 配置更改
-ci: add GitHub Actions workflow
-
-
-小贴士：
-
-scope 可选，用于指明影响范围（例如模块名：bt、mavros、nav、planner 等）。
-提示性提交可以在正文描述动机、做法与影响面，便于 Code Review 与后续排查。
-关联问题单：在页脚使用 Closes #123 &#x2F; Refs #123，平台会自动联动。
-破坏性变更：页脚使用 BREAKING CHANGE: 说明迁移指南。
-
-示例：
-git commit -m &quot;feat(bt): add new takeoff behavior&quot;git commit -m &quot;fix(mavros): correct FCU URL parsing&quot;git commit -m &quot;refactor(nav): simplify tick logic&quot;git commit -m &quot;docs: update README with usage example&quot;git commit -m &quot;chore: initial commit&quot;
-
-结合上文流程，建议首次提交使用：
-git commit -m &quot;chore: initial commit&quot;
-
-小结
-关键在于：先本地初始化并提交 → 创建“空”的远程仓库 → 添加远程 → 首次推送。
-建议优先使用 SSH，减少认证麻烦；.gitignore 要尽早设置，避免把无关文件带上去。
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-        <tag>GitHub</tag>
-        <tag>版本控制</tag>
-        <tag>教程</tag>
       </tags>
   </entry>
   <entry>
@@ -1700,442 +4876,12 @@ Linux 网络配置指南
 
 ]]></content>
       <categories>
-        <category>技术分享</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>教程</tag>
         <tag>Mesh</tag>
-        <tag>无人机</tag>
+        <tag>多机</tag>
         <tag>集群通信</tag>
-        <tag>环境配置</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
-    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
-    <content><![CDATA[
-适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
-
-
-
-一、准备工作
-一台运行 Ubuntu 20.04&#x2F;22.04 的电脑（建议 20.04&#x2F;22.04，x86_64）
-USB Type‑C 数据线（支持数据传输）
-Jetson SDK Manager（NVIDIA 官方工具）
-Jetson Orin NX 开发板、12V 供电与显示器（HDMI&#x2F;DP）
-
-软件下载：
-
-SDK Manager: https://developer.nvidia.com/sdk-manager
-需登录 NVIDIA 账号（没有先注册）
-
-二、安装 SDK Manager
-下载 .deb 包后双击安装，或执行：
-
-sudo apt install ./sdkmanager_*_amd64.deb
-
-启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
-
-三、进入恢复模式（Recovery）
-用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
-断电 → 按住“REC&#x2F;Recovery”键 → 上电 → 2 秒后松手
-此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
-
-常见位置提示：
-
-REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
-
-四、SDK Manager 配置与烧录
-Select Product Category: Jetson
-Hardware Configuration: 选择 Jetson Orin NX
-Target Operating System: Linux for Tegra
-Target Version: 选择推荐&#x2F;最新 JetPack（与板卡兼容）
-选择 Host&#x2F;Target 组件（默认即可）
-点击 Continue，按引导下载镜像与依赖 → 开始 Flash
-
-烧录阶段注意：
-
-全程保持 USB 连接稳定，避免移动触碰
-若网络慢，建议先开代理或稳定网络
-出现权限提示时，按指引使用 sudo 重试
-
-五、首次开机向导烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
-
-设置语言、时区、用户名&#x2F;密码
-进入桌面后建议先运行：
-
-sudo apt update &amp;&amp; sudo apt upgrade -y
-
-六、常见问题排查（FAQ）
-PC 不识别设备（lsusb 看不到 NVIDIA）：
-
-
-检查是否严格按“按住 REC → 上电”顺序
-更换 USB‑C 线（必须支持数据）与 USB 口
-更换 PC 或操作系统版本（建议 Ubuntu 20.04&#x2F;22.04）
-
-
-SDK Manager 卡在下载&#x2F;校验：
-
-
-切换网络或配置代理后重试
-退出后重新登录 SDK Manager，会复用已下载数据
-
-
-烧录成功但无法进桌面：
-
-
-尝试重启；检查电源&#x2F;显示器连接
-若持续异常，可重新进入 Recovery 再次烧录
-
-七、后续建议（可选）
-安装基础工具：
-
-sudo apt install -y git curl vim htop tmux
-
-使用 ToDesk&#x2F;向日葵等远程工具便于维护
-后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-      </categories>
-      <tags>
-        <tag>教程</tag>
-        <tag>环境配置</tag>
-        <tag>Jetson</tag>
-        <tag>系统烧录</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mid-360S + FAST-LIO2 + MAVROS + PX4 真机部署测试</title>
-    <url>/2026/05/06/Mid360-FAST-LIO-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95/</url>
-    <content><![CDATA[前言前面已经完成了三件事：
-
-机载电脑已经连上并启动 Mid-360S。
-FAST-LIO2 已经成功运行，并输出 /Odometry。
-机载电脑上已经运行 MAVROS，可以和 PX4 飞控通信。
-
-下一步要做的事情，就是把 FAST-LIO2 的定位结果送进 PX4 的 EKF2，让 PX4 在没有 GPS 的室内也能得到稳定的本地位置估计，然后使用 Position 模式或 Offboard 模式实现悬停。
-本文先跑通最实用的一条链路：
-Mid-360S  -&gt; livox_ros_driver2  -&gt; FAST-LIO2  -&gt; /Odometry  -&gt; external_odom_to_mavros  -&gt; /uav1/vision_pose/pose  -&gt; MAVROS  -&gt; PX4 EKF2  -&gt; Position / Hold / Offboard 悬停
-
-
-
-一、整体思路PX4 本身不直接订阅 ROS 2 的 /Odometry 话题。我们需要通过 MAVROS 把外部定位转换成 MAVLink 消息，再送给 PX4。
-常见有两种接入方式：
-
-
-
-接入方式
-ROS 2 话题
-MAVLink 消息
-适合情况
-
-
-
-位姿输入
-/uav1/vision_pose/pose
-VISION_POSITION_ESTIMATE
-最简单，先跑通悬停
-
-
-里程计输入
-/uav1/odometry/out
-ODOMETRY
-可带速度和协方差，后期优化
-
-
-本文先使用 /uav1/vision_pose/pose。它只需要 geometry_msgs/msg/PoseStamped，桥接逻辑简单，更适合第一次实机调通。
-后续如果要进一步提升控制品质，可以改用 /uav1/odometry/out，但要特别注意：nav_msgs/Odometry 中的 twist 必须表达在机体系，而不是世界系。
-二、安全检查实机调定位和悬停前，先把安全检查放在第一位。
-建议顺序：
-
-第一次只上电，不装桨。
-第二次装桨但固定机体或使用保护架。
-第三次低高度、空旷室内、手动随时可切回 Stabilized 或 Altitude。
-不要一开始就直接 Offboard 自动起飞。
-
-室内定位悬停不是只看 /Odometry 有输出，还要确认坐标方向、尺度、延迟、PX4 融合状态都正确。
-三、确认 FAST-LIO2 输出启动 Mid-360S：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-启动 FAST-LIO2：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
-
-检查 /Odometry：
-ros2 topic info /Odometryros2 topic hz /Odometryros2 topic echo /Odometry --once
-
-正常情况下类型应为：
-nav_msgs/msg/Odometry
-
-重点看消息头：
-header.frame_idchild_frame_idpose.pose.positionpose.pose.orientation
-
-FAST-LIO2 的初始坐标原点一般是启动时的位置，室内悬停不要求它和真实世界坐标对齐，只要求局部坐标连续、方向正确、漂移足够小。
-四、确认坐标方向PX4 使用的是 FRD &#x2F; NED 习惯：
-机体系 FRD:X 向前Y 向右Z 向下
-
-ROS 常用的是 FLU &#x2F; ENU 习惯：
-机体系 FLU:X 向前Y 向左Z 向上世界系 ENU:X 向东或局部前方Y 向北或局部左方Z 向上
-
-MAVROS 会处理 ROS ENU&#x2F;FLU 到 PX4 NED&#x2F;FRD 的转换，所以我们发布给 /uav1/vision_pose/pose 的数据应当按 ROS 习惯来理解。
-第一次调试时，可以把无人机拿在手里缓慢移动，观察 /Odometry：
-ros2 topic echo /Odometry
-
-推荐检查：
-
-
-
-动作
-ROS ENU 中推荐表现
-
-
-
-抬高无人机
-z 增大
-
-
-向机头方向移动
-x 增大
-
-
-向机体左侧移动
-y 增大
-
-
-如果方向不一致，不要急着飞，需要先在桥接节点中做坐标转换，或者检查雷达安装方向、FAST-LIO2 外参和 TF。
-五、安装 MAVROS 相关包如果已经安装并启动 MAVROS，可以跳过这一节。
-sudo apt updatesudo apt install -y \  ros-humble-mavros \  ros-humble-mavros-extras \  ros-humble-mavros-msgs
-
-安装 GeographicLib 数据：
-ros2 run mavros install_geographiclib_datasets.sh
-
-如果你的 MAVROS 包里找不到这个脚本，也可以手动下载：
-cd /tmpwget https://raw.githubusercontent.com/mavlink/mavros/ros2/mavros/scripts/install_geographiclib_datasets.shchmod +x install_geographiclib_datasets.sh./install_geographiclib_datasets.sh
-
-启动 MAVROS：
-source /opt/ros/humble/setup.bashros2 launch mavros px4.launch \  fcu_url:=&quot;/dev/ttyUSB0:921600&quot; \  namespace:=&quot;uav1&quot; \  tgt_system:=1
-
-如果你使用的是 USB、TELEM、UDP 或自定义 launch，需要把 fcu_url 换成自己的连接方式。
-常见例子：
-串口：/dev/ttyUSB0:921600USB ACM：/dev/ttyACM0:57600SITL UDP：udp://:14540@127.0.0.1:14557
-
-检查连接：
-ros2 topic echo /uav1/state
-
-正常应看到：
-connected: true
-
-六、使用外部里程计到 MAVROS 的通用桥接包git clone https://github.com/dreamer198/external_odom_to_mavros.git
-
-编译：
-source /opt/ros/humble/setup.bashcolcon build --packages-select external_odom_to_mavros --symlink-installsource install/setup.bash
-
-FAST-LIO2 的输入话题是 /Odometry，消息类型是 nav_msgs/msg/Odometry，所以这样启动：
-ros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=odometry \  input_topic:=/Odometry \  output_topic:=/uav1/vision_pose/pose \  output_frame_id:=map \  publish_rate:=30.0
-
-检查输出：
-ros2 topic hz /uav1/vision_pose/poseros2 topic echo /uav1/vision_pose/pose --once
-
-推荐频率至少 30Hz。PX4 官方文档建议外部视觉消息以 30Hz 到 50Hz 输入，频率太低时 EKF2 可能不会融合。
-如果后续换成 VINS、OpenVINS、LIO-SAM、UWB 或动捕，只需要改 input_type 和 input_topic。
-例如输入是 PoseStamped：
-ros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=pose_stamped \  input_topic:=/external_pose \  output_topic:=/uav1/vision_pose/pose
-
-这个节点默认假设输入位姿已经符合 ROS ENU&#x2F;FLU 习惯。如果方向检查不通过，需要先修正上游定位坐标系、传感器外参，或者在桥接前增加专门的坐标转换节点。
-七、配置 PX4 EKF2 参数打开 QGroundControl：
-Vehicle Setup -&gt; Parameters
-
-重点修改下面几个参数。
-1. 开启外部视觉融合参数：
-EKF2_EV_CTRL
-
-建议先开启：
-Horizontal position fusionVertical position fusion
-
-如果 FAST-LIO2 的 yaw 方向稳定，并且坐标方向已经确认正确，再考虑开启：
-Yaw fusion
-
-如果只是先跑通室内悬停，不建议一开始就融合 velocity，因为本文使用的是 /uav1/vision_pose/pose，没有给 PX4 发送速度。
-2. 设置高度参考参数：
-EKF2_HGT_REF
-
-室内主要依赖 Mid-360S &#x2F; FAST-LIO2 定位时，可以设为：
-Vision
-
-如果你的 FAST-LIO2 垂直方向还有漂移，可以先保留 Baro 做对比测试，但最终室内定点悬停通常希望视觉&#x2F;激光定位成为主要高度来源。
-3. 设置延迟参数：
-EKF2_EV_DELAY
-
-第一次可以先设为：
-0.0
-
-如果飞行时出现明显的跟随滞后、刹车发飘、来回修正，再通过日志调这个值。这个延迟和雷达时间戳、FAST-LIO2 计算耗时、MAVROS 转发链路都有关系，每套机子都可能不同。
-4. 设置外部定位传感器相对机体的位置参数：
-EKF2_EV_POS_XEKF2_EV_POS_YEKF2_EV_POS_Z
-
-如果桥接节点发布的是无人机 base_link 或飞控中心的位姿，可以先都设为：
-0.0
-
-如果你直接发布的是雷达或 FAST-LIO IMU 坐标系的位姿，就要填雷达定位原点相对机体中心的位置。
-注意这里按 PX4 机体系 FRD 填：
-X：向前为正Y：向右为正Z：向下为正
-
-例如雷达在飞控前方 0.08m、左侧 0.02m、上方 0.05m：
-EKF2_EV_POS_X = 0.08EKF2_EV_POS_Y = -0.02EKF2_EV_POS_Z = -0.05
-
-5. 室内 GPS 处理如果室内没有 GPS，或者 GPS 信号很差，建议不要让 GPS 参与位置融合。可以检查：
-EKF2_GPS_CTRL
-
-室内纯激光定位测试时，可将 GPS 融合关闭。不同 PX4 版本参数界面略有差别，建议通过 QGroundControl 的参数说明确认当前固件对应选项。
-修改 EKF2 参数后，重启飞控。
-八、检查 PX4 是否收到外部定位启动顺序推荐如下：
-终端 1：启动雷达source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-终端 2：启动 FAST-LIO2source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-
-终端 3：启动 MAVROSsource /opt/ros/humble/setup.bashros2 launch mavros px4.launch \  fcu_url:=&quot;/dev/ttyACM0:921600&quot; \  namespace:=&quot;uav1&quot; \  tgt_system:=1 \  gcs_url:=&quot;udp://:14550@10.0.30.196:14550&quot;
-
-终端 4：启动桥接节点source /opt/ros/humble/setup.bashsource ~/px4_lio_ws/install/setup.bashros2 launch external_odom_to_mavros bridge.launch.py \  input_type:=odometry \  input_topic:=/Odometry \  output_topic:=/uav1/vision_pose/pose \  output_frame_id:=map \  publish_rate:=30.0
-
-检查 MAVROS 本地位置：
-ros2 topic echo /uav1/local_position/odom
-
-如果 PX4 已经融合外部定位，这里应当能看到比较稳定的本地位置输出。
-也可以在 QGroundControl 中查看：
-MAVLink Inspector -&gt; LOCAL_POSITION_NEDMAVLink Inspector -&gt; ODOMETRY
-
-为了让 PX4 回传收到的外部 odometry，可设置：
-MAV_ODOM_LP = 1
-
-方向和姿态检查完成后，建议再设回：
-MAV_ODOM_LP = 0
-
-然后手持无人机做方向检查：
-
-
-
-动作
-PX4 &#x2F; MAVLink NED 中推荐表现
-
-
-
-向机头方向移动
-x 增大
-
-
-向机体右侧移动
-y 增大
-
-
-抬高无人机
-z 减小
-
-
-如果这个方向不对，不要起飞。
-九、先用 Position 模式悬停最推荐的第一次室内悬停方式不是 Offboard，而是 Position 模式。
-原因是：
-
-PX4 自己负责位置控制。
-遥控器可以直接接管。
-更容易判断 EKF2 融合是否正常。
-
-操作步骤：
-
-确认 /Odometry 稳定。
-确认 /uav1/vision_pose/pose 约 30Hz。
-确认 /uav1/state 中 connected: true。
-确认 QGroundControl 没有位置估计相关的红色告警。
-切到 Position 模式。
-低高度起飞，建议先 0.3m 到 0.5m。
-摇杆回中，观察是否能定点悬停。
-
-如果 Position 模式无法进入，通常说明 PX4 认为本地位置估计还不可用。优先查：
-ros2 topic hz /uav1/vision_pose/poseros2 topic echo /uav1/local_position/odom --onceros2 topic echo /uav1/state
-
-QGroundControl 中也要看 EKF2 是否有 innovation、height、local position 相关告警。
-十、再测试 Offboard 悬停Position 模式能稳定悬停以后，再测试 Offboard。
-PX4 Offboard 有一个硬要求：进入 Offboard 前，外部控制端必须已经持续发送 setpoint，频率要大于 2Hz。实际使用建议 20Hz 或 30Hz。
-可以先用 MAVROS 的位置 setpoint 话题做简单测试：
-ros2 topic pub -r 20 /uav1/setpoint_position/local geometry_msgs/msg/PoseStamped \  &quot;&#123;header: &#123;frame_id: &#x27;map&#x27;&#125;, pose: &#123;position: &#123;x: 0.0, y: 0.0, z: 0.8&#125;, orientation: &#123;w: 1.0&#125;&#125;&#125;&quot;
-
-保持这个命令运行，再切 Offboard：
-ros2 service call /uav1/set_mode mavros_msgs/srv/SetMode \  &quot;&#123;base_mode: 0, custom_mode: &#x27;OFFBOARD&#x27;&#125;&quot;
-
-如果需要通过 MAVROS 解锁：
-ros2 service call /uav1/cmd/arming mavros_msgs/srv/CommandBool \  &quot;&#123;value: true&#125;&quot;
-
-实机第一次不建议直接用命令解锁自动飞，最好先手动起飞到低高度，确认 Position 稳定后，再让 Offboard 接管当前位置。
-十一、常见问题1. /uav1/vision_pose/pose 有数据，但 PX4 不融合检查：
-
-频率是否太低，建议 30Hz 到 50Hz。
-EKF2 参数是否已开启 external vision fusion。
-修改参数后是否重启飞控。
-坐标方向是否正确。
-时间戳是否持续更新。
-QGroundControl 是否有 EKF2 相关告警。
-
-2. 起飞后上下抖动优先检查：
-
-EKF2_HGT_REF 是否合理。
-FAST-LIO2 的 z 是否稳定。
-雷达是否看到了足够的地面、墙面或结构。
-机架震动是否影响 Mid-360S 或机载电脑。
-EKF2_EV_DELAY 是否需要调大。
-
-3. 水平位置慢慢漂移常见原因：
-
-室内环境结构太少，比如空旷大厅、玻璃墙、长直走廊。
-FAST-LIO2 外参不准。
-雷达安装不够刚性。
-飞机振动导致点云畸变或 IMU 质量变差。
-起飞前 FAST-LIO2 没有静止初始化。
-
-4. 一切正常但 Position 模式无法进入看 QGroundControl 的 Preflight &#x2F; EKF 提示。
-重点确认：
-local position estimate validlocal velocity estimate validheight estimate valid
-
-如果没有 GPS，且飞控仍然要求 GPS，检查当前固件的 arming check 和 GPS 相关参数，不要盲目关闭所有安全检查。
-5. Offboard 一切换就退出PX4 Offboard 要求 setpoint 持续输入。检查：
-ros2 topic hz /uav1/setpoint_position/local
-
-应大于 2Hz，实际建议 20Hz。
-还要检查：
-COM_OF_LOSS_TCOM_OBL_RC_ACT
-
-它们决定 Offboard 丢失后的超时和保护动作。
-十二、后续优化方向第一次能稳定悬停以后，可以继续优化：
-
-把 /uav1/vision_pose/pose 改成 /uav1/odometry/out，向 PX4 发送完整 ODOMETRY。
-加入速度估计，并确认速度表达在机体系。
-精确标定 Mid-360S &#x2F; FAST-LIO IMU 到机体中心的外参。
-调整 EKF2_EV_DELAY，降低动态飞行时的创新误差。
-录制 rosbag 和 PX4 ulog，对比 FAST-LIO2 输出与 PX4 local position。
-在 Offboard 中加入当前位置锁定、限速、失联降落和遥控器接管逻辑。
-
-参考资料
-PX4 外部视觉定位文档：https://docs.px4.io/v1.16/en/ros/external_position_estimation
-PX4 Offboard 模式文档：https://docs.px4.io/v1.16/en/flight_modes/offboard
-MAVROS ROS 2 文档：https://mavros.readthedocs.io/en/latest/
-MAVROS odometry 插件：https://mavros.readthedocs.io/en/latest/plugins/extras/odom/
-MAVROS vision_pose 插件：https://mavros.readthedocs.io/en/latest/plugins/extras/vision_pose_estimate/
-FAST-LIO 官方仓库：https://github.com/hku-mars/FAST_LIO
-FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
-
-]]></content>
-      <categories>
-        <category>技术分享</category>
-        <category>无人机</category>
-      </categories>
-      <tags>
-        <tag>FAST-LIO2</tag>
-        <tag>Livox</tag>
-        <tag>Mid-360S</tag>
-        <tag>MAVROS</tag>
-        <tag>PX4</tag>
-        <tag>无人机</tag>
-        <tag>室内定位</tag>
       </tags>
   </entry>
   <entry>
@@ -2226,294 +4972,13 @@ GeographicLib 数据集脚本（镜像）：https://gitee.com/tyx6/mytools
 
 ]]></content>
       <categories>
-        <category>技术分享</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>ROS2</tag>
-        <tag>MAVROS</tag>
-        <tag>PX4</tag>
-        <tag>教程</tag>
-        <tag>无人机</tag>
-        <tag>环境配置</tag>
         <tag>Jetson</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mid-360S 使用教程</title>
-    <url>/2026/05/06/Mid360s%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言Livox Mid-360S 是一款常用于移动机器人、无人机、SLAM、建图和避障的 3D 激光雷达。它通过以太网输出数据，在 ROS 2 中通常配合 Livox-SDK2 和 livox_ros_driver2 使用。
-本文记录 Ubuntu 22.04 + ROS 2 Humble 下从硬件连接、网络配置、驱动安装到点云查看的完整流程。
-
-
-一、硬件与网络准备1. 连接设备Mid-360S  ├── 电源：DC 9~27 V  └── 网口：连接电脑网口或交换机
-
-注意事项：
-
-电脑和雷达必须在同一个网段。
-多网卡电脑要确认使用的是连接雷达的有线网卡。
-初次调试建议关闭防火墙，避免 UDP 数据被拦截。
-
-sudo ufw disable
-
-查看网卡名称：
-ip addr
-
-常见网卡名有 enp108s0、eno1、eth0 等。注意：ip addr 输出中接口名后面的冒号只是显示格式，命令里一般不要带这个冒号。
-2. 配置电脑 IP电脑 IP 只需要满足两点：
-
-和雷达 IP 在同一网段。
-不与雷达或局域网中其他设备冲突。
-
-例如雷达在 192.168.1.0/24 网段，可以把电脑网卡设置为 192.168.1.5：
-sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
-
-其中 enp108s0 需要替换为自己的有线网卡名。
-3. 确认雷达 IP如果已经知道雷达 IP，直接跳到下一步。否则可以通过以下方式获取：
-
-看设备标签、说明书或出厂配置文档。
-用官方的 Livox 工具在同网段内发现设备。
-使用 Mid-360 协议中的广播发现功能获取 lidar_ip 和 cmd_port。
-
-确认网络连通：
-ping 192.168.1.100
-
-如果 ping 不通，优先检查电源、网线、网卡名、电脑 IP 和雷达 IP 是否正确。
-二、安装 SDK 与 ROS 驱动1. 安装 Livox-SDK2Livox-SDK2 是 Livox 雷达的底层通信 SDK，livox_ros_driver2 编译时需要依赖它。
-sudo apt updatesudo apt install -y git cmake build-essentialmkdir -p ~/codecd ~/codegit clone https://github.com/Livox-SDK/Livox-SDK2.gitcd Livox-SDK2mkdir -p build &amp;&amp; cd buildcmake ..make -j$(nproc)sudo make install
-
-如果运行时报找不到动态库，将 /usr/local/lib 加入环境变量：
-echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-2. 安装 livox_ros_driver2创建工作空间并编译：
-mkdir -p ~/livox_ws/srccd ~/livox_ws/srcgit clone https://github.com/Livox-SDK/livox_ros_driver2.gitcd ~/livox_ws/src/livox_ros_driver2source /opt/ros/humble/setup.bash./build.sh humble
-
-加载 ROS 2 工作空间：
-cd ~/livox_wssource install/setup.bash
-
-也可以写入 ~/.bashrc：
-echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-三、修改 Mid-360S 配置进入驱动配置目录：
-cd ~/livox_ws/src/livox_ros_driver2/configls
-
-通常会看到 MID360_config.json、HAP_config.json、mixed_HAP_MID360_config.json 等文件。Mid-360S 可以按 Mid-360 系列流程配置；如果驱动版本提供了 MID360S_config.json 或 MID360s_config.json，优先使用对应文件。
-gedit MID360s_config.json
-
-重点检查：
-
-
-
-字段
-含义
-
-
-
-host_ip
-电脑有线网卡 IP，例如 192.168.1.5
-
-
-lidar_configs[].ip
-雷达 IP，例如 192.168.1.100
-
-
-pcl_data_type
-点云数据类型，常用 1
-
-
-pattern_mode
-扫描模式，常用 0，表示非重复扫描
-
-
-extrinsic_parameter
-Livox 驱动层外参，不等同于 ROS TF
-
-
-示例配置片段：
-&#123;  &quot;MID360s&quot;: &#123;    &quot;lidar_net_info&quot;: &#123;      &quot;cmd_data_port&quot;: 56100,      &quot;push_msg_port&quot;: 56200,      &quot;point_data_port&quot;: 56300,      &quot;imu_data_port&quot;: 56400,      &quot;log_data_port&quot;: 56500    &#125;,    &quot;host_net_info&quot;: [      &#123;        &quot;host_ip&quot;: &quot;192.168.1.5&quot;,        &quot;cmd_data_port&quot;: 56101,        &quot;push_msg_port&quot;: 56201,        &quot;point_data_port&quot;: 56301,        &quot;imu_data_port&quot;: 56401,        &quot;log_data_port&quot;: 56501      &#125;    ]  &#125;,  &quot;lidar_configs&quot;: [    &#123;      &quot;ip&quot;: &quot;192.168.1.100&quot;,      &quot;pcl_data_type&quot;: 1,      &quot;pattern_mode&quot;: 0,      &quot;extrinsic_parameter&quot;: &#123;        &quot;roll&quot;: 0.0,        &quot;pitch&quot;: 0.0,        &quot;yaw&quot;: 0.0,        &quot;x&quot;: 0,        &quot;y&quot;: 0,        &quot;z&quot;: 0      &#125;    &#125;  ]&#125;
-
-extrinsic_parameter 的建议用法：
-只验证通信：保持全 0让驱动直接输出补偿后的点云：在 json 中设置外参让 ROS 系统知道雷达和机体的坐标关系：发布 TF 或在算法中设置外参
-
-不要在 MID360s_config.json、TF 和 SLAM 配置里重复补偿同一个安装角度。
-如果修改源码目录中的配置后没有生效，可能是运行时加载了 install 目录中的旧配置。建议重新编译并使用软链接安装：
-cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
-
-四、启动与验证cd ~/livox_wssource /opt/ros/humble/setup.bashsource install/setup.bash
-
-1. 启动 RViz 查看点云ros2 launch livox_ros_driver2 rviz_MID360_launch.py
-
-如果有 Mid-360S 专用 launch 文件，则使用对应文件名：
-ros2 launch livox_ros_driver2 rviz_MID360s_launch.py
-
-只查看雷达原始坐标系下的点云时，RViz 的 Fixed Frame 通常设置为：
-livox_frame
-
-2. 只启动数据发布节点如果不需要打开 RViz，可以启动消息发布 launch：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-
-具体文件名以 launch_ROS2 目录中的实际内容为准。
-3. 查看 ROS 2 话题ros2 topic list
-
-常见话题：
-/livox/lidar/livox/imu
-
-ros2 topic info /livox/lidarros2 topic info /livox/imuros2 topic hz /livox/lidarros2 topic hz /livox/imu
-
-如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，通常可以直接给 RViz、SLAM、建图或避障算法使用。
-4. 录制 rosbagmkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
-
-播放 rosbag：
-ros2 bag play &lt;bag目录&gt;
-
-如需录制所有话题：
-ros2 bag record -a
-
-五、接入算法时需要确认什么Mid-360S 常用于 FAST-LIO、LIO-SAM、VINS、YOPO 等感知或定位模块。接入算法时重点检查三件事。
-1. 话题名称pointCloudTopic: &quot;/livox/lidar&quot;imuTopic: &quot;/livox/imu&quot;
-
-2. 坐标系驱动默认 frame 常见为：
-livox_frame
-
-如果算法使用 base_link、body、camera_init 等坐标系，需要让 TF、算法配置和消息中的 frame_id 保持一致。
-3. 外参位置三类外参作用不同，不要混用：
-MID360s_config.json / extrinsic_parameter  -&gt; 影响驱动发布出来的点云坐标  -&gt; 不会发布 ROS TFROS TF / static_transform_publisher / robot_state_publisher  -&gt; 描述 ROS 坐标系之间的关系  -&gt; RViz 和部分算法会按 TF 做坐标变换SLAM / 控制算法中的 extrinsic_T、extrinsic_R  -&gt; 算法内部使用的雷达到机体或雷达到 IMU 外参
-
-如果雷达前倾 30 度、安装在机体上方 10 cm，可以选择下面两种方式之一。
-方式一：在 json 中设置 extrinsic_parameter，让驱动直接输出补偿后的点云：
-&quot;extrinsic_parameter&quot;: &#123;  &quot;roll&quot;: 0.0,  &quot;pitch&quot;: -30.0,  &quot;yaw&quot;: 0.0,  &quot;x&quot;: 0,  &quot;y&quot;: 0,  &quot;z&quot;: 100&#125;
-
-方式二：保持 json 外参为 0，单独发布静态 TF：
-ros2 run tf2_ros static_transform_publisher \  --x 0 --y 0 --z 0.10 \  --roll 0 --pitch -0.5236 --yaw 0 \  --frame-id base_link \  --child-frame-id livox_frame
-
-然后将 RViz 的 Fixed Frame 设置为：
-base_link
-
-调试阶段可以先在算法中使用零外参：
-extrinsic_T: [0.0, 0.0, 0.0]extrinsic_R: [1.0, 0.0, 0.0,              0.0, 1.0, 0.0,              0.0, 0.0, 1.0]
-
-实际运行 SLAM 或控制算法时，再根据安装位置修改。核心原则是：同一个角度或位移只补偿一次。
-六、常见问题1. ping 不通雷达
-检查雷达电源和网线。
-确认电脑 IP 和雷达 IP 在同一网段。
-确认命令里使用的是正确网卡名。
-
-ip addr
-
-必要时重新配置电脑网卡：
-sudo ip addr flush dev enp108s0sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
-
-2. 编译时报找不到 Livox-SDK2ls /usr/local/lib | grep livoxls /usr/local/include | grep livox
-
-如果没有结果，重新安装 SDK：
-cd ~/code/Livox-SDK2/buildcmake ..make -j$(nproc)sudo make install
-
-3. 运行时报找不到动态库error while loading shared libraries: liblivox_lidar_sdk_shared.so
-
-echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-4. RViz 打开后没有点云
-只看原始点云时，Fixed Frame 设为 livox_frame。
-通过 TF 看机体系点云时，Fixed Frame 设为 base_link。
-确认 /livox/lidar 存在，并且有发布频率。
-确认 host_ip 是电脑网卡 IP，lidar_configs[].ip 是雷达 IP。
-
-ros2 topic listros2 topic hz /livox/lidar
-
-5. 改了 json 外参后点云没有变化或还是歪先确认修改的是实际加载的配置文件：
-grep -n &quot;user_config_path&quot; ~/livox_ws/src/livox_ros_driver2/launch_ROS2/*.py
-
-然后重新编译并加载环境：
-cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
-
-如果通过 TF 查看点云，检查 TF 是否存在：
-ros2 run tf2_ros tf2_echo base_link livox_frame
-
-6. 点云很卡打开对应 launch 文件，适当降低 publish_freq：
-&#123;&quot;publish_freq&quot;: 5.0&#125;
-
-7. 多雷达时无法区分话题可以启用 multi_topic，让不同雷达发布到独立话题。配置思路：
-multi_topic = 1每个雷达配置不同的 lidar_ip必要时给每个雷达配置不同网段或不同网卡
-
-参考资料
-Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
-livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
-Mid-360(S) 通信协议：https://livox-wiki-en.readthedocs.io/en/latest/
-
-总结Mid-360S 的基本使用流程可以概括为：
-连接电源和网线  -&gt; 配置电脑网卡 IP  -&gt; 安装 Livox-SDK2  -&gt; 编译 livox_ros_driver2  -&gt; 修改 json 中的 host_ip 和 lidar_configs[].ip  -&gt; ros2 launch 启动  -&gt; RViz 查看点云或录制 rosbag
-
-接入 SLAM 或机器人系统时，重点关注点云话题、IMU 话题、frame_id 和雷达到机体外参。MID360s_config.json 中的 extrinsic_parameter 会影响驱动输出点云，但它不是 ROS TF。
-]]></content>
-      <categories>
-        <category>技术分享</category>
-        <category>使用教程</category>
-      </categories>
-      <tags>
-        <tag>Livox</tag>
-        <tag>Mid-360S</tag>
         <tag>ROS2</tag>
-        <tag>激光雷达</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>OpenVINS搭建与测试</title>
-    <url>/2026/05/13/OpenVINS%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[环境
-系统：Ubuntu 22.04
-ROS2：Humble
-源码仓库：https://github.com/dreamer198/open_vins.git
-
-源码下载mkdir -p ~/ros2_ws/srccd ~/ros2_ws/srcgit clone https://github.com/dreamer198/open_vins.git
-
-依赖安装source /opt/ros/humble/setup.bashsudo apt-get updatesudo apt-get install -y \  libeigen3-dev \  libboost-all-dev \  libceres-dev \  python3-colcon-common-extensions \  ros-humble-ros2bag \  ros-humble-rosbag2*
-
-编译进入工作空间根目录：
-cd ~/ros2_ws
-
-直接使用 colcon build 可能会因为并行编译占用内存过高而卡死，建议限制并行度：
-MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf
-
-如果在 Jetson Orin NX 上遇到 OpenCV 缺少 aruco 模块的问题，可以关闭 ArUco Tag 支持后重新编译：
-MAKEFLAGS=&quot;-j8&quot; CMAKE_BUILD_PARALLEL_LEVEL=1 \colcon build --executor sequential --packages-select ov_core ov_init ov_msckf \  --cmake-args -DENABLE_ARUCO_TAGS=OFF
-
-编译完成后加载环境：
-source ~/ros2_ws/install/setup.bash
-
-公开数据集测试下载数据集数据集下载地址：OpenVINS EuRoC 数据集说明
-推荐先下载 Vicon Room 1 01，也就是 V1_01_easy。
-运行测试终端 1：启动 OpenVINS。
-cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf subscribe.launch.py config:=euroc_mav
-
-终端 2：播放数据集。
-ros2 bag play V1_01_easy
-
-终端 3：打开 RViz2 可视化。
-rviz2 -d ~/ros2_ws/src/open_vins/ov_msckf/launch/display_ros2.rviz
-
-RealSense D455测试启动相机终端 1：发布双目红外图像和 IMU 数据。
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_gyro:=true \  enable_accel:=true \  unite_imu_method:=1 \  depth_module.infra_profile:=640,480,30 \  gyro_fps:=200 \  accel_fps:=200
-
-可以通过 rqt 查看红外图像中是否有红外斑点。如果有，关闭相机发射器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-
-启动 OpenVINS终端 2：运行 D455 配置。
-cd ~/ros2_wssource install/setup.bashros2 launch ov_msckf d455.launch.py enable_rviz:=true enable_mavros:=true
-
-常见问题
-编译卡死：降低 MAKEFLAGS 或 CMAKE_BUILD_PARALLEL_LEVEL。
-Jetson 缺少 aruco：编译时添加 --cmake-args -DENABLE_ARUCO_TAGS=OFF。
-红外图像有斑点：关闭 depth_module.emitter_enabled。
-
-]]></content>
-      <categories>
-        <category>SLAM</category>
-        <category>视觉惯性导航</category>
-      </categories>
-      <tags>
-        <tag>SLAM</tag>
-        <tag>ROS2</tag>
-        <tag>OpenVINS</tag>
-        <tag>VIO</tag>
+        <tag>PX4</tag>
+        <tag>MAVROS</tag>
       </tags>
   </entry>
   <entry>
@@ -2626,109 +5091,12 @@ ROS Gazebo Bridge
 
 ]]></content>
       <categories>
-        <category>机器人</category>
-        <category>仿真</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
         <tag>ROS2</tag>
         <tag>PX4</tag>
         <tag>Gazebo</tag>
-        <tag>无人机仿真</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>《动手学强化学习》阅读笔记</title>
-    <url>/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
-    <content><![CDATA[本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。
-
-
-第一章 强化学习基础什么是强化学习？强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。
-环境与随机性用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：
-
-动作选择的随机性（策略的随机性）
-环境状态转移的随机性（$P(s’\mid s,a)$ 的采样）
-
-目标：最大化策略价值强化学习的优化目标是最大化在与环境交互过程中的策略价值（长期累积奖励的期望）。
-数据从何而来数据并非来自固定数据集，而是在智能体与环境的交互过程中不断产生，且会随策略更新而改变分布。
-占用度量（Occupancy Measure）
-定义：某策略与环境交互时，采样到状态-动作对 $(s,a)$ 的概率分布。
-性质：当且仅当两个策略诱导的占用度量完全相同时，这两个策略等价；策略变化会引起占用度量变化。
-关联：策略价值等价于在该占用度量下的奖励期望，因此“找最优策略 ≈ 找最优占用度量”。
-
-与有监督学习的区别
-有监督学习：给定数据分布，最小化损失的期望。
-强化学习：通过交互诱导数据分布，最大化奖励的期望。
-关键差异：RL 的数据分布随策略变化，非 i.i.d.
-
-
-第二章 多臂老虎机：探索 vs 利用多臂老虎机（Multi-Armed Bandit, MAB）刻画“探索未知”和“利用已知”的权衡：既要尝试可能更优的臂（探索），又要选择当前估计最优的臂（利用）。
-目标与懊悔（Regret）
-时刻 $t$ 的即时懊悔：$r_t &#x3D; \mu^* - \mu_{a_t}$。
-累积懊悔：$R_T &#x3D; \sum_{t&#x3D;1}^{T} (\mu^* - \mu_{a_t})$。
-目标等价：最大化累积奖励 ⇔ 最小化累积懊悔。
-
-期望奖励的估计对某一拉杆（动作）$a$ 的经验期望奖励估计：
-$$\hat{\mu}a &#x3D; \frac{1}{n_a} \sum{i&#x3D;1}^{n_a} r_i$$
-其中 $n_a$ 为选择臂 $a$ 的次数，$r_i$ 为获得的奖励。
-三类经典策略
-ε-贪心（$\varepsilon$-greedy）：
-
-以概率 $1-\varepsilon$ 选择当前估计最优的臂（利用），以概率 $\varepsilon$ 随机选择（探索）。
-常用做法：随时间衰减 $\varepsilon_t$（例如 $\varepsilon_t &#x3D; c&#x2F;t$ 或分段衰减）。
-
-
-上置信界（UCB）：
-
-利用“乐观估计”促进探索。常见形式： $$ a_t &#x3D; \arg\max_a \Big( \hat{\mu}_a + c\sqrt{\frac{2\ln t}{n_a}} \Big) $$
-思想：不确定性越大（$n_a$ 越小），上置信界越宽，更值得探索。
-
-
-汤普森采样（Thompson Sampling）：
-
-将每个臂的奖励建模为后验分布（如 Beta 分布），按后验进行一次采样并选择样本最大的臂。
-兼顾探索与利用，实践中表现优异、实现简单。
-
-
-
-小结：MAB 不改变环境状态，可视为“无状态”RL 的特例。
-
-第三章 马尔可夫决策过程（MDP）与价值马尔可夫过程与马尔可夫奖励过程（MRP）
-马尔可夫性质：$P(S_{t+1}\mid S_{0:t}) &#x3D; P(S_{t+1}\mid S_t)$。
-状态转移矩阵的每行和为 1。
-在马尔可夫过程中加入奖励与折扣因子 $\gamma\in(0,1]$ 得到 MRP。
-折扣动机：考虑不确定性与时间偏好；$\gamma$ 越接近 1 越重视长期。
-
-回报（从时刻 $t$ 出发的累积折扣奖励）：
-$$G_t &#x3D; \sum_{k&#x3D;0}^{T-t-1} \gamma^k, R_{t+k+1}$$
-状态价值函数（MRP）：
-$$V(s) &#x3D; \mathbb{E}[G_t\mid S_t&#x3D;s] &#x3D; R(s) + \gamma, \sum_{s’} P(s’\mid s), V(s’)$$
-常见求解：动态规划（DP）、蒙特卡洛（MC）、时序差分（TD）。
-马尔可夫决策过程（MDP）在 MRP 基础上加入动作 $a$ 与策略 $\pi(a\mid s)$：
-
-状态价值：$V^\pi(s) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s,]$。
-动作价值：$Q^\pi(s,a) &#x3D; \mathbb{E}_\pi[,G_t\mid S_t&#x3D;s, A_t&#x3D;a,]$。
-期望型贝尔曼方程：
-
-$$V^\pi(s) &#x3D; \sum_a \pi(a\mid s) \sum_{s’} P(s’\mid s,a)\big[ R(s,a,s’) + \gamma V^\pi(s’) \big]$$
-占用度量（在 MDP 下）策略的占用度量描述在策略 $\pi$ 与动力学 $P$ 下，状态-动作对 $(s,a)$ 被访问的频率分布。它直接决定了奖励期望与策略价值，是连接“采样分布”和“最优性”的桥梁。
-
-关键要点速记
-RL 的核心在于“交互诱导的数据分布”和“长期最优”。
-MAB：ε-贪心、UCB、汤普森采样是三大基石；目标是最小化累积懊悔。
-MRP&#x2F;MDP：价值函数与贝尔曼方程是算法设计的基础；DP&#x2F;MC&#x2F;TD 各有适用场景。
-占用度量提供了从策略到数据分布、再到价值最大化的统一视角。
-
-参考资料
-《动手学强化学习》
-Sutton &amp; Barto. Reinforcement Learning: An Introduction
-
-]]></content>
-      <categories>
-        <category>学习笔记</category>
-      </categories>
-      <tags>
-        <tag>强化学习</tag>
-        <tag>机器学习</tag>
       </tags>
   </entry>
   <entry>
@@ -2845,12 +5213,12 @@ ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:/
 
 ]]></content>
       <categories>
-        <category>技术分享</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
         <tag>ROS2</tag>
-        <tag>MAVROS</tag>
         <tag>PX4</tag>
+        <tag>MAVROS</tag>
         <tag>Gazebo</tag>
         <tag>多机</tag>
       </tags>
@@ -2937,204 +5305,108 @@ Tutorials: https://docs.ros2.org
 
 ]]></content>
       <categories>
-        <category>技术分享</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
         <tag>ROS2</tag>
-        <tag>无人机</tag>
         <tag>集群通信</tag>
-        <tag>接口</tag>
         <tag>自定义消息</tag>
       </tags>
   </entry>
   <entry>
-    <title>RealSense D435i安装与使用教程</title>
-    <url>/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言Intel RealSense D435i 是一款带 IMU 的深度相机，常用于 SLAM、VIO、视觉导航等任务。本文记录在 Ubuntu 22.04 + ROS2 Humble 环境下的安装、启动和常见问题处理。
-一、安装驱动1. 添加软件源# 添加 GPG keysudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FB0B24895113F120sudo apt-key export FB0B24895113F120 | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/librealsense.gpg# 添加 RealSense 软件源echo &#x27;deb [signed-by=/etc/apt/trusted.gpg.d/librealsense.gpg] https://librealsense.intel.com/Debian/apt-repo jammy main&#x27; | sudo tee /etc/apt/sources.list.d/librealsense.list
+    <title>UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</title>
+    <url>/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/</url>
+    <content><![CDATA[在复现无人机路径规划算法时，我逐渐发现，真正困难的不只是把某个算法编译起来，而是让定位、规划、控制、任务和飞控组成一条稳定、可复用的完整链路。不同项目的依赖和接口各不相同，切换算法时经常需要重新整理环境。
+为了解决这些问题，我开发了 UAV Autonomy All-in-One。这是一个基于 ROS1 Noetic、PX4 和 Gazebo Classic 的无人机自主飞行框架，希望用同一套工程结构连接仿真与真机，并让不同规划器能够以相对独立、平等的方式接入。
 
-2. 安装 librealsensesudo apt updatesudo apt install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg
 
-3. 安装 ROS2 驱动包sudo apt install -y ros-humble-realsense2-camera
+项目定位这个项目并不是新的路径规划算法，而是一个面向无人机自主飞行的工程框架。它主要关注：
 
-4. 验证安装连接相机后运行：
-realsense-viewer
+统一仿真与真机的定位、任务、规划和控制链路；
+隔离不同开源算法的依赖，减少相互影响；
+使用一致的方式选择和运行不同规划器；
+保留必要的状态检查、故障处理、日志和飞行数据；
+为后续接入新的规划器和传感器预留清晰边界。
 
-如果可以看到相机图像和 IMU 数据，说明驱动安装成功。
+仿真侧由 PX4 SITL、Gazebo、模拟 MID-360、规划器和控制器组成；真机侧使用 PX4、MID-360、FAST-LIO、规划器和控制器。两套环境在底层传感器上有所不同，但上层任务和自主飞行逻辑尽量保持一致。
+当前支持的规划器main 分支目前支持四个规划器：
 
-更详细的驱动安装说明可参考：CSDN教程
 
-二、ROS2 启动方式VIO 常用配置：双目红外 + IMU适合 VINS-Fusion、OpenVINS 等视觉惯性算法：
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_accel:=true \  enable_gyro:=true \  unite_imu_method:=2 \  gyro_fps:=200 \  depth_module.infra_profile:=640,480,30
 
-RGB-D 配置适合需要彩色图像和深度图像的任务：
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=true \  enable_depth:=true \  enable_infra1:=false \  enable_infra2:=false \  enable_accel:=false \  enable_gyro:=false
+规划器
+简介
 
-默认配置不指定参数时，使用驱动默认配置：
-ros2 launch realsense2_camera rs_launch.py
 
-三、常用参数
 
+Diff-Planner
+面向局部自主飞行的轨迹规划方法
 
-参数
-说明
-常用值
 
+Fast-Planner Kino
+基于 Kinodynamic 搜索的 Fast-Planner 模式
 
 
-enable_color
-是否启用彩色相机
-true &#x2F; false
+Fast-Planner Topo
+加入拓扑路径搜索的 Fast-Planner 模式
 
 
-enable_depth
-是否启用深度相机
-true &#x2F; false
+SUPER
+强调安全性与局部重规划的规划器
 
 
-enable_infra1
-是否启用左红外相机
-true &#x2F; false
+这些规划器分别保留自己的地图、搜索和轨迹生成方式，但通过公共框架接入任务、控制与可视化链路。不同算法在启动前选择，当前不支持飞行过程中切换或多个规划器同时控制飞机。
+仿真场景项目内置室内和森林场景。下面是 forest 测试环境：
 
+  
+  forest 仿真场景
 
-enable_infra2
-是否启用右红外相机
-true &#x2F; false
 
+以下 GIF 来自项目仓库，均为原录像的 4 倍速：
 
-enable_accel
-是否启用加速度计
-true &#x2F; false
+  
+    Diff-Planner
+    Fast Kino
+  
+  
+    
+    
+  
 
 
-enable_gyro
-是否启用陀螺仪
-true &#x2F; false
 
+  
+    Fast Topo
+    SUPER
+  
+  
+    
+    
+  
 
-unite_imu_method
-IMU 融合方式：0 不融合，1 线性插值，2 拷贝
-2
 
+项目特点相比单独维护多个算法仓库，这个项目更关注完整系统的一致性：
 
-gyro_fps
-陀螺仪采样率
-200
+各规划器使用隔离的构建环境，避免同名依赖相互覆盖；
+仿真与真机复用任务执行和安全检查逻辑；
+统一展示环境、目标、规划轨迹和实际飞行路径；
+自动保存运行日志和 rosbag，方便回放与排查；
+人工接管、定位异常和规划故障具有明确的处理边界。
 
-
-accel_fps
-加速度计采样率
-200
-
-
-depth_module.infra_profile
-红外图像分辨率和帧率
-640,480,30
-
-
-四、运行时设置关闭激光发射器室外 VIO 或被动双目场景中，通常需要关闭激光投影器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-
-查看可用参数ros2 param list /camera/camera
-
-修改参数ros2 param set /camera/camera &lt;参数名&gt; &lt;参数值&gt;
-
-五、常用话题相机启动后，常用话题如下：
-
-
-
-话题名
-消息类型
-说明
-
-
-
-/camera/infra1/image_raw
-sensor_msgs/msg/Image
-左红外图像
-
-
-/camera/infra2/image_raw
-sensor_msgs/msg/Image
-右红外图像
-
-
-/camera/color/image_raw
-sensor_msgs/msg/Image
-彩色图像
-
-
-/camera/depth/image_rect_raw
-sensor_msgs/msg/Image
-深度图像
-
-
-/camera/accel/sample
-sensor_msgs/msg/Imu
-加速度计数据
-
-
-/camera/gyro/sample
-sensor_msgs/msg/Imu
-陀螺仪数据
-
-
-/camera/imu
-sensor_msgs/msg/Imu
-融合后的 IMU 数据
-
-
-六、RViz2 可视化启动 RViz2：
-rviz2
-
-常用显示项：
-
-Image：查看红外图像、彩色图像
-PointCloud2：查看点云，需要启用深度相机
-TF：查看相机坐标系关系
-
-七、性能优化
-按需开启数据流，不用的彩色、深度或红外数据可以关闭。
-适当降低分辨率和帧率，减少 USB 带宽和 CPU 占用。
-VIO 场景建议设置 unite_imu_method:=2，使用融合后的 IMU 话题。
-室外或被动双目场景建议关闭激光发射器。
-
-八、常见问题1. 相机无法识别检查 USB 连接和设备识别情况：
-lsusb | grep Intelrealsense-viewer
-
-优先使用 USB 3.0 接口，并避免通过低质量扩展坞连接。
-2. ROS2 无法启动相机检查 RealSense 相关包是否已安装：
-dpkg -l | grep realsense
-
-必要时重新安装 ROS2 驱动包：
-sudo apt install --reinstall ros-humble-realsense2-camera
-
-3. IMU 数据不同步启动时加入：
-unite_imu_method:=2
-
-然后重启相机节点。
-4. 帧率不稳定常见原因是 USB 带宽不足。可以尝试：
-
-使用 USB 3.0 接口
-降低图像分辨率
-降低帧率
-关闭暂时不用的数据流
-
-参考资源
-Intel RealSense官方文档
-librealsense2 GitHub
-realsense2_camera ROS2包装
-
+当前边界框架已经覆盖仿真和真机的软件链路，但“能够构建和启动”不等于已经完成真实飞行验证。真机使用前仍需要针对具体机体完成传感器外参、定位、控制器、PX4 failsafe 和遥控接管测试。
+当前项目面向单机、单规划器执行，暂不提供空中切换、自动规划器回退、多规划器并行控制、地图共享或统一的动态障碍预测接口。
+更详细的环境说明、使用方法、参数配置和安全注意事项请查看项目仓库：
+dreamer198&#x2F;UAV-Autonomy-All-in-One
 ]]></content>
       <categories>
-        <category>传感器</category>
-        <category>安装教程</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>ROS2</tag>
-        <tag>RealSense</tag>
-        <tag>深度相机</tag>
-        <tag>IMU</tag>
+        <tag>路径规划</tag>
+        <tag>PX4</tag>
+        <tag>Docker</tag>
+        <tag>ROS1</tag>
+        <tag>Gazebo</tag>
+        <tag>无人机自主飞行</tag>
       </tags>
   </entry>
   <entry>
@@ -3205,330 +5477,604 @@ cd ~/code/YOPO-ROS2/Controllercolcon build --packages-select so3_quadrotor_simul
 3. pip 依赖冲突安装 Python 依赖时可能出现 numpy&#x2F;empy 版本冲突警告（与 ultralytics、bloom 等包），不影响 YOPO 本身运行，可忽略。
 ]]></content>
       <categories>
-        <category>技术分享</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
+        <tag>路径规划</tag>
         <tag>ROS2</tag>
-        <tag>无人机</tag>
         <tag>YOPO</tag>
-        <tag>仿真</tag>
-        <tag>四旋翼</tag>
       </tags>
   </entry>
   <entry>
-    <title>使用 SSH 远控局域网中的其他电脑</title>
-    <url>/2026/05/06/ssh%E8%BF%9C%E6%8E%A7%E7%94%B5%E8%84%91/</url>
-    <content><![CDATA[前言在机器人调试、ROS 开发、服务器维护或多台 Ubuntu 电脑协同时，经常需要从一台电脑登录另一台电脑执行命令。
-SSH（Secure Shell）可以让我们通过网络安全地登录远程终端。只要两台电脑在同一个局域网，并且被控电脑开启了 SSH 服务，就可以在本机终端中远程操作它。
+    <title>无人机路径规划开源算法总结</title>
+    <url>/2026/05/27/%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E5%BC%80%E6%BA%90%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[前言本文依据我的 Awesome UAV Planning 论文与阅读笔记仓库重新整理。当前基线为 2026-08-06 的 e8ea156，共收录 63 个方法、数据集或平台，按照它们主要解决的问题分为 9 类。
+表格中的方法名链接到对应中文阅读笔记，最后一列链接到官方代码、项目页、论文或数据。需要特别注意：有论文、项目页或 GitHub 仓库，不等于论文完整方法已经开源，也不等于能够一键复现实验。
+开源状态怎么看
 
 
-一、准备本文约定：
-电脑 A：控制端，当前操作的电脑电脑 B：被控端，需要远程登录的电脑
-
-使用 SSH 前需要确认：
-
-两台电脑在同一个局域网内。
-电脑 B 已安装并启动 SSH 服务。
-电脑 A 能访问电脑 B 的 IP 地址。
-已知道电脑 B 的用户名和登录密码。
-
-在电脑 B 上查看用户名：
-whoami
-
-查看局域网 IP：
-hostname -I
-
-输出中类似 192.168.1.23、192.168.31.88、10.0.0.15 的地址，一般就是局域网 IP。
-二、安装并启动 SSH 服务以下命令在电脑 B 上执行。
-安装 openssh-server：
-sudo apt updatesudo apt install -y openssh-server
-
-启动 SSH 服务，并设置开机自启：
-sudo systemctl enable --now ssh
-
-查看服务状态：
-systemctl status ssh
-
-如果看到 active (running)，说明 SSH 服务已经正常运行。
-少数系统的服务名可能是 sshd，如果 ssh 不生效，可以尝试：
-systemctl status sshd
-
-三、远程登录假设电脑 B 的信息如下：
-用户名：dreamerIP 地址：192.168.1.23
-
-在电脑 A 上登录电脑 B：
-ssh dreamer@192.168.1.23
-
-第一次连接时，终端会询问是否继续连接，输入 yes 后回车，再输入电脑 B 的用户密码即可。
-登录成功后，当前终端执行的命令都运行在电脑 B 上。可以用下面的命令确认当前主机名：
-hostname
-
-退出远程登录：
-exit
-
-四、测试网络连通性如果 SSH 连接不上，先在电脑 A 上测试能否访问电脑 B：
-ping 192.168.1.23
-
-如果能持续收到回复，说明两台电脑网络基本连通。
-如果没有回复，优先检查：
-
-两台电脑是否在同一个局域网。
-IP 地址是否写错。
-电脑 B 是否连接到了正确的 WiFi 或网口。
-网线、交换机、路由器是否正常。
-是否有多个网卡，导致看错了 IP。
-
-五、常用优化设置固定 IP如果电脑 B 使用 DHCP 自动获取 IP，重启或换网络后 IP 可能变化。建议给电脑 B 设置固定 IP，后续连接会更方便。
-推荐在路由器后台设置：
-DHCP 静态分配 / 地址保留 / IP-MAC 绑定
-
-把电脑 B 的 MAC 地址绑定到固定 IP。这样不用修改系统网络配置，也不容易把网络改乱。
-如果需要在 Ubuntu 桌面版中手动设置，可以进入：
-设置 -&gt; 网络 -&gt; 有线/无线 -&gt; IPv4 -&gt; 手动
-
-示例：
-地址：192.168.1.23子网掩码：255.255.255.0网关：192.168.1.1DNS：8.8.8.8 或 114.114.114.114
-
-注意：固定 IP 不能和局域网内其他设备重复，否则会产生 IP 冲突。
-配置免密登录每次登录都输入密码比较麻烦，可以在电脑 A 上配置 SSH 密钥。
-生成密钥：
-ssh-keygen -t ed25519
-
-一路回车即可。默认会生成：
-~/.ssh/id_ed25519~/.ssh/id_ed25519.pub
-
-把公钥复制到电脑 B：
-ssh-copy-id dreamer@192.168.1.23
-
-之后再次登录：
-ssh dreamer@192.168.1.23
-
-如果配置成功，就不需要再输入密码。
-设置主机别名IP 地址不好记，可以在电脑 A 上编辑 SSH 配置文件：
-nano ~/.ssh/config
-
-添加：
-Host robot    HostName 192.168.1.23    User dreamer    Port 22
-
-以后可以直接登录：
-ssh robot
-
-六、传输文件SSH 也可以配合 scp 在两台电脑之间传文件。
-从电脑 A 复制文件到电脑 B：
-scp local_file.txt dreamer@192.168.1.23:~/
-
-从电脑 B 复制文件到电脑 A：
-scp dreamer@192.168.1.23:~/remote_file.txt ./
-
-复制整个文件夹：
-scp -r my_folder dreamer@192.168.1.23:~/
-
-如果已经设置别名，可以写得更简单：
-scp -r my_folder robot:~/
-
-七、常见问题
-
-
-报错
-常见原因
-处理方法
+标记
+含义
 
 
 
-Connection refused
-网络能找到电脑 B，但 SSH 服务未启动或 22 端口未开放
-在电脑 B 上执行 sudo systemctl status ssh，必要时执行 sudo systemctl start ssh
+代码 &#x2F; 核心代码
+已公开论文相关实现，但仍需核对权重、数据、配置和部署资产
 
 
-No route to host
-网络不通，或 IP 地址写错
-在电脑 A 上执行 ping 192.168.1.23，检查网络和 IP
+部分开源
+仅公开部分模块或相关子系统
 
 
-Permission denied
-用户名、密码或密钥不正确
-在电脑 B 上用 whoami 确认用户名，再用 ssh 用户名@IP地址 登录
+上游代码 &#x2F; 基础仿真器
+只公开依赖或研究底座，不代表论文新增方法已经发布
 
 
-REMOTE HOST IDENTIFICATION HAS CHANGED
-电脑 B 重装系统或主机指纹变化
-在电脑 A 上执行 ssh-keygen -R 192.168.1.23 后重新连接
+仓库 &#x2F; 占位仓库 &#x2F; 项目页
+可能只有说明、演示或发布预告，不能据此认定代码已经开源
 
 
-八、安全建议
-不要使用过于简单的系统密码。
-优先使用 SSH 密钥登录。
-不需要远程控制时，可以关闭 SSH 服务。
-不要随便把 SSH 端口暴露到公网。
-如果必须公网访问，建议先用 VPN、Tailscale、ZeroTier 等方式组网，再使用 SSH 登录。
+未开源 &#x2F; 未确认
+官方明确尚未发布，或截至核验日期尚未确认官方方法实现
 
-关闭 SSH 服务：
-sudo systemctl stop ssh
 
-禁止开机自启：
-sudo systemctl disable ssh
 
-总结局域网中使用 SSH 远控电脑的核心流程：
+截至 2026-08-06，YOPOv2-Tracker 的 Tracker 代码与权重尚未发布；MAD 和 AeroAct 的论文专用实现尚未确认开源。FlightBench 与 Drive-OccWorld 已公开核心代码，但都不是包含全部资产、权重和配置的一键复现包。
 
-在被控电脑上安装并启动 openssh-server。
-查看被控电脑的用户名和局域网 IP。
-在控制端使用 ssh 用户名@IP地址 登录。
-按需配置固定 IP、免密登录和主机别名。
-使用 scp 在两台电脑之间传输文件。
+几个容易混淆的概念
 
-配置完成后，远程调试机器人、编译代码、查看 ROS 节点或启动程序都会方便很多。
+
+概念
+主要回答的问题
+常见输出
+
+
+
+路径规划
+从哪里走
+离散路径、几何路径
+
+
+运动规划
+在动力学约束下能否这样飞
+状态序列、动作序列
+
+
+轨迹规划
+如何连续、平滑地飞
+多项式、B-spline、MINCO 轨迹
+
+
+在线重规划
+环境变化后如何快速修正
+滚动更新的局部轨迹
+
+
+探索 &#x2F; 覆盖
+目标尚未确定时，下一步去哪里看
+Frontier、视点、扫描航线
+
+
+多机规划
+多架无人机如何分工并避免冲突
+多机轨迹、任务分配
+
+
+学习型规划
+网络替代或增强规划链路的哪一部分
+动作、航点、轨迹、代价或初值
+
+
+世界 &#x2F; 动作模型
+动作会让环境和自身状态怎样变化
+未来占据、潜在状态、未来视觉或动作块
+
+
+分类总览
+
+
+类别
+数量
+核心问题
+代表方法
+
+
+
+单机局部轨迹规划与重规划
+9
+实时生成安全、平滑、动力学可行的局部轨迹
+Fast-Planner、EGO-Planner、GCOPTER、SUPER
+
+
+动态环境与感知约束安全规划
+6
+处理动态障碍、有限视野、定位退化和跟踪扰动
+PANTHER、Intent-MPC、APACE、SIMP
+
+
+多机安全集群与编队轨迹规划
+6
+多机避碰、通信延迟、规模扩展和编队变形
+EGO-Swarm、MADER、Primitive-Swarm
+
+
+探索覆盖搜索与重建任务规划
+13
+主动选择 Frontier、视点、覆盖顺序和任务分配
+FUEL、RACER、FC-Planner、ActiveGS
+
+
+学习型规划与端到端避障
+10
+用学习方法生成动作、航点、轨迹或规划器近似
+YOPO、YOPOv2-Tracker、NavRL、OMC-RL
+
+
+视觉语言导航
+7
+根据语言、图像或语义目标产生导航行为
+AerialVLN、AerialVLA、HALO、WorldVLN
+
+
+3DGS 神经地图安全导航与主动建图
+3
+在 Gaussian Splatting 地图中规划、控制和选择视点
+Splat-Nav、SAFER-Splat、RT-GuIDE
+
+
+平台、数据集与评测工具
+6
+提供任务定义、数据生成、仿真和统一评测
+FlightBench、OpenFly、CARIC、CityNav
+
+
+世界动作模型
+3
+预测动作影响下的未来占据、潜在状态或视觉后果，并用于规划或控制
+Drive-OccWorld、MAD、AeroAct
+
+
+合计
+63
+
+
+
+
+1. 单机局部轨迹规划与重规划这一类关注单架无人机如何在未知或复杂环境中，持续生成可执行的安全局部轨迹。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+Fast-Planner
+Kinodynamic search、B-spline 优化与滚动重规划
+代码
+
+
+Topo-PGO
+用多条拓扑路径引导梯度优化，跳出局部极小值
+Fast-Planner · TopoTraj
+
+
+RAPTOR
+拓扑路径、风险感知轨迹修正与主动 yaw 规划
+部分开源：规划主干
+
+
+EGO-Planner
+不显式构建 ESDF 的梯度轨迹优化
+代码
+
+
+EVA-Planner
+根据环境复杂度自适应调节飞行激进度
+代码
+
+
+TGK-Planner
+拓扑引导采样与锚定迭代 QP
+代码
+
+
+GCOPTER
+安全走廊约束下的 MINCO 轨迹优化
+代码
+
+
+FASTER
+Whole &#x2F; Safe 双轨迹与未知空间安全回退
+代码
+
+
+SUPER
+远距 LiDAR、双轨迹和高速安全重规划
+仓库
+
+
+2. 动态环境与感知约束安全规划这类方法不仅要避开会移动的障碍，还会把相机视场、特征可见性、定位质量或模型扰动纳入规划。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+PANTHER
+动态避障、视场约束和 yaw 轨迹联合优化
+代码
+
+
+Intent-MPC
+将动态障碍的意图预测引入 MPC
+代码
+
+
+LA-Planner
+弱纹理和低光照环境中的定位感知规划
+代码
+
+
+APACE
+以共视、视差和可匹配性提升高速视觉定位
+代码
+
+
+PE-Planner
+MPCC、高阶离散 CBF 与在线扰动补偿
+仿真代码
+
+
+SIMP
+安全时间区间、时空拓扑和四维走廊轨迹
+核心代码
+
+
+3. 多机安全集群与编队轨迹规划这一类主要处理多机间避碰、分布式协同、通信延迟、规模扩展，以及编队保持和变形。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+EGO-Swarm
+EGO-Planner 的去中心化多机扩展
+代码
+
+
+EGO-v2
+时空联合优化、UWB 漂移修正和野外微型集群
+仿真 · 数据与硬件
+
+
+MADER
+去中心化异步规划与 check-recheck 协议
+代码
+
+
+Robust MADER
+将有界通信延迟纳入多机安全提交协议
+代码
+
+
+Primitive-Swarm
+用运动基元库和占用查表扩展大规模集群
+代码
+
+
+Swarm-Formation
+复杂环境中的分布式编队保持与变形
+代码
+
+
+4. 探索、覆盖、搜索与重建任务规划这类工作的目标通常不只是“到达一个已知终点”，而是主动决定下一步去哪里观察、扫描、搜索或重建。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+FUEL
+增量 Frontier 与分层未知空间探索
+代码
+
+
+FALCON
+用覆盖路径引导全局探索，减少局部短视
+代码
+
+
+EDEN
+双层探索顺序、曲率感知视点与连续高速轨迹
+代码
+
+
+EPIC
+基于点云拓扑的轻量 LiDAR 探索
+代码
+
+
+Star-Searcher
+在未知环境中联合目标搜索与表面检查
+代码
+
+
+RACER
+受限通信下的去中心化多机快速探索
+代码
+
+
+C2-Explorer
+连通任务表示与连续性驱动的多机任务分配
+代码
+
+
+FC-Planner
+骨架引导的复杂三维场景覆盖规划
+代码
+
+
+FC-Vision
+未知障碍下的可见性维护和扫描路径修复
+仓库
+
+
+PredRecon
+用未知表面预测改善主动重建视点规划
+代码
+
+
+ActiveGS
+以 Gaussian 置信度联合探索与重建质量提升
+代码
+
+
+MAGICIAN
+用预测占据和 imagined Gaussians 做长期主动建图
+代码
+
+
+SOAR
+异构 LiDAR &#x2F; 相机多 UAV 主动重建
+代码
+
+
+5. 学习型规划与端到端避障这一类用模仿学习、强化学习、神经网络或可微物理，直接生成动作、航点、轨迹，或近似传统规划链路的一部分。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+Deep-PANTHER
+用模仿学习生成 PANTHER 多模态候选轨迹
+代码
+
+
+YOPO
+用一次网络前向压缩感知、搜索和轨迹优化
+代码
+
+
+YOPOv2-Tracker
+统一 RGB-D 目标检测、候选轨迹与姿态 &#x2F; 推力控制
+Tracker 未开源 · 论文 · 占位仓库 · 相关导航 &#x2F; 控制代码
+
+
+NavRL
+PPO 动态避障策略与 velocity-obstacle safety shield
+代码
+
+
+Agile-Autonomy
+从特权专家学习真实环境高速视觉飞行
+代码
+
+
+ViTFly
+比较 ViT、CNN 和时序网络的深度图避障策略
+代码
+
+
+evfly
+单目事件相机、ConvLSTM 和少样本真实迁移
+代码
+
+
+RAPID
+用逆强化学习从深度图生成高速避障航点
+未确认官方代码
+
+
+DiffPhysDrone
+通过可微物理直接训练单机和无通信集群策略
+代码
+
+
+OMC-RL
+掩码时序对比表征与 Oracle 引导的视觉强化学习
+部分开源：上游代码
+
+
+6. 视觉语言导航这类任务把自然语言、目标图像或开放词汇语义加入导航，让无人机理解“去哪里”以及“要找什么”。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+AerialVLN
+城市级无人机视觉语言导航任务与 AirSim 基准
+代码
+
+
+AerialVLA &#x2F; AeroVLA
+将视觉和语言直接映射为 UAV 动作 token
+代码
+
+
+GaussNav
+用 Semantic Gaussian 视觉记忆做 ImageGoal 导航
+代码
+
+
+HALO
+高空单目开放词汇地图与语言条件探索
+代码
+
+
+UAV-Flow
+一句短指令对应的真实 UAV 轨迹模仿基准
+代码 · 真实数据
+
+
+WorldVLN
+在潜空间预测未来，再解码连续相对航点
+代码 · 权重
+
+
+See, Point, Fly
+通用 VLM 二维指点与相机几何三维动作生成
+代码
+
+
+7. 3DGS 神经地图安全导航与主动建图这类方法直接利用 Gaussian Splatting 地图进行碰撞检查、安全控制或信息驱动的视点规划。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+Splat-Nav
+Gaussian 地图中的几何碰撞约束和安全轨迹
+代码
+
+
+SAFER-Splat
+在线 Gaussian 地图上的 CBF safety filter
+代码
+
+
+RT-GuIDE
+实时 Gaussian 建图与信息驱动视点选择
+代码
+
+
+8. 平台、数据集与评测工具这一类不是单一规划算法，而是为算法提供任务定义、数据、仿真场景或统一评测标准。
+
+
+
+方法 &#x2F; 平台
+核心内容
+资源与开源状态
+
+
+
+FlightBench
+学习型与优化型第一视角四旋翼导航统一评测
+核心平台已开源，非完整一键复现 · 项目页 · 代码
+
+
+OpenFly
+Aerial VLN 数据生成、训练和统一评测平台
+代码
+
+
+CARIC
+异构多 UAV 协同巡检、分配和规划基准
+项目页
+
+
+UAV-ON
+开放世界无人机 ObjectGoal Navigation 基准
+代码
+
+
+CityNav
+真实城市三维扫描数字孪生中的大范围语言目标导航
+代码
+
+
+TravelUAV
+连续六自由度长程 VLN 与分级求助基准
+仓库
+
+
+9. 世界动作模型世界动作模型尝试学习“执行某个动作后，环境和无人机会怎样变化”。这一方向与传统局部规划并不等价：有的方法显式预测未来占据，有的方法只在潜空间保存地图记忆，也有的方法在训练时预测未来视觉、部署时直接生成动作。
+
+
+
+方法
+核心内容
+资源与开源状态
+
+
+
+Drive-OccWorld
+用动作条件预测未来 4D 语义占据与场景流，再以显式代价选择候选轨迹
+核心代码已开源，仓库未提供论文任务权重 · 项目页 · 代码
+
+
+MAD
+用占据、可见性和本体状态监督世界模型潜在记忆，直接输出四旋翼加速度
+MAD 专用实现未确认开源 · 论文 · 基础仿真器（非 MAD 实现）
+
+
+AeroAct
+训练时联合预测未来第一视角与动作块，部署时直接生成局部飞行轨迹
+AeroAct 专用代码未确认开源，数据与权重未确认发布 · 论文 · 基础仿真器（非 AeroAct 实现）
+
+
+推荐阅读路线下面的顺序表示知识依赖，不是对算法进行主观排名。
+
+局部规划基础：Fast-Planner → EGO-Planner → GCOPTER → SUPER
+拓扑鲁棒与主动感知：Fast-Planner → Topo-PGO → RAPTOR
+动态障碍与感知约束：PANTHER → Intent-MPC &#x2F; SIMP → APACE &#x2F; LA-Planner
+多机安全：MADER → Robust MADER；工程集群可读 EGO-Swarm → EGO-v2
+探索与重建：FUEL → FALCON &#x2F; EDEN；主动重建可读 PredRecon → ActiveGS &#x2F; MAGICIAN
+学习型避障：Agile-Autonomy &#x2F; YOPO → YOPOv2-Tracker &#x2F; NavRL &#x2F; DiffPhysDrone &#x2F; OMC-RL → FlightBench
+视觉语言导航：AerialVLN → OpenFly &#x2F; TravelUAV → AerialVLA &#x2F; WorldVLN
+3DGS 导航：Splat-Nav → SAFER-Splat；主动建图可对照 RT-GuIDE
+世界动作模型：Drive-OccWorld（显式占据预测）→ MAD（潜在空间地图记忆）&#x2F; AeroAct（未来视觉辅助动作生成）
+
+横向比较时先统一口径
+输出究竟是几何路径、连续轨迹、航点还是即时速度；
+环境是静态、动态、未知，还是只有仿真器能够直接访问；
+安全来自经验成功率、后备轨迹、safety filter 还是形式化证明；
+“开源”指完整系统、核心模块、上游代码、项目页，还是仅有预训练模型；
+世界模型在部署时是否真的滚动预测未来，还是未来预测只提供训练监督；
+实验证据属于离线开放环、闭环仿真、sim-to-real、数字孪生还是真机闭环。
+
+因此，选算法时不能只看论文中的最高速度或成功率，也不能只看仓库是否存在。更可靠的做法是先确定自己的传感器、地图形式、控制接口和场景，再检查代码、权重、数据、配置以及部署资产是否真正齐全。
 ]]></content>
       <categories>
-        <category>技术分享</category>
-        <category>使用教程</category>
+        <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>Linux</tag>
-        <tag>SSH</tag>
-        <tag>局域网</tag>
-        <tag>远程控制</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>VINS-Fusion环境搭建与使用</title>
-    <url>/2026/03/30/VINS-Fusion%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[前言VINS-Fusion是一款优秀的视觉惯性导航系统（VIO），支持多种相机配置（单目、双目、RGB-D等）和GPS融合。本文记录在ROS2环境下的搭建与使用过程。
-参考教程详细的安装步骤可以参考：CSDN教程
-环境搭建依赖安装sudo apt updatesudo apt install -y \    ros-humble-cv-bridge \    ros-humble-tf2-ros \    ros-humble-pcl-conversions \    ros-humble-nav_msgs \    ros-humble-sensor-msgs \    ros-humble-geometry-msgs
-
-编译安装# 创建工作空间mkdir -p ~/code/vins_ws/srccd ~/code/vins_ws/src# 克隆VINS-Fusion ROS2版本git clone https://github.com/HKUST-Aerial-Robotics/VINS-Fusion.git vins_fusion_ros2# 安装依赖cd vins_fusion_ros2rosdep install --from-paths . --ignore-src -r -y# 编译cd ~/code/vins_wscolcon build --symlink-install# 设置环境变量echo &quot;source ~/code/vins_ws/install/setup.bash&quot; &gt;&gt; ~/.bashrcsource ~/.bashrc
-
-数据集测试1. 下载数据集下载EuRoC数据集（ROS2 bag格式）：
-
-数据集地址：EuRoC Data Sets
-推荐序列：V1_01_easy、V1_02_medium、MH_01_easy 等
-
-将数据下载并解压到合适的位置，例如：
-~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/
-
-2. 启动RViz2可视化在终端1中运行：
-source ~/code/vins_ws/install/setup.bashrviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
-
-3. 启动VINS-Fusion节点在终端2中运行：
-source ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
-
-4. 播放数据集在终端3中运行：
-ros2 bag play ~/code/vins_ws/src/vins_fusion_ros2/data/V1_01_easy/V1_01_easy.db3
-
-在RViz2中应该能看到位姿估计轨迹和特征点云。
-RealSense D435i实机测试1. 启动相机在新终端中发布双目红外图像和IMU数据：
-ros2 launch realsense2_camera rs_launch.py \    enable_color:=false \    enable_depth:=false \    enable_infra1:=true \    enable_infra2:=true \    enable_accel:=true \    enable_gyro:=true \    unite_imu_method:=2 \    gyro_fps:=200 \    accel_fps:=200 \    depth_module.infra_profile:=640,480,30
-
-2. 关闭激光发射器在室外或使用被动双目时，建议关闭激光投影器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-
-3. 启动VINS-Fusionsource ~/code/vins_ws/install/setup.bashros2 launch vins_fusion_ros2 vins_fusion_ros2.launch.py
-
-4. 查看结果在RViz2中可视化：
-rviz2 -d ~/code/vins_ws/src/vins_fusion_ros2/config/vins_rviz_config.rviz
-
-配置文件说明VINS-Fusion的配置文件位于：
-~/code/vins_ws/src/vins_fusion_ros2/config/
-
-主要配置文件：
-
-
-
-配置文件
-说明
-
-
-
-stereo_euroc_config.yaml
-EuRoC数据集双目配置
-
-
-stereo_realsense_config.yaml
-RealSense双目配置
-
-
-rgb_d_realsense_config.yaml
-RGB-D配置
-
-
-配置文件关键参数# 相机话题image0_topic: &quot;/camera/infra1/image_raw&quot;image1_topic: &quot;/camera/infra2/image_raw&quot;imu_topic: &quot;/camera/imu&quot;# 相机内参（需要标定）camera_matrix: [fx, 0.0, cx, 0.0, fy, cy, 0.0, 0.0, 1.0]# IMU到相机的外参body_T_imu: [...]# 时间同步参数acc_noise: 0.1    # 加速度计噪声gyr_noise: 0.01   # 陀螺仪噪声
-
-使用技巧1. 相机标定使用VINS-Fusion前，需要对相机进行内参标定：
-# 安装kalibrsudo apt install -y ros-humble-kalibr# 标定相机内参kalibr_calibrate_imu_camera --bag your_calibration.bag \    --cam camchain.yaml --imu imu.yaml \    --target april_6x6.yaml
-
-2. 提高初始化成功率
-确保相机视野中有足够的纹理和特征点
-初始化时缓慢移动相机，避免快速运动
-保持足够的照明条件
-
-3. 多机协同VINS-Fusion支持多传感器融合，可以根据需要添加：
-
-GPS传感器
-轮速计
-其他视觉传感器
-
-常见问题1. 初始化失败原因：相机运动过快或特征点不足
-解决方法：
-
-缓慢移动相机
-增加场景纹理
-调整特征检测参数
-
-2. 时间戳不同步原因：IMU和图像时间戳未对齐
-解决方法：
-
-设置 unite_imu_method:=2
-检查话题时间戳
-调整时间同步参数
-
-3. 性能问题解决方法：
-
-降低图像分辨率
-减少特征点数量
-使用更好的CPU&#x2F;GPU
-
-4. 漂移问题原因：长时间运行或纹理单一环境
-解决方法：
-
-添加闭环检测模块
-融合GPS信息
-定期重置
-
-进阶应用1. 回环检测VINS-Fusion可以集成回环检测模块：
-# 在配置文件中启用loop_closure: 1load_previous_pose_graph: 1
-
-2. 与其他系统集成VINS-Fusion可以与以下系统集成：
-
-Fast-Drone：快速无人机导航
-LIO-SAM：激光-视觉融合
-Cartographer：2D&#x2F;3D建图
-
-3. 实时性能优化# 降低特征点数量max_cnt: 150           # 特征点最大数量min_dist: 30           # 特征点最小间距# 调整窗口大小window_size: 10        # 滑动窗口大小
-
-参考资源
-VINS-Fusion GitHub
-VINS-Mono论文
-EuRoC数据集
-Kalibr标定工具
-
-总结VINS-Fusion是一个功能强大的VIO系统，适合用于：
-
-无人机自主导航
-移动机器人定位
-AR&#x2F;VR应用
-三维重建
-
-通过本文的配置，你可以快速搭建VINS-Fusion环境并开始使用。
-]]></content>
-      <categories>
-        <category>SLAM</category>
-        <category>视觉惯性导航</category>
-      </categories>
-      <tags>
-        <tag>SLAM</tag>
-        <tag>ROS2</tag>
-        <tag>VIO</tag>
-        <tag>VINS-Fusion</tag>
+        <tag>路径规划</tag>
+        <tag>多机</tag>
+        <tag>轨迹规划</tag>
+        <tag>开源算法</tag>
       </tags>
   </entry>
 </search>
