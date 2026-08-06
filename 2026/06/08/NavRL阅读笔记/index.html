@@ -162,21 +162,26 @@
   isHighlightShrink: false,
   isToc: true,
   pageType: 'post'
-}</script><link rel="stylesheet" href="/css/custom.css?v=20260609-tags-starmap"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://picsum.photos/seed/ziqian-blog-mdl32z/1600/900);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Dreamer Island</span></a><a class="nav-page-title" href="/"><span class="site-name">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-08T14:00:00.000Z" title="发表于 2026-06-08 22:00:00">2026-06-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-08T12:44:19.490Z" title="更新于 2026-07-08 20:44:19">2026-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/">论文学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id data-flag-title><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="NavRL-阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"><a href="#NavRL-阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么" class="headerlink" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"></a>NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</h1><span id="more"></span>
-
+}</script><link rel="stylesheet" href="/css/custom.css?v=20260609-tags-starmap"><meta name="generator" content="Hexo 8.1.1"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(https://picsum.photos/seed/ziqian-blog-mdl32z/1600/900);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Dreamer Island</span></a><a class="nav-page-title" href="/"><span class="site-name">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-06-08T14:00:00.000Z" title="发表于 2026-06-08 22:00:00">2026-06-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-07-08T12:44:19.490Z" title="更新于 2026-07-08 20:44:19">2026-07-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/">论文学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">6.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>21分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id data-flag-title><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="NavRL-阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</h1>
+<span id="more"></span>
 <blockquote>
-<p>论文：<strong>NavRL: Learning Safe Flight in Dynamic Environments</strong><br>期刊：<strong>IEEE RA-L 2025</strong><br>作者：<strong>Zhefan Xu, Xinming Han, Haoyu Shen, Hanyu Jin, Kenji Shimada</strong><br>代码：<a target="_blank" rel="noopener" href="https://github.com/Zhefan-Xu/NavRL">https://github.com/Zhefan-Xu/NavRL</a></p>
+<p>论文：<strong>NavRL: Learning Safe Flight in Dynamic Environments</strong><br>
+期刊：<strong>IEEE RA-L 2025</strong><br>
+作者：<strong>Zhefan Xu, Xinming Han, Haoyu Shen, Hanyu Jin, Kenji Shimada</strong><br>
+代码：<a target="_blank" rel="noopener" href="https://github.com/Zhefan-Xu/NavRL">https://github.com/Zhefan-Xu/NavRL</a></p>
 </blockquote>
 <p>这篇论文最值得看的地方，不是“用了 PPO”这件事，而是作者把一个能落到真机上的动态环境局部导航系统拆成了三层：<strong>可迁移的状态表示、可学习的局部速度策略、可解释的安全屏蔽层</strong>。它不是那种纯 end-to-end 的“图像进、动作出”工作，而是明显更偏工程部署导向。</p>
 <p>对于<strong>面向动态未知环境的无人机强化学习局部导航与真实部署</strong>这一研究方向，这篇论文的相关性非常直接：它已经把“动态障碍感知 + RL 决策 + 安全兜底 + Jetson 真机部署”这条链路走通了一遍。它的长处和短板，也基本对应了后续最容易继续往前推进的切入点。</p>
-<h2 id="一页速览"><a href="#一页速览" class="headerlink" title="一页速览"></a>一页速览</h2><table>
+<h2 id="一页速览">一页速览</h2>
+<table>
 <thead>
 <tr>
 <th>维度</th>
 <th>结论</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>研究任务</td>
 <td>无人机在动态未知环境中做局部导航，既避开静态障碍，也避开移动障碍，并尽量实现零样本真机迁移。</td>
 </tr>
@@ -204,11 +209,13 @@
 <td>对相关研究方向的意义</td>
 <td>很适合作为“动态环境 RL 局部导航 + 真机部署”的复现基线与对标对象</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <blockquote>
 <p><strong>一句话判断：</strong> NavRL 不是最花哨的学习导航论文，但很像一个真正能上机的动态局部导航基线。</p>
 </blockquote>
-<h2 id="0-先说结论：这篇论文和相关研究方向有什么关系？"><a href="#0-先说结论：这篇论文和相关研究方向有什么关系？" class="headerlink" title="0. 先说结论：这篇论文和相关研究方向有什么关系？"></a>0. 先说结论：这篇论文和相关研究方向有什么关系？</h2><p>这篇论文和上述研究方向是<strong>强相关</strong>的，原因有四个：</p>
+<h2 id="0-先说结论：这篇论文和相关研究方向有什么关系？">0. 先说结论：这篇论文和相关研究方向有什么关系？</h2>
+<p>这篇论文和上述研究方向是<strong>强相关</strong>的，原因有四个：</p>
 <ol>
 <li>它研究的就是<strong>局部导航</strong>，不是全局路径规划，也不是纯控制跟踪。</li>
 <li>它明确处理了<strong>动态障碍</strong>，而不是只在静态障碍里做强化学习。</li>
@@ -223,11 +230,20 @@
 <li>真机部署时，瓶颈到底在策略网络，还是在前端感知和安全约束。</li>
 </ul>
 <p>因此，如果后续要围绕这一方向继续做论文创新，这篇文章更像是一个<strong>很实用的起点</strong>，而不是终点。</p>
-<h2 id="1-这篇论文解决什么问题？"><a href="#1-这篇论文解决什么问题？" class="headerlink" title="1. 这篇论文解决什么问题？"></a>1. 这篇论文解决什么问题？</h2><p>这篇论文关注的场景，是<strong>无人机在未知或部分未知的动态环境中进行局部自主导航</strong>：一边向目标点前进，一边避开静态障碍和移动障碍。现有方法里，传统优化&#x2F;规划方法往往要把系统拆成预测、建图、轨迹优化等多个模块，参数多、调参重，对环境变化也比较敏感；而一些学习方法虽然有更强的适应性，但要么依赖图像直接输入导致 sim-to-real 很难，要么缺少安全机制，不适合直接上真机。作者想解决的核心痛点，其实就一句话：<strong>能不能训练一个强化学习局部导航策略，让它既能躲静态障碍，也能躲动态障碍，还能比较稳地迁移到真实无人机上，并且在策略失误时有一个轻量安全兜底。</strong></p>
-<h2 id="2-方法的核心思路是什么？"><a href="#2-方法的核心思路是什么？" class="headerlink" title="2. 方法的核心思路是什么？"></a>2. 方法的核心思路是什么？</h2><h3 id="整体思路"><a href="#整体思路" class="headerlink" title="整体思路"></a>整体思路</h3><p>NavRL 的整体方法并不复杂，但工程组合很有针对性。它先不用原始 RGB 图像直接喂给策略网络，而是把环境整理成两类中间表示：<strong>静态障碍的射线距离表示</strong>和<strong>动态障碍的目标级状态表示</strong>。然后用 PPO 学一个<strong>目标导向的局部速度策略</strong>，输出目标坐标系下的三维速度指令。最后在部署时，不直接相信网络输出，而是用一个基于 <strong>Velocity Obstacle</strong> 思想的安全屏蔽层，对不安全动作做一次线性规划投影。</p>
+<h2 id="1-这篇论文解决什么问题？">1. 这篇论文解决什么问题？</h2>
+<p>这篇论文关注的场景，是<strong>无人机在未知或部分未知的动态环境中进行局部自主导航</strong>：一边向目标点前进，一边避开静态障碍和移动障碍。现有方法里，传统优化/规划方法往往要把系统拆成预测、建图、轨迹优化等多个模块，参数多、调参重，对环境变化也比较敏感；而一些学习方法虽然有更强的适应性，但要么依赖图像直接输入导致 sim-to-real 很难，要么缺少安全机制，不适合直接上真机。作者想解决的核心痛点，其实就一句话：<strong>能不能训练一个强化学习局部导航策略，让它既能躲静态障碍，也能躲动态障碍，还能比较稳地迁移到真实无人机上，并且在策略失误时有一个轻量安全兜底。</strong></p>
+<h2 id="2-方法的核心思路是什么？">2. 方法的核心思路是什么？</h2>
+<h3 id="整体思路">整体思路</h3>
+<p>NavRL 的整体方法并不复杂，但工程组合很有针对性。它先不用原始 RGB 图像直接喂给策略网络，而是把环境整理成两类中间表示：<strong>静态障碍的射线距离表示</strong>和<strong>动态障碍的目标级状态表示</strong>。然后用 PPO 学一个<strong>目标导向的局部速度策略</strong>，输出目标坐标系下的三维速度指令。最后在部署时，不直接相信网络输出，而是用一个基于 <strong>Velocity Obstacle</strong> 思想的安全屏蔽层，对不安全动作做一次线性规划投影。</p>
 <p>换句话说，这篇论文的核心不是“更强的网络”，而是：<strong>先把状态表示做对，再让 RL 学反应式避障，最后用几何安全层兜底。</strong></p>
-<h3 id="流程梳理"><a href="#流程梳理" class="headerlink" title="流程梳理"></a>流程梳理</h3><p><strong>输入 -&gt; 关键模块 -&gt; 输出</strong></p>
-<p><code>RGB-D + 自身状态 + 目标点</code><br>-&gt; <code>静态障碍建图与射线表示</code><br>-&gt; <code>动态障碍检测/跟踪/测速</code><br>-&gt; <code>状态编码 + PPO 策略网络</code><br>-&gt; <code>VO-inspired safety shield</code><br>-&gt; <code>无人机速度指令</code></p>
+<h3 id="流程梳理">流程梳理</h3>
+<p><strong>输入 -&gt; 关键模块 -&gt; 输出</strong></p>
+<p><code>RGB-D + 自身状态 + 目标点</code><br>
+-&gt; <code>静态障碍建图与射线表示</code><br>
+-&gt; <code>动态障碍检测/跟踪/测速</code><br>
+-&gt; <code>状态编码 + PPO 策略网络</code><br>
+-&gt; <code>VO-inspired safety shield</code><br>
+-&gt; <code>无人机速度指令</code></p>
 <table>
 <thead>
 <tr>
@@ -237,7 +253,8 @@
 <th>是否属于本文重点亮点</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>静态障碍建模</td>
 <td>occupancy voxel map + 3D ray casting</td>
 <td>把复杂静态环境压缩成局部可通行性表示</td>
@@ -267,46 +284,63 @@
 <td>加快收敛，增强数据多样性</td>
 <td>是</td>
 </tr>
-</tbody></table>
-<h3 id="每个关键模块的作用"><a href="#每个关键模块的作用" class="headerlink" title="每个关键模块的作用"></a>每个关键模块的作用</h3><h4 id="1-静态障碍表示"><a href="#1-静态障碍表示" class="headerlink" title="1. 静态障碍表示"></a>1. 静态障碍表示</h4><p>作者先用深度图在线构建 3D occupancy voxel map，然后不把整张体素地图直接送进网络，而是从无人机位置做 3D ray casting，把各个方向上“离障碍有多远”编码成一个二维矩阵。</p>
+</tbody>
+</table>
+<h3 id="每个关键模块的作用">每个关键模块的作用</h3>
+<h4 id="1-静态障碍表示">1. 静态障碍表示</h4>
+<p>作者先用深度图在线构建 3D occupancy voxel map，然后不把整张体素地图直接送进网络，而是从无人机位置做 3D ray casting，把各个方向上“离障碍有多远”编码成一个二维矩阵。</p>
 <p>这个模块的作用是：<strong>把复杂的三维静态环境压缩成一个适合策略学习、又比较容易 sim-to-real 的几何表示。</strong></p>
 <p>这部分是有价值的设计，因为它避免了直接依赖图像纹理，也避免了整张体素地图过大、过稀疏的问题。</p>
-<h4 id="2-动态障碍表示"><a href="#2-动态障碍表示" class="headerlink" title="2. 动态障碍表示"></a>2. 动态障碍表示</h4><p>动态障碍不进 occupancy map，而是单独检测和跟踪。作者用 U-depth detector、DBSCAN detector、YOLO 分类器和 Kalman filter，最终得到每个动态障碍的<strong>相对位置、距离、速度、尺寸</strong>。</p>
+<h4 id="2-动态障碍表示">2. 动态障碍表示</h4>
+<p>动态障碍不进 occupancy map，而是单独检测和跟踪。作者用 U-depth detector、DBSCAN detector、YOLO 分类器和 Kalman filter，最终得到每个动态障碍的<strong>相对位置、距离、速度、尺寸</strong>。</p>
 <p>这个模块的作用是：<strong>把“会动的东西”显式建模成目标级对象状态，而不是混进静态地图里。</strong></p>
 <p>这里要注意一个细节：这部分动态检测与跟踪主要继承自作者前一篇工作，并不是 NavRL 这篇 paper 的核心算法创新，但它对真实部署非常重要。</p>
-<h4 id="3-状态编码与策略学习"><a href="#3-状态编码与策略学习" class="headerlink" title="3. 状态编码与策略学习"></a>3. 状态编码与策略学习</h4><p>静态障碍矩阵和动态障碍矩阵分别经过 CNN 提取特征，再和无人机内部状态拼接，送入 actor-critic 结构，用 PPO 训练。</p>
+<h4 id="3-状态编码与策略学习">3. 状态编码与策略学习</h4>
+<p>静态障碍矩阵和动态障碍矩阵分别经过 CNN 提取特征，再和无人机内部状态拼接，送入 actor-critic 结构，用 PPO 训练。</p>
 <p>这个模块的作用是：<strong>让网络学会在目标驱动下输出局部反应速度，而不是显式解轨迹优化问题。</strong></p>
 <p>真正值得注意的创新，不是 PPO 本身，而是：</p>
 <ul>
-<li>状态分成静态&#x2F;动态两条支路；</li>
+<li>状态分成静态/动态两条支路；</li>
 <li>全部都转到 <strong>goal coordinate frame</strong>；</li>
 <li>动作空间是<strong>有边界的速度命令</strong>，不是姿态、电机或离散动作。</li>
 </ul>
-<h4 id="4-安全屏蔽层"><a href="#4-安全屏蔽层" class="headerlink" title="4. 安全屏蔽层"></a>4. 安全屏蔽层</h4><p>网络输出一个候选速度 <code>V_rl</code>。如果这个速度不会落入任何 velocity obstacle 区域，就直接执行；如果会引发潜在碰撞，就求解一个小规模线性约束优化，把动作投影到最近的安全区域。</p>
+<h4 id="4-安全屏蔽层">4. 安全屏蔽层</h4>
+<p>网络输出一个候选速度 <code>V_rl</code>。如果这个速度不会落入任何 velocity obstacle 区域，就直接执行；如果会引发潜在碰撞，就求解一个小规模线性约束优化，把动作投影到最近的安全区域。</p>
 <p>这个模块的作用是：<strong>在不重做完整规划的前提下，给黑盒 RL 策略加一个可解释、可实时运行的安全补丁。</strong></p>
 <p>这一块是全文最有“部署味”的部分，也是最贴近上述研究方向的地方。</p>
-<h3 id="哪些部分是作者真正的创新？"><a href="#哪些部分是作者真正的创新？" class="headerlink" title="哪些部分是作者真正的创新？"></a>哪些部分是作者真正的创新？</h3><p>如果说得严格一点，这篇论文的创新更像<strong>系统创新</strong>而不是理论创新：</p>
+<h3 id="哪些部分是作者真正的创新？">哪些部分是作者真正的创新？</h3>
+<p>如果说得严格一点，这篇论文的创新更像<strong>系统创新</strong>而不是理论创新：</p>
 <ul>
-<li><p><strong>创新 1：面向 sim-to-real 的状态表示设计</strong><br>不用原始图像，改用静态射线图 + 动态目标状态。</p>
+<li>
+<p><strong>创新 1：面向 sim-to-real 的状态表示设计</strong><br>
+不用原始图像，改用静态射线图 + 动态目标状态。</p>
 </li>
-<li><p><strong>创新 2：面向局部导航的动作设计</strong><br>直接输出目标坐标系下的三维速度，并用 Beta 分布处理有界连续动作。</p>
+<li>
+<p><strong>创新 2：面向局部导航的动作设计</strong><br>
+直接输出目标坐标系下的三维速度，并用 Beta 分布处理有界连续动作。</p>
 </li>
-<li><p><strong>创新 3：VO-inspired safety shield</strong><br>在 RL 输出之后做几何安全投影，降低黑盒策略失误带来的碰撞风险。</p>
+<li>
+<p><strong>创新 3：VO-inspired safety shield</strong><br>
+在 RL 输出之后做几何安全投影，降低黑盒策略失误带来的碰撞风险。</p>
 </li>
-<li><p><strong>创新 4：大规模并行训练 + 真机验证链路</strong><br>用 Isaac Sim 同时训练上千架四旋翼，并完成 zero-shot real deployment。</p>
+<li>
+<p><strong>创新 4：大规模并行训练 + 真机验证链路</strong><br>
+用 Isaac Sim 同时训练上千架四旋翼，并完成 zero-shot real deployment。</p>
 </li>
 </ul>
 <p>反过来说，<strong>PPO、CNN 编码器、Kalman 跟踪</strong>本身都不是新东西。</p>
-<h2 id="3-需要重点理解哪些公式？"><a href="#3-需要重点理解哪些公式？" class="headerlink" title="3. 需要重点理解哪些公式？"></a>3. 需要重点理解哪些公式？</h2><p>这篇论文的公式不算多，但有几组必须抓住。重点不是会不会推导，而是要明白这些公式在系统里各自干什么。</p>
+<h2 id="3-需要重点理解哪些公式？">3. 需要重点理解哪些公式？</h2>
+<p>这篇论文的公式不算多，但有几组必须抓住。重点不是会不会推导，而是要明白这些公式在系统里各自干什么。</p>
 <table>
 <thead>
 <tr>
-<th>公式 &#x2F; 对象</th>
+<th>公式 / 对象</th>
 <th>在系统里的作用</th>
 <th>真正需要理解的点</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>MDP 目标公式 <code>(1)</code></td>
 <td>定义 RL 的总体优化目标</td>
 <td>这是逐时刻局部决策，不是整条轨迹优化</td>
@@ -341,27 +375,29 @@
 <td>把危险动作投影到安全区域</td>
 <td>尽量少改 RL 动作，但不能让它撞上去</td>
 </tr>
-</tbody></table>
-<h3 id="3-1-强化学习目标"><a href="#3-1-强化学习目标" class="headerlink" title="3.1 强化学习目标"></a>3.1 强化学习目标</h3><p>论文把问题写成一个标准 MDP，目标是最大化累计折扣回报：</p>
+</tbody>
+</table>
+<h3 id="3-1-强化学习目标">3.1 强化学习目标</h3>
+<p>论文把问题写成一个标准 MDP，目标是最大化累计折扣回报：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">π* = arg max E[ Σ γ^t R(s_t, a_t) ]</span><br></pre></td></tr></table></figure>
-
 <p>这没有太多新意，但它说明作者把这个问题当成<strong>反应式局部决策</strong>来学，而不是轨迹优化问题。也就是说，网络不负责生成整条轨迹，而是每个时刻都根据当前感知状态输出一个速度动作。</p>
-<h3 id="3-2-输入状态如何定义"><a href="#3-2-输入状态如何定义" class="headerlink" title="3.2 输入状态如何定义"></a>3.2 输入状态如何定义</h3><p>作者设计的状态由三部分组成。</p>
-<h4 id="1-无人机内部状态"><a href="#1-无人机内部状态" class="headerlink" title="1. 无人机内部状态"></a>1. 无人机内部状态</h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">S_int = [目标方向单位向量, 到目标距离, 当前速度]</span><br></pre></td></tr></table></figure>
-
+<h3 id="3-2-输入状态如何定义">3.2 输入状态如何定义</h3>
+<p>作者设计的状态由三部分组成。</p>
+<h4 id="1-无人机内部状态">1. 无人机内部状态</h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">S_int = [目标方向单位向量, 到目标距离, 当前速度]</span><br></pre></td></tr></table></figure>
 <p>更具体地说，是把“机器人到目标点的相对位置”拆成<strong>方向 + 距离</strong>，再加上当前速度。这样做的实际意义是：网络不用自己从大坐标差值里再去学“方向归一化”这件事，优化会更稳定一些。</p>
 <p>而且这些量都放在 <strong>goal coordinate frame</strong> 下。这个设计很关键，因为它弱化了绝对世界坐标的影响，让策略更像“朝目标前进时如何避障”的通用技能，更利于迁移。</p>
-<h4 id="2-动态障碍状态"><a href="#2-动态障碍状态" class="headerlink" title="2. 动态障碍状态"></a>2. 动态障碍状态</h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">D_i = [相对方向单位向量, 相对距离, 障碍速度, 障碍尺寸]</span><br><span class="line">S_dyn = [D_1, D_2, ..., D_Nd]</span><br></pre></td></tr></table></figure>
-
+<h4 id="2-动态障碍状态">2. 动态障碍状态</h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">D_i = [相对方向单位向量, 相对距离, 障碍速度, 障碍尺寸]</span><br><span class="line">S_dyn = [D_1, D_2, ..., D_Nd]</span><br></pre></td></tr></table></figure>
 <p>这意味着动态障碍不是一堆像素，而是一组带运动属性的对象。实际含义很直接：<strong>策略不仅知道前面有东西，还知道它往哪儿动、动多快、占多大。</strong></p>
 <p>对这一研究方向来说，这个设计很值得借鉴，因为动态局部导航的关键往往不是“看到障碍”，而是“知道它在怎么动”。</p>
-<h4 id="3-静态障碍状态"><a href="#3-静态障碍状态" class="headerlink" title="3. 静态障碍状态"></a>3. 静态障碍状态</h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">S_stat = [R_θ0, R_θ1, ..., R_θNv]</span><br></pre></td></tr></table></figure>
-
+<h4 id="3-静态障碍状态">3. 静态障碍状态</h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">S_stat = [R_θ0, R_θ1, ..., R_θNv]</span><br></pre></td></tr></table></figure>
 <p>这里每个 <code>R_θi</code> 都是一组射线长度，表示不同方向上与静态障碍的距离。它本质上是一个<strong>稠密的局部几何可通行性描述</strong>。</p>
 <p>这个表示的实际意义是：网络拿到的不是地图本身，而是“周围哪些方向更空旷”。这对局部反应式策略很友好。</p>
-<h3 id="3-3-输出动作是什么"><a href="#3-3-输出动作是什么" class="headerlink" title="3.3 输出动作是什么"></a>3.3 输出动作是什么</h3><p>作者不是直接让网络输出真实速度，而是先输出一个归一化速度，再映射到最大速度范围内：</p>
+<h3 id="3-3-输出动作是什么">3.3 输出动作是什么</h3>
+<p>作者不是直接让网络输出真实速度，而是先输出一个归一化速度，再映射到最大速度范围内：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">V_ctrl^G = v_lim * (2 * V_hat_ctrl^G - 1),    V_hat_ctrl^G ∈ [0, 1]</span><br></pre></td></tr></table></figure>
-
 <p>这里最关键的不是这个线性映射，而是背后的动作设计思想：</p>
 <ul>
 <li>输出的是<strong>速度</strong>，不是低层控制量；</li>
@@ -370,26 +406,27 @@
 <li>网络参数化的是 <strong>Beta distribution</strong>，适合有界连续动作空间。</li>
 </ul>
 <p>实际含义就是：作者希望动作既好学，又容易跨平台迁移，也方便人理解和监督。</p>
-<h3 id="3-4-奖励函数在鼓励什么"><a href="#3-4-奖励函数在鼓励什么" class="headerlink" title="3.4 奖励函数在鼓励什么"></a>3.4 奖励函数在鼓励什么</h3><p>总奖励写成：</p>
+<h3 id="3-4-奖励函数在鼓励什么">3.4 奖励函数在鼓励什么</h3>
+<p>总奖励写成：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = λ1 r_vel + λ2 r_ss + λ3 r_ds + λ4 r_smooth + λ5 r_height</span><br></pre></td></tr></table></figure>
-
 <p>看起来简单，但每一项都对应一个很现实的飞行偏好。</p>
-<h4 id="1-速度奖励-r-vel"><a href="#1-速度奖励-r-vel" class="headerlink" title="1. 速度奖励 r_vel"></a>1. 速度奖励 <code>r_vel</code></h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_vel = goal方向单位向量 · 当前速度</span><br></pre></td></tr></table></figure>
-
+<h4 id="1-速度奖励-r-vel">1. 速度奖励 <code>r_vel</code></h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_vel = goal方向单位向量 · 当前速度</span><br></pre></td></tr></table></figure>
 <p>它鼓励无人机沿着目标方向高速前进。通俗讲，就是“别磨蹭，往目标方向走”。</p>
-<h4 id="2-静态安全奖励-r-ss"><a href="#2-静态安全奖励-r-ss" class="headerlink" title="2. 静态安全奖励 r_ss"></a>2. 静态安全奖励 <code>r_ss</code></h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_ss = 平均 log(射线距离)</span><br></pre></td></tr></table></figure>
-
+<h4 id="2-静态安全奖励-r-ss">2. 静态安全奖励 <code>r_ss</code></h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_ss = 平均 log(射线距离)</span><br></pre></td></tr></table></figure>
 <p>离静态障碍越远，奖励越大。这里用 log 而不是线性距离，意味着作者希望“离得很近时惩罚更敏感，离得已经够远时边际收益变小”。</p>
-<h4 id="3-动态安全奖励-r-ds"><a href="#3-动态安全奖励-r-ds" class="headerlink" title="3. 动态安全奖励 r_ds"></a>3. 动态安全奖励 <code>r_ds</code></h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_ds = 平均 log(与动态障碍的距离)</span><br></pre></td></tr></table></figure>
-
+<h4 id="3-动态安全奖励-r-ds">3. 动态安全奖励 <code>r_ds</code></h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_ds = 平均 log(与动态障碍的距离)</span><br></pre></td></tr></table></figure>
 <p>它和静态安全奖励类似，但针对会动的障碍。实际含义是：策略会倾向于和动态目标保持间距。</p>
-<h4 id="4-平滑奖励-r-smooth"><a href="#4-平滑奖励-r-smooth" class="headerlink" title="4. 平滑奖励 r_smooth"></a>4. 平滑奖励 <code>r_smooth</code></h4><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_smooth = - ||v_t - v_(t-1)||</span><br></pre></td></tr></table></figure>
-
+<h4 id="4-平滑奖励-r-smooth">4. 平滑奖励 <code>r_smooth</code></h4>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r_smooth = - ||v_t - v_(t-1)||</span><br></pre></td></tr></table></figure>
 <p>这在真实无人机上很重要。没有这项，RL 很容易学出抖动控制，看起来会“能躲，但飞得很难受”。</p>
-<h4 id="5-高度奖励-r-height"><a href="#5-高度奖励-r-height" class="headerlink" title="5. 高度奖励 r_height"></a>5. 高度奖励 <code>r_height</code></h4><p>作者额外惩罚无人机过度上升，防止它通过“往高处飞”来投机避障。这个设计虽然简单，但很实用，因为很多 RL 策略确实会钻这种空子。</p>
-<h3 id="3-5-安全约束在做什么"><a href="#3-5-安全约束在做什么" class="headerlink" title="3.5 安全约束在做什么"></a>3.5 安全约束在做什么</h3><p>部署阶段最重要的是下面这个投影问题：</p>
+<h4 id="5-高度奖励-r-height">5. 高度奖励 <code>r_height</code></h4>
+<p>作者额外惩罚无人机过度上升，防止它通过“往高处飞”来投机避障。这个设计虽然简单，但很实用，因为很多 RL 策略确实会钻这种空子。</p>
+<h3 id="3-5-安全约束在做什么">3.5 安全约束在做什么</h3>
+<p>部署阶段最重要的是下面这个投影问题：</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">min ||V_safe - V_rl||</span><br><span class="line">s.t.  V_safe 落在各个 velocity obstacle 外侧</span><br><span class="line">      V_min &lt;= V_safe &lt;= V_max</span><br></pre></td></tr></table></figure>
-
 <p>它的实际含义很清楚：<strong>尽量少改网络动作，但如果网络动作会撞，就把它推到最近的安全速度上。</strong></p>
 <p>这里最值得理解的不是公式本身，而是它代表的安全哲学：</p>
 <ul>
@@ -398,20 +435,22 @@
 <li>两者不是互斥，而是串联。</li>
 </ul>
 <p>这很适合真实部署，因为真机系统里往往不敢把最后控制权完全交给神经网络。</p>
-<h2 id="4-实验说明了什么？"><a href="#4-实验说明了什么？" class="headerlink" title="4. 实验说明了什么？"></a>4. 实验说明了什么？</h2><table>
+<h2 id="4-实验说明了什么？">4. 实验说明了什么？</h2>
+<table>
 <thead>
 <tr>
 <th>维度</th>
 <th>内容</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>训练平台</td>
 <td>NVIDIA Isaac Sim，RTX 4090，约 10 小时，并行训练 1024 架四旋翼</td>
 </tr>
 <tr>
 <td>仿真测试</td>
-<td>Gazebo，包含走廊场景以及高密度静态 &#x2F; 动态 &#x2F; 混合障碍环境</td>
+<td>Gazebo，包含走廊场景以及高密度静态 / 动态 / 混合障碍环境</td>
 </tr>
 <tr>
 <td>真机平台</td>
@@ -425,35 +464,52 @@
 <td>核心指标</td>
 <td>训练成功率、训练回报、平均碰撞次数、各模块时延</td>
 </tr>
-</tbody></table>
-<h3 id="使用了哪些场景、平台和硬件？"><a href="#使用了哪些场景、平台和硬件？" class="headerlink" title="使用了哪些场景、平台和硬件？"></a>使用了哪些场景、平台和硬件？</h3><p>作者的实验分三层：</p>
+</tbody>
+</table>
+<h3 id="使用了哪些场景、平台和硬件？">使用了哪些场景、平台和硬件？</h3>
+<p>作者的实验分三层：</p>
 <ol>
-<li><p><strong>训练</strong>：NVIDIA Isaac Sim<br>使用 RTX 4090，约训练 10 小时，同时并行训练 <strong>1024 架</strong>四旋翼。</p>
+<li>
+<p><strong>训练</strong>：NVIDIA Isaac Sim<br>
+使用 RTX 4090，约训练 10 小时，同时并行训练 <strong>1024 架</strong>四旋翼。</p>
 </li>
-<li><p><strong>仿真测试</strong>：Gazebo<br>包括走廊类场景，以及高密度静态&#x2F;动态&#x2F;混合障碍环境。</p>
+<li>
+<p><strong>仿真测试</strong>：Gazebo<br>
+包括走廊类场景，以及高密度静态/动态/混合障碍环境。</p>
 </li>
-<li><p><strong>真实飞行测试</strong>：自定义四旋翼平台<br>机载计算为 <strong>Jetson Orin NX</strong>，传感器使用 <strong>Intel RealSense D435i</strong>，状态估计使用 <strong>LIO</strong>。</p>
+<li>
+<p><strong>真实飞行测试</strong>：自定义四旋翼平台<br>
+机载计算为 <strong>Jetson Orin NX</strong>，传感器使用 <strong>Intel RealSense D435i</strong>，状态估计使用 <strong>LIO</strong>。</p>
 </li>
 </ol>
-<h3 id="与哪些方法进行了对比？"><a href="#与哪些方法进行了对比？" class="headerlink" title="与哪些方法进行了对比？"></a>与哪些方法进行了对比？</h3><p>主要对比了三类对象：</p>
+<h3 id="与哪些方法进行了对比？">与哪些方法进行了对比？</h3>
+<p>主要对比了三类对象：</p>
 <ul>
 <li><strong>EGO-Planner</strong>：经典静态局部规划器；</li>
 <li><strong>ViGO</strong>：作者之前做的 vision-aided dynamic planner；</li>
 <li><strong>NavRL without safety shield</strong>：看安全屏蔽层是否真的有用。</li>
 </ul>
 <p>这个对比组合有意义，但也有明显不足：<strong>缺少更强的 RL baseline</strong>，所以它更像“证明自己能部署且比这两个工程基线更抗动态障碍”，而不是证明自己在 RL 领域绝对最强。</p>
-<h3 id="使用了哪些指标？"><a href="#使用了哪些指标？" class="headerlink" title="使用了哪些指标？"></a>使用了哪些指标？</h3><p>作者主要看了四类指标：</p>
+<h3 id="使用了哪些指标？">使用了哪些指标？</h3>
+<p>作者主要看了四类指标：</p>
 <ol>
-<li><p><strong>训练成功率</strong><br>定义为从起点安全到达目标点且无碰撞。</p>
+<li>
+<p><strong>训练成功率</strong><br>
+定义为从起点安全到达目标点且无碰撞。</p>
 </li>
-<li><p><strong>训练回报曲线</strong></p>
+<li>
+<p><strong>训练回报曲线</strong></p>
 </li>
-<li><p><strong>平均碰撞次数</strong><br>在 20 次运行上统计。</p>
+<li>
+<p><strong>平均碰撞次数</strong><br>
+在 20 次运行上统计。</p>
 </li>
-<li><p><strong>各模块运行时延</strong></p>
+<li>
+<p><strong>各模块运行时延</strong></p>
 </li>
 </ol>
-<h3 id="最重要的实验结果是什么？"><a href="#最重要的实验结果是什么？" class="headerlink" title="最重要的实验结果是什么？"></a>最重要的实验结果是什么？</h3><p>下面这些数字最值得记住。</p>
+<h3 id="最重要的实验结果是什么？">最重要的实验结果是什么？</h3>
+<p>下面这些数字最值得记住。</p>
 <table>
 <thead>
 <tr>
@@ -462,7 +518,8 @@
 <th>说明</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>Curriculum learning 提升成功率</td>
 <td><code>74.51% -&gt; 82.71%</code>、<code>62.30% -&gt; 80.96%</code>、<code>54.98% -&gt; 68.65%</code></td>
 <td>动态障碍越多，课程学习越重要</td>
@@ -487,49 +544,59 @@
 <td><code>15 ms + 27 ms + 7 ms + 16 ms</code></td>
 <td>Orin NX 上总时延约 65 ms，约 15 Hz，可实时运行</td>
 </tr>
-</tbody></table>
-<h4 id="1-Curriculum-learning-确实有效"><a href="#1-Curriculum-learning-确实有效" class="headerlink" title="1. Curriculum learning 确实有效"></a>1. Curriculum learning 确实有效</h4><p>训练环境大小为 <code>50m x 50m</code>，动态障碍数量从 <code>60 -&gt; 80 -&gt; 100 -&gt; 120</code> 逐步提升。<br>在固定训练时间下：</p>
+</tbody>
+</table>
+<h4 id="1-Curriculum-learning-确实有效">1. Curriculum learning 确实有效</h4>
+<p>训练环境大小为 <code>50m x 50m</code>，动态障碍数量从 <code>60 -&gt; 80 -&gt; 100 -&gt; 120</code> 逐步提升。<br>
+在固定训练时间下：</p>
 <ul>
 <li><code>dynamic=80</code> 时，成功率从 <code>74.51%</code> 提升到 <code>82.71%</code></li>
 <li><code>dynamic=100</code> 时，从 <code>62.30%</code> 提升到 <code>80.96%</code></li>
 <li><code>dynamic=120</code> 时，从 <code>54.98%</code> 提升到 <code>68.65%</code></li>
 </ul>
 <p>这说明对于动态障碍局部导航，<strong>课程学习不是装饰项，而是训练能不能稳定起来的重要条件。</strong></p>
-<h4 id="2-大规模并行训练有用"><a href="#2-大规模并行训练有用" class="headerlink" title="2. 大规模并行训练有用"></a>2. 大规模并行训练有用</h4><p>作者比较了不同机器人数量下的训练回报，结论是：<strong>机器人越多，收敛越快，最终回报也越高。</strong></p>
+<h4 id="2-大规模并行训练有用">2. 大规模并行训练有用</h4>
+<p>作者比较了不同机器人数量下的训练回报，结论是：<strong>机器人越多，收敛越快，最终回报也越高。</strong></p>
 <p>这个结果很有参考价值，因为如果后续也做 Isaac Sim 或 Omnidrones 一类的大规模并行训练，训练吞吐量很可能决定能不能把“动态交互策略”真正学出来。</p>
-<h4 id="3-真正的优势体现在动态和混合环境"><a href="#3-真正的优势体现在动态和混合环境" class="headerlink" title="3. 真正的优势体现在动态和混合环境"></a>3. 真正的优势体现在动态和混合环境</h4><p>在 <code>20m x 40m</code> 的高密度测试图上，平均碰撞次数如下：</p>
+<h4 id="3-真正的优势体现在动态和混合环境">3. 真正的优势体现在动态和混合环境</h4>
+<p>在 <code>20m x 40m</code> 的高密度测试图上，平均碰撞次数如下：</p>
 <ul>
-<li><p><strong>静态环境</strong></p>
+<li>
+<p><strong>静态环境</strong></p>
 <ul>
 <li>EGO: <code>0.45</code></li>
 <li>ViGO: <code>0.80</code></li>
-<li>NavRL w&#x2F;o shield: <code>0.95</code></li>
+<li>NavRL w/o shield: <code>0.95</code></li>
 <li>NavRL: <code>0.65</code></li>
 </ul>
 </li>
-<li><p><strong>纯动态环境</strong></p>
+<li>
+<p><strong>纯动态环境</strong></p>
 <ul>
 <li>ViGO: <code>3.15</code></li>
-<li>NavRL w&#x2F;o shield: <code>2.70</code></li>
+<li>NavRL w/o shield: <code>2.70</code></li>
 <li>NavRL: <code>0.85</code></li>
 </ul>
 </li>
-<li><p><strong>混合环境</strong></p>
+<li>
+<p><strong>混合环境</strong></p>
 <ul>
 <li>ViGO: <code>4.40</code></li>
-<li>NavRL w&#x2F;o shield: <code>4.60</code></li>
+<li>NavRL w/o shield: <code>4.60</code></li>
 <li>NavRL: <code>2.10</code></li>
 </ul>
 </li>
 </ul>
 <p>这个结果非常说明问题：<strong>NavRL 的主要价值不是把静态环境做到极致，而是在动态和混合场景里显著降低碰撞。</strong></p>
-<h4 id="4-Safety-shield-不是可有可无"><a href="#4-Safety-shield-不是可有可无" class="headerlink" title="4. Safety shield 不是可有可无"></a>4. Safety shield 不是可有可无</h4><p>从上面的数字也能看出来，去掉 safety shield 后：</p>
+<h4 id="4-Safety-shield-不是可有可无">4. Safety shield 不是可有可无</h4>
+<p>从上面的数字也能看出来，去掉 safety shield 后：</p>
 <ul>
 <li>纯动态环境碰撞从 <code>0.85</code> 上升到 <code>2.70</code></li>
 <li>混合环境碰撞从 <code>2.10</code> 上升到 <code>4.60</code></li>
 </ul>
 <p>这说明仅靠 RL 策略本身还不够稳，安全屏蔽层在动态环境里几乎是<strong>决定性组件</strong>。</p>
-<h4 id="5-真机运行时延是可以接受的"><a href="#5-真机运行时延是可以接受的" class="headerlink" title="5. 真机运行时延是可以接受的"></a>5. 真机运行时延是可以接受的</h4><p>Jetson Orin NX 上的运行时间：</p>
+<h4 id="5-真机运行时延是可以接受的">5. 真机运行时延是可以接受的</h4>
+<p>Jetson Orin NX 上的运行时间：</p>
 <ul>
 <li>Static perception: <code>15 ms</code></li>
 <li>Dynamic perception: <code>27 ms</code></li>
@@ -537,8 +604,10 @@
 <li>Safety shield: <code>16 ms</code></li>
 </ul>
 <p>总和大约 <code>65 ms</code>，对应约 <code>15 Hz</code>。这说明它确实可以上机实时跑，但也说明一个事实：<strong>瓶颈并不在策略网络，而在前端感知和安全层。</strong></p>
-<h3 id="是否有真实无人机实验？"><a href="#是否有真实无人机实验？" class="headerlink" title="是否有真实无人机实验？"></a>是否有真实无人机实验？</h3><p>有。作者做了真实室内飞行实验，设置静态障碍，并让行人朝无人机运动，测试其避障与到达目标能力。论文给出的结论是：<strong>无人机能够零样本从仿真迁移到真实平台，并在有行人扰动的场景中安全到达目标。</strong></p>
-<h3 id="实验是否足以支持作者的结论？"><a href="#实验是否足以支持作者的结论？" class="headerlink" title="实验是否足以支持作者的结论？"></a>实验是否足以支持作者的结论？</h3><p>本文认为，它<strong>足以支持“这是一个可部署、在动态环境中有效的 RL 局部导航系统”<strong>这个结论，但</strong>还不足以支持“这是动态无人机导航的通用最优方案”</strong>。</p>
+<h3 id="是否有真实无人机实验？">是否有真实无人机实验？</h3>
+<p>有。作者做了真实室内飞行实验，设置静态障碍，并让行人朝无人机运动，测试其避障与到达目标能力。论文给出的结论是：<strong>无人机能够零样本从仿真迁移到真实平台，并在有行人扰动的场景中安全到达目标。</strong></p>
+<h3 id="实验是否足以支持作者的结论？">实验是否足以支持作者的结论？</h3>
+<p>本文认为，它<strong>足以支持“这是一个可部署、在动态环境中有效的 RL 局部导航系统”<strong>这个结论，但</strong>还不足以支持“这是动态无人机导航的通用最优方案”</strong>。</p>
 <p>原因是：</p>
 <ul>
 <li>baseline 不够丰富，特别缺少更强的 RL 和 hybrid 方法；</li>
@@ -546,7 +615,8 @@
 <li>主要指标是碰撞次数，缺少更细的效率、舒适性、死锁率、TTC 裕度等分析；</li>
 <li>最大速度只有 <code>2.0 m/s</code>，更偏安全导航，不是高速敏捷飞行。</li>
 </ul>
-<h2 id="5-这个方法有哪些局限性？"><a href="#5-这个方法有哪些局限性？" class="headerlink" title="5. 这个方法有哪些局限性？"></a>5. 这个方法有哪些局限性？</h2><table>
+<h2 id="5-这个方法有哪些局限性？">5. 这个方法有哪些局限性？</h2>
+<table>
 <thead>
 <tr>
 <th>局限性</th>
@@ -555,7 +625,8 @@
 <th>是否可验证</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>对前端感知质量依赖强</td>
 <td>策略直接依赖动态障碍检测、关联与速度估计</td>
 <td>多人交错、遮挡、低光、深度噪声大、目标突然加速</td>
@@ -563,7 +634,7 @@
 </tr>
 <tr>
 <td>动态障碍模型过于简化</td>
-<td>主要把障碍抽象成 bounding box &#x2F; sphere，并用局部几何近似处理</td>
+<td>主要把障碍抽象成 bounding box / sphere，并用局部几何近似处理</td>
 <td>非刚体目标、人群交互、急转弯目标、多障碍博弈</td>
 <td>可以，构造不同运动模型场景测试 shield 触发率与碰撞率</td>
 </tr>
@@ -577,7 +648,7 @@
 <td>状态表示压缩掉部分信息</td>
 <td>射线图和对象级状态高效，但丢失纹理、语义与细几何</td>
 <td>复杂立体场景、细长障碍、语义约束强的环境</td>
-<td>可以，与 richer map &#x2F; semantic state 做消融</td>
+<td>可以，与 richer map / semantic state 做消融</td>
 </tr>
 <tr>
 <td>实验覆盖面仍有限</td>
@@ -585,11 +656,13 @@
 <td>室外强光、大场景长航程、高速飞行、密集近距离交互</td>
 <td>可以，扩展到更复杂真实环境和长期测试</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <blockquote>
 <p><strong>最关键的一条：</strong> 这篇论文最大的风险不是“策略学不会”，而是“真实部署时前端感知和安全层一起决定了上限”。</p>
 </blockquote>
-<h2 id="6-可以如何在此基础上创新？"><a href="#6-可以如何在此基础上创新？" class="headerlink" title="6. 可以如何在此基础上创新？"></a>6. 可以如何在此基础上创新？</h2><p>如果后续想围绕这篇论文做研究，优先考虑那些<strong>真的能解决部署问题</strong>、而且<strong>能靠实验验证</strong>的方向，而不是只换个 backbone。</p>
+<h2 id="6-可以如何在此基础上创新？">6. 可以如何在此基础上创新？</h2>
+<p>如果后续想围绕这篇论文做研究，优先考虑那些<strong>真的能解决部署问题</strong>、而且<strong>能靠实验验证</strong>的方向，而不是只换个 backbone。</p>
 <table>
 <thead>
 <tr>
@@ -600,10 +673,11 @@
 <th>是否适合作为论文创新点</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>感知不确定性感知的安全屏蔽层</td>
 <td>shield 默认感知可信，但真实检测和测速都有噪声</td>
-<td>把检测框、速度估计和跟踪协方差引入 VO 约束，做 risk-aware &#x2F; chance-constrained shield</td>
+<td>把检测框、速度估计和跟踪协方差引入 VO 约束，做 risk-aware / chance-constrained shield</td>
 <td>中等偏高</td>
 <td>很适合，且非常贴合真实部署</td>
 </tr>
@@ -617,7 +691,7 @@
 <tr>
 <td>防卡死的 RL + 短时规划混合框架</td>
 <td>reactive policy + shield 在密集动态环境里可能保守甚至卡住</td>
-<td>RL 给局部意图，再由 MPC &#x2F; sampling &#x2F; trajectory optimizer 生成短时可执行轨迹</td>
+<td>RL 给局部意图，再由 MPC / sampling / trajectory optimizer 生成短时可执行轨迹</td>
 <td>高</td>
 <td>非常适合，论文潜力高</td>
 </tr>
@@ -635,17 +709,21 @@
 <td>高</td>
 <td>适合，但需要更系统的人机交互实验</td>
 </tr>
-</tbody></table>
-<h3 id="更推荐的组合"><a href="#更推荐的组合" class="headerlink" title="更推荐的组合"></a>更推荐的组合</h3><p><strong>感知不确定性建模 + 安全屏蔽层升级 + 真实部署鲁棒训练</strong></p>
+</tbody>
+</table>
+<h3 id="更推荐的组合">更推荐的组合</h3>
+<p><strong>感知不确定性建模 + 安全屏蔽层升级 + 真实部署鲁棒训练</strong></p>
 <p>这条线最能击中 NavRL 的真实薄弱处，而且最容易形成“动态未知环境 + 真机部署”的清晰论文故事。</p>
-<h2 id="7-最后给出一份简短笔记"><a href="#7-最后给出一份简短笔记" class="headerlink" title="7. 最后给出一份简短笔记"></a>7. 最后给出一份简短笔记</h2><table>
+<h2 id="7-最后给出一份简短笔记">7. 最后给出一份简短笔记</h2>
+<table>
 <thead>
 <tr>
 <th>项目</th>
 <th>内容</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>论文解决的问题</td>
 <td>让无人机在动态未知环境中进行安全局部导航，同时尽量实现从仿真到真实平台的零样本迁移</td>
 </tr>
@@ -655,7 +733,7 @@
 </tr>
 <tr>
 <td>输入</td>
-<td>目标相对状态、当前速度、静态障碍射线距离矩阵、动态障碍的位置 &#x2F; 速度 &#x2F; 尺寸状态</td>
+<td>目标相对状态、当前速度、静态障碍射线距离矩阵、动态障碍的位置 / 速度 / 尺寸状态</td>
 </tr>
 <tr>
 <td>输出</td>
@@ -683,17 +761,19 @@
 </tr>
 <tr>
 <td>复现时优先看哪些模块</td>
-<td>状态表示构造、ray casting 静态编码、动态目标跟踪接口、奖励函数实现、VO safety shield、Isaac Sim 并行训练配置、PX4 &#x2F; Jetson 部署链路</td>
+<td>状态表示构造、ray casting 静态编码、动态目标跟踪接口、奖励函数实现、VO safety shield、Isaac Sim 并行训练配置、PX4 / Jetson 部署链路</td>
 </tr>
-</tbody></table>
-<h2 id="总体评价"><a href="#总体评价" class="headerlink" title="总体评价"></a>总体评价</h2><p>如果只从算法新颖性看，NavRL 不是那种会让人惊呼“方法太新了”的论文；但如果从<strong>真实系统能不能落地</strong>这个角度看，它是很有价值的。它真正回答的问题不是“RL 能不能在论文里跑通”，而是“RL 能不能和感知、安全机制、机载计算一起组成一个能飞的动态导航系统”。</p>
+</tbody>
+</table>
+<h2 id="总体评价">总体评价</h2>
+<p>如果只从算法新颖性看，NavRL 不是那种会让人惊呼“方法太新了”的论文；但如果从<strong>真实系统能不能落地</strong>这个角度看，它是很有价值的。它真正回答的问题不是“RL 能不能在论文里跑通”，而是“RL 能不能和感知、安全机制、机载计算一起组成一个能飞的动态导航系统”。</p>
 <p>对这一研究方向来说，这篇论文最大的价值有两个：</p>
 <ol>
 <li>它给出一个<strong>能对标、能复现、能上机</strong>的动态局部导航基线。</li>
 <li>它把后续最值得创新的痛点暴露得很清楚：<strong>感知不确定性、动态交互建模、shield 的保守性、以及复杂真实场景下的鲁棒性。</strong></li>
 </ol>
 <p>因此，本文的结论是：<strong>这篇论文很值得读，也值得复现，但更值得在它暴露出来的问题上继续往前推。</strong></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/dreamer198">Dreamer</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dreamer198.top/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">https://dreamer198.top/2026/06/08/NavRL阅读笔记/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dreamer198.top" target="_blank">Dreamer Island</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">强化学习</a><a class="post-meta__tags" href="/tags/NavRL/">NavRL</a><a class="post-meta__tags" href="/tags/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a><a class="post-meta__tags" href="/tags/%E5%B1%80%E9%83%A8%E5%AF%BC%E8%88%AA/">局部导航</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-bn2h3y/1600/900" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Docker 容器内 Fast-Planner 下载、编译与测试</div></div><div class="info-2"><div class="info-item-1">前言本文是《Docker使用教程》的后续，默认已经按照其中的步骤创建了以下环境：  容器名：ros_noetic 基础镜像：osrf/ros:noetic-desktop-full 宿主机 ~/docker/ros_root 已挂载到容器 /root X11 目录和认证文件已经挂载，容器可以运行 RViz  这里的“全新容器”是指容器已经创建，但还没有下载 Fast-Planner，也没有安装项目依赖。本文不再重复安装 Docker、拉取 ROS 镜像或创建容器，只介绍如何在这个容器中下载、编译和测试 dre...</div></div></div></a><a class="pagination-related" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Vim编辑器使用教程</div></div><div class="info-2"><div class="info-item-1">前言Vim 是 Linux 终端里非常常用的文本编辑器。平时修改配置文件、写脚本、在服务器或 Docker 容器里临时改代码，经常都会用到它。 刚开始接触 Vim 时，最容易卡住的地方不是“怎么高效编辑”，而是“怎么进入编辑、怎么保存、怎么退出”。所以这篇文章先从最基本的生存命令开始，再逐步整理移动、复制粘贴、查找替换、多文件编辑和常用配置。   一、安装 Vim在 Ubuntu &#x2F; Debian 系统中安装： 12sudo apt updatesudo apt install -y vim  查看...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《动手学强化学习》阅读笔记"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1celxbw/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-17</div><div class="info-item-2">《动手学强化学习》阅读笔记</div></div><div class="info-2"><div class="info-item-1">本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。   第一章 强化学习基础什么是强化学习？强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。 环境与随机性用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：  动作选择的随机性（策略的随机性） 环境状态转移...</div></div></div></a><a class="pagination-related" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-bn2h3y/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-13</div><div class="info-item-2">Docker 容器内 Fast-Planner 下载、编译与测试</div></div><div class="info-2"><div class="info-item-1">前言本文是《Docker使用教程》的后续，默认已经按照其中的步骤创建了以下环境：  容器名：ros_noetic 基础镜像：osrf/ros:noetic-desktop-full 宿主机 ~/docker/ros_root 已挂载到容器 /root X11 目录和认证文件已经挂载，容器可以运行 RViz  这里的“全新容器”是指容器已经创建，但还没有下载 Fast-Planner，也没有安装项目依赖。本文不再重复安装 Docker、拉取 ROS 镜像或创建容器，只介绍如何在这个容器中下载、编译和测试 dre...</div></div></div></a><a class="pagination-related" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/uav-autonomy-all-in-one/forest.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-06</div><div class="info-item-2">UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</div></div><div class="info-2"><div class="info-item-1">在复现无人机路径规划算法时，我逐渐发现，真正困难的不只是把某个算法编译起来，而是让定位、规划、控制、任务和飞控组成一条稳定、可复用的完整链路。不同项目的依赖和接口各不相同，切换算法时经常需要重新整理环境。 为了解决这些问题，我开发了 UAV Autonomy All-in-One。这是一个基于 ROS1 Noetic、PX4 和 Gazebo Classic 的无人机自主飞行框架，希望用同一套工程结构连接仿真与真机，并让不同规划器能够以相对独立、平等的方式接入。   项目定位这个项目并不是新的路径规划算法，而...</div></div></div></a><a class="pagination-related" href="/2026/03/31/YOPO-ROS2-RUN/" title="YOPO-ROS2 运行指南"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-axl0z6/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-31</div><div class="info-item-2">YOPO-ROS2 运行指南</div></div><div class="info-2"><div class="info-item-1">YOPO-ROS2 运行指南   项目地址：https://github.com/dreamer198/YOPO-ROS2.git  环境依赖   依赖 版本要求    ROS 2 Humble   CUDA 12.6+   GCC&#x2F;G++ 11   PyTorch 2.4.1+cu118   Eigen3, PCL, OpenCV, yaml-cpp 系统安装   一、构建1. 构建 Controller 工作空间1234cd ~/code/YOPO-ROS2/Controllersource /...</div></div></div></a><a class="pagination-related" href="/2026/05/27/%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E5%BC%80%E6%BA%90%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" title="无人机路径规划开源算法总结"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1a12ek3/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-27</div><div class="info-item-2">无人机路径规划开源算法总结</div></div><div class="info-2"><div class="info-item-1">前言本文依据我的 Awesome UAV Planning 论文与阅读笔记仓库重新整理。当前基线为 2026-08-06 的 e8ea156，共收录 63 个方法、数据集或平台，按照它们主要解决的问题分为 9 类。 表格中的方法名链接到对应中文阅读笔记，最后一列链接到官方代码、项目页、论文或数据。需要特别注意：有论文、项目页或 GitHub 仓库，不等于论文完整方法已经开源，也不等于能够一键复现实验。 开源状态怎么看   标记 含义    代码 &#x2F; 核心代码 已公开论文相关实现，但仍需核对权重、数据...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Dreamer</div><div class="author-info-description">Welcome to Dreamer Island, a space for learning, creating, and dreaming.</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">29</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dreamer198"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dreamer198" target="_blank" title="Github"><i class="fab fa-github" style="color: #909090;"></i></a><span class="social-icon qr-social-icon qq-qr-icon" title="QQ" role="img" aria-label="QQ" tabindex="0"><i class="fab fa-qq" style="color: #12B7F5;"></i></span><span class="social-icon qr-social-icon wechat-qr-icon" title="WeChat" role="img" aria-label="WeChat" tabindex="0"><i class="fab fa-weixin" style="color: #07C160;"></i></span><a class="social-icon" href="mailto:huangziqian@whu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#NavRL-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%8A%A8%E6%80%81%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%B1%80%E9%83%A8%E5%AF%BC%E8%88%AA%E5%88%B0%E5%BA%95%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%A1%B5%E9%80%9F%E8%A7%88"><span class="toc-number">1.1.</span> <span class="toc-text">一页速览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0-%E5%85%88%E8%AF%B4%E7%BB%93%E8%AE%BA%EF%BC%9A%E8%BF%99%E7%AF%87%E8%AE%BA%E6%96%87%E5%92%8C%E7%9B%B8%E5%85%B3%E7%A0%94%E7%A9%B6%E6%96%B9%E5%90%91%E6%9C%89%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0. 先说结论：这篇论文和相关研究方向有什么关系？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%BF%99%E7%AF%87%E8%AE%BA%E6%96%87%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">1. 这篇论文解决什么问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">2. 方法的核心思路是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">整体思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86"><span class="toc-number">1.4.2.</span> <span class="toc-text">流程梳理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E4%B8%AA%E5%85%B3%E9%94%AE%E6%A8%A1%E5%9D%97%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.4.3.</span> <span class="toc-text">每个关键模块的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%9D%99%E6%80%81%E9%9A%9C%E7%A2%8D%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">1. 静态障碍表示</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E9%9A%9C%E7%A2%8D%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">2. 动态障碍表示</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%8A%B6%E6%80%81%E7%BC%96%E7%A0%81%E4%B8%8E%E7%AD%96%E7%95%A5%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">3. 状态编码与策略学习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%AE%89%E5%85%A8%E5%B1%8F%E8%94%BD%E5%B1%82"><span class="toc-number">1.4.3.4.</span> <span class="toc-text">4. 安全屏蔽层</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%AA%E4%BA%9B%E9%83%A8%E5%88%86%E6%98%AF%E4%BD%9C%E8%80%85%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%88%9B%E6%96%B0%EF%BC%9F"><span class="toc-number">1.4.4.</span> <span class="toc-text">哪些部分是作者真正的创新？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%9C%80%E8%A6%81%E9%87%8D%E7%82%B9%E7%90%86%E8%A7%A3%E5%93%AA%E4%BA%9B%E5%85%AC%E5%BC%8F%EF%BC%9F"><span class="toc-number">1.5.</span> <span class="toc-text">3. 需要重点理解哪些公式？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87"><span class="toc-number">1.5.1.</span> <span class="toc-text">3.1 强化学习目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%BE%93%E5%85%A5%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89"><span class="toc-number">1.5.2.</span> <span class="toc-text">3.2 输入状态如何定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%86%85%E9%83%A8%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">1. 无人机内部状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E9%9A%9C%E7%A2%8D%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">2. 动态障碍状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%9D%99%E6%80%81%E9%9A%9C%E7%A2%8D%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">3. 静态障碍状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%BE%93%E5%87%BA%E5%8A%A8%E4%BD%9C%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.3.</span> <span class="toc-text">3.3 输出动作是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%A5%96%E5%8A%B1%E5%87%BD%E6%95%B0%E5%9C%A8%E9%BC%93%E5%8A%B1%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.4.</span> <span class="toc-text">3.4 奖励函数在鼓励什么</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%80%9F%E5%BA%A6%E5%A5%96%E5%8A%B1-r-vel"><span class="toc-number">1.5.4.1.</span> <span class="toc-text">1. 速度奖励 r_vel</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E9%9D%99%E6%80%81%E5%AE%89%E5%85%A8%E5%A5%96%E5%8A%B1-r-ss"><span class="toc-number">1.5.4.2.</span> <span class="toc-text">2. 静态安全奖励 r_ss</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%8A%A8%E6%80%81%E5%AE%89%E5%85%A8%E5%A5%96%E5%8A%B1-r-ds"><span class="toc-number">1.5.4.3.</span> <span class="toc-text">3. 动态安全奖励 r_ds</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%B9%B3%E6%BB%91%E5%A5%96%E5%8A%B1-r-smooth"><span class="toc-number">1.5.4.4.</span> <span class="toc-text">4. 平滑奖励 r_smooth</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E9%AB%98%E5%BA%A6%E5%A5%96%E5%8A%B1-r-height"><span class="toc-number">1.5.4.5.</span> <span class="toc-text">5. 高度奖励 r_height</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E5%AE%89%E5%85%A8%E7%BA%A6%E6%9D%9F%E5%9C%A8%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.5.</span> <span class="toc-text">3.5 安全约束在做什么</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E9%AA%8C%E8%AF%B4%E6%98%8E%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">4. 实验说明了什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E5%9C%BA%E6%99%AF%E3%80%81%E5%B9%B3%E5%8F%B0%E5%92%8C%E7%A1%AC%E4%BB%B6%EF%BC%9F"><span class="toc-number">1.6.1.</span> <span class="toc-text">使用了哪些场景、平台和硬件？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95%E8%BF%9B%E8%A1%8C%E4%BA%86%E5%AF%B9%E6%AF%94%EF%BC%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">与哪些方法进行了对比？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E6%8C%87%E6%A0%87%EF%BC%9F"><span class="toc-number">1.6.3.</span> <span class="toc-text">使用了哪些指标？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.6.4.</span> <span class="toc-text">最重要的实验结果是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Curriculum-learning-%E7%A1%AE%E5%AE%9E%E6%9C%89%E6%95%88"><span class="toc-number">1.6.4.1.</span> <span class="toc-text">1. Curriculum learning 确实有效</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83%E6%9C%89%E7%94%A8"><span class="toc-number">1.6.4.2.</span> <span class="toc-text">2. 大规模并行训练有用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%9C%9F%E6%AD%A3%E7%9A%84%E4%BC%98%E5%8A%BF%E4%BD%93%E7%8E%B0%E5%9C%A8%E5%8A%A8%E6%80%81%E5%92%8C%E6%B7%B7%E5%90%88%E7%8E%AF%E5%A2%83"><span class="toc-number">1.6.4.3.</span> <span class="toc-text">3. 真正的优势体现在动态和混合环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-Safety-shield-%E4%B8%8D%E6%98%AF%E5%8F%AF%E6%9C%89%E5%8F%AF%E6%97%A0"><span class="toc-number">1.6.4.4.</span> <span class="toc-text">4. Safety shield 不是可有可无</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BB%B6%E6%98%AF%E5%8F%AF%E4%BB%A5%E6%8E%A5%E5%8F%97%E7%9A%84"><span class="toc-number">1.6.4.5.</span> <span class="toc-text">5. 真机运行时延是可以接受的</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%AF%E5%90%A6%E6%9C%89%E7%9C%9F%E5%AE%9E%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%AE%9E%E9%AA%8C%EF%BC%9F"><span class="toc-number">1.6.5.</span> <span class="toc-text">是否有真实无人机实验？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%98%AF%E5%90%A6%E8%B6%B3%E4%BB%A5%E6%94%AF%E6%8C%81%E4%BD%9C%E8%80%85%E7%9A%84%E7%BB%93%E8%AE%BA%EF%BC%9F"><span class="toc-number">1.6.6.</span> <span class="toc-text">实验是否足以支持作者的结论？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%BF%99%E4%B8%AA%E6%96%B9%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B%E5%B1%80%E9%99%90%E6%80%A7%EF%BC%9F"><span class="toc-number">1.7.</span> <span class="toc-text">5. 这个方法有哪些局限性？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%8F%AF%E4%BB%A5%E5%A6%82%E4%BD%95%E5%9C%A8%E6%AD%A4%E5%9F%BA%E7%A1%80%E4%B8%8A%E5%88%9B%E6%96%B0%EF%BC%9F"><span class="toc-number">1.8.</span> <span class="toc-text">6. 可以如何在此基础上创新？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%8E%A8%E8%8D%90%E7%9A%84%E7%BB%84%E5%90%88"><span class="toc-number">1.8.1.</span> <span class="toc-text">更推荐的组合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%9C%80%E5%90%8E%E7%BB%99%E5%87%BA%E4%B8%80%E4%BB%BD%E7%AE%80%E7%9F%AD%E7%AC%94%E8%AE%B0"><span class="toc-number">1.9.</span> <span class="toc-text">7. 最后给出一份简短笔记</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E4%BD%93%E8%AF%84%E4%BB%B7"><span class="toc-number">1.10.</span> <span class="toc-text">总体评价</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/uav-autonomy-all-in-one/forest.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"></a><div class="content"><a class="title" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架">UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</a><time datetime="2026-08-06T14:13:35.000Z" title="发表于 2026-08-06 22:13:35">2026-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-bn2h3y/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker 容器内 Fast-Planner 下载、编译与测试"></a><div class="content"><a class="title" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试">Docker 容器内 Fast-Planner 下载、编译与测试</a><time datetime="2026-07-13T02:00:00.000Z" title="发表于 2026-07-13 10:00:00">2026-07-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-mdl32z/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"></a><div class="content"><a class="title" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</a><time datetime="2026-06-08T14:00:00.000Z" title="发表于 2026-06-08 22:00:00">2026-06-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vim编辑器使用教程"></a><div class="content"><a class="title" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程">Vim编辑器使用教程</a><time datetime="2026-06-03T06:00:00.000Z" title="发表于 2026-06-03 14:00:00">2026-06-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/02/Docker-ROS1-DiffPlanner-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/" title="Docker ROS1 Diff-Planner PX4 真机部署教程"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1dhfjsu/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker ROS1 Diff-Planner PX4 真机部署教程"></a><div class="content"><a class="title" href="/2026/06/02/Docker-ROS1-DiffPlanner-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%95%99%E7%A8%8B/" title="Docker ROS1 Diff-Planner PX4 真机部署教程">Docker ROS1 Diff-Planner PX4 真机部署教程</a><time datetime="2026-06-02T09:00:00.000Z" title="发表于 2026-06-02 17:00:00">2026-06-02</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Dreamer</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"></div><script src="/js/visitor-config.js"></script><script src="/js/visitor-tracker.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.1"></script></div></div>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/dreamer198">Dreamer</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dreamer198.top/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">https://dreamer198.top/2026/06/08/NavRL阅读笔记/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dreamer198.top" target="_blank">Dreamer Island</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/">强化学习</a><a class="post-meta__tags" href="/tags/NavRL/">NavRL</a><a class="post-meta__tags" href="/tags/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a><a class="post-meta__tags" href="/tags/%E5%B1%80%E9%83%A8%E5%AF%BC%E8%88%AA/">局部导航</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/06/09/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7%E4%B8%8E%E5%9B%9B%E6%97%8B%E7%BF%BC%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/" title="微分平坦性怎么判断：从质点、小车到四旋翼无人机"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1i2z1b7/1600/900" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">微分平坦性怎么判断：从质点、小车到四旋翼无人机</div></div><div class="info-2"><div class="info-item-1">前言 在学习无人机轨迹规划时，经常会看到一句话：四旋翼无人机是微分平坦系统。 这句话听起来很理论，但它对工程实现非常关键。因为很多规划器并不会直接优化四个电机转速，也不会直接优化滚转角、俯仰角和力矩，而是优先优化三维空间中的位置轨迹。这样做背后的原因，就是四旋翼的状态和控制输入可以由位置、偏航角及其有限阶导数恢复出来。 这篇文章先整理微分平坦性的判断标准，再通过质点、小车和四旋翼三个例子说明它到底是什么意思，最后结合 EGO-Planner、MINCO、minimum-snap 这类轨迹规划方法理解它的实际意...</div></div></div></a><a class="pagination-related" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Vim编辑器使用教程</div></div><div class="info-2"><div class="info-item-1">前言 Vim 是 Linux 终端里非常常用的文本编辑器。平时修改配置文件、写脚本、在服务器或 Docker 容器里临时改代码，经常都会用到它。 刚开始接触 Vim 时，最容易卡住的地方不是“怎么高效编辑”，而是“怎么进入编辑、怎么保存、怎么退出”。所以这篇文章先从最基本的生存命令开始，再逐步整理移动、复制粘贴、查找替换、多文件编辑和常用配置。  一、安装 Vim 在 Ubuntu / Debian 系统中安装： 12sudo apt updatesudo apt install -y vim 查看版本： 1...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="《动手学强化学习》阅读笔记"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1celxbw/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-11-17</div><div class="info-item-2">《动手学强化学习》阅读笔记</div></div><div class="info-2"><div class="info-item-1">本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。  第一章 强化学习基础 什么是强化学习？ 强化学习（Reinforcement Learning, RL）是一种实现序贯决策的机器学习方法，智能体通过与环境交互、获取奖励信号，不断改进策略以实现长期目标。 环境与随机性 用于决策任务的环境是一个动态的随机过程：未来状态的分布由当前状态与智能体选择的动作共同决定。每次状态转移包含两类随机性：  动作选择的随机性（策略的随机性） 环境状态...</div></div></div></a><a class="pagination-related" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-bn2h3y/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-07-13</div><div class="info-item-2">Docker 容器内 Fast-Planner 下载、编译与测试</div></div><div class="info-2"><div class="info-item-1">前言 本文是《Docker使用教程》的后续，默认已经按照其中的步骤创建了以下环境：  容器名：ros_noetic 基础镜像：osrf/ros:noetic-desktop-full 宿主机 ~/docker/ros_root 已挂载到容器 /root X11 目录和认证文件已经挂载，容器可以运行 RViz  这里的“全新容器”是指容器已经创建，但还没有下载 Fast-Planner，也没有安装项目依赖。本文不再重复安装 Docker、拉取 ROS 镜像或创建容器，只介绍如何在这个容器中下载、编译和测试 dr...</div></div></div></a><a class="pagination-related" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/uav-autonomy-all-in-one/forest.png" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-08-06</div><div class="info-item-2">UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</div></div><div class="info-2"><div class="info-item-1">在复现无人机路径规划算法时，我逐渐发现，真正困难的不只是把某个算法编译起来，而是让定位、规划、控制、任务和飞控组成一条稳定、可复用的完整链路。不同项目的依赖和接口各不相同，切换算法时经常需要重新整理环境。 为了解决这些问题，我开发了 UAV Autonomy All-in-One。这是一个基于 ROS1 Noetic、PX4 和 Gazebo Classic 的无人机自主飞行框架，希望用同一套工程结构连接仿真与真机，并让不同规划器能够以相对独立、平等的方式接入。  项目定位 这个项目并不是新的路径规划算法，而...</div></div></div></a><a class="pagination-related" href="/2026/03/31/YOPO-ROS2-RUN/" title="YOPO-ROS2 运行指南"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-axl0z6/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-03-31</div><div class="info-item-2">YOPO-ROS2 运行指南</div></div><div class="info-2"><div class="info-item-1">YOPO-ROS2 运行指南   项目地址：https://github.com/dreamer198/YOPO-ROS2.git  环境依赖    依赖 版本要求     ROS 2 Humble   CUDA 12.6+   GCC/G++ 11   PyTorch 2.4.1+cu118   Eigen3, PCL, OpenCV, yaml-cpp 系统安装    一、构建 1. 构建 Controller 工作空间 1234cd ~/code/YOPO-ROS2/Controllersource /...</div></div></div></a><a class="pagination-related" href="/2026/05/27/%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E5%BC%80%E6%BA%90%E7%AE%97%E6%B3%95%E6%80%BB%E7%BB%93/" title="无人机路径规划开源算法总结"><img class="cover" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1a12ek3/1600/900" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-05-27</div><div class="info-item-2">无人机路径规划开源算法总结</div></div><div class="info-2"><div class="info-item-1">前言 本文依据我的 Awesome UAV Planning 论文与阅读笔记仓库重新整理。当前基线为 2026-08-06 的 e8ea156，共收录 63 个方法、数据集或平台，按照它们主要解决的问题分为 9 类。 表格中的方法名链接到对应中文阅读笔记，最后一列链接到官方代码、项目页、论文或数据。需要特别注意：有论文、项目页或 GitHub 仓库，不等于论文完整方法已经开源，也不等于能够一键复现实验。 开源状态怎么看    标记 含义     代码 / 核心代码 已公开论文相关实现，但仍需核对权重、数据、配...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"></div><div class="author-info-name">Dreamer</div><div class="author-info-description">Welcome to Dreamer Island, a space for learning, creating, and dreaming.</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">30</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">52</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">6</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dreamer198"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dreamer198" target="_blank" title="Github"><i class="fab fa-github" style="color: #909090;"></i></a><span class="social-icon qr-social-icon qq-qr-icon" title="QQ" role="img" aria-label="QQ" tabindex="0"><i class="fab fa-qq" style="color: #12B7F5;"></i></span><span class="social-icon qr-social-icon wechat-qr-icon" title="WeChat" role="img" aria-label="WeChat" tabindex="0"><i class="fab fa-weixin" style="color: #07C160;"></i></span><a class="social-icon" href="mailto:huangziqian@whu.edu.cn" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#NavRL-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%EF%BC%9A%E5%8A%A8%E6%80%81%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E5%B1%80%E9%83%A8%E5%AF%BC%E8%88%AA%E5%88%B0%E5%BA%95%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%A1%B5%E9%80%9F%E8%A7%88"><span class="toc-number">1.1.</span> <span class="toc-text">一页速览</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0-%E5%85%88%E8%AF%B4%E7%BB%93%E8%AE%BA%EF%BC%9A%E8%BF%99%E7%AF%87%E8%AE%BA%E6%96%87%E5%92%8C%E7%9B%B8%E5%85%B3%E7%A0%94%E7%A9%B6%E6%96%B9%E5%90%91%E6%9C%89%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F"><span class="toc-number">1.2.</span> <span class="toc-text">0. 先说结论：这篇论文和相关研究方向有什么关系？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%BF%99%E7%AF%87%E8%AE%BA%E6%96%87%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">1. 这篇论文解决什么问题？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%96%B9%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%E6%80%9D%E8%B7%AF%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.4.</span> <span class="toc-text">2. 方法的核心思路是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B4%E4%BD%93%E6%80%9D%E8%B7%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">整体思路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B%E6%A2%B3%E7%90%86"><span class="toc-number">1.4.2.</span> <span class="toc-text">流程梳理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%8F%E4%B8%AA%E5%85%B3%E9%94%AE%E6%A8%A1%E5%9D%97%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-number">1.4.3.</span> <span class="toc-text">每个关键模块的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%9D%99%E6%80%81%E9%9A%9C%E7%A2%8D%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">1. 静态障碍表示</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E9%9A%9C%E7%A2%8D%E8%A1%A8%E7%A4%BA"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">2. 动态障碍表示</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%8A%B6%E6%80%81%E7%BC%96%E7%A0%81%E4%B8%8E%E7%AD%96%E7%95%A5%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">3. 状态编码与策略学习</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%AE%89%E5%85%A8%E5%B1%8F%E8%94%BD%E5%B1%82"><span class="toc-number">1.4.3.4.</span> <span class="toc-text">4. 安全屏蔽层</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%93%AA%E4%BA%9B%E9%83%A8%E5%88%86%E6%98%AF%E4%BD%9C%E8%80%85%E7%9C%9F%E6%AD%A3%E7%9A%84%E5%88%9B%E6%96%B0%EF%BC%9F"><span class="toc-number">1.4.4.</span> <span class="toc-text">哪些部分是作者真正的创新？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%9C%80%E8%A6%81%E9%87%8D%E7%82%B9%E7%90%86%E8%A7%A3%E5%93%AA%E4%BA%9B%E5%85%AC%E5%BC%8F%EF%BC%9F"><span class="toc-number">1.5.</span> <span class="toc-text">3. 需要重点理解哪些公式？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E7%9B%AE%E6%A0%87"><span class="toc-number">1.5.1.</span> <span class="toc-text">3.1 强化学习目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%BE%93%E5%85%A5%E7%8A%B6%E6%80%81%E5%A6%82%E4%BD%95%E5%AE%9A%E4%B9%89"><span class="toc-number">1.5.2.</span> <span class="toc-text">3.2 输入状态如何定义</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%86%85%E9%83%A8%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">1. 无人机内部状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%8A%A8%E6%80%81%E9%9A%9C%E7%A2%8D%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">2. 动态障碍状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%9D%99%E6%80%81%E9%9A%9C%E7%A2%8D%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">3. 静态障碍状态</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E8%BE%93%E5%87%BA%E5%8A%A8%E4%BD%9C%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.3.</span> <span class="toc-text">3.3 输出动作是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E5%A5%96%E5%8A%B1%E5%87%BD%E6%95%B0%E5%9C%A8%E9%BC%93%E5%8A%B1%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.4.</span> <span class="toc-text">3.4 奖励函数在鼓励什么</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E9%80%9F%E5%BA%A6%E5%A5%96%E5%8A%B1-r-vel"><span class="toc-number">1.5.4.1.</span> <span class="toc-text">1. 速度奖励 r_vel</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E9%9D%99%E6%80%81%E5%AE%89%E5%85%A8%E5%A5%96%E5%8A%B1-r-ss"><span class="toc-number">1.5.4.2.</span> <span class="toc-text">2. 静态安全奖励 r_ss</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E5%8A%A8%E6%80%81%E5%AE%89%E5%85%A8%E5%A5%96%E5%8A%B1-r-ds"><span class="toc-number">1.5.4.3.</span> <span class="toc-text">3. 动态安全奖励 r_ds</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%B9%B3%E6%BB%91%E5%A5%96%E5%8A%B1-r-smooth"><span class="toc-number">1.5.4.4.</span> <span class="toc-text">4. 平滑奖励 r_smooth</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E9%AB%98%E5%BA%A6%E5%A5%96%E5%8A%B1-r-height"><span class="toc-number">1.5.4.5.</span> <span class="toc-text">5. 高度奖励 r_height</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E5%AE%89%E5%85%A8%E7%BA%A6%E6%9D%9F%E5%9C%A8%E5%81%9A%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.5.</span> <span class="toc-text">3.5 安全约束在做什么</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E9%AA%8C%E8%AF%B4%E6%98%8E%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.6.</span> <span class="toc-text">4. 实验说明了什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E5%9C%BA%E6%99%AF%E3%80%81%E5%B9%B3%E5%8F%B0%E5%92%8C%E7%A1%AC%E4%BB%B6%EF%BC%9F"><span class="toc-number">1.6.1.</span> <span class="toc-text">使用了哪些场景、平台和硬件？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E%E5%93%AA%E4%BA%9B%E6%96%B9%E6%B3%95%E8%BF%9B%E8%A1%8C%E4%BA%86%E5%AF%B9%E6%AF%94%EF%BC%9F"><span class="toc-number">1.6.2.</span> <span class="toc-text">与哪些方法进行了对比？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E4%BA%86%E5%93%AA%E4%BA%9B%E6%8C%87%E6%A0%87%EF%BC%9F"><span class="toc-number">1.6.3.</span> <span class="toc-text">使用了哪些指标？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E9%87%8D%E8%A6%81%E7%9A%84%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">1.6.4.</span> <span class="toc-text">最重要的实验结果是什么？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-Curriculum-learning-%E7%A1%AE%E5%AE%9E%E6%9C%89%E6%95%88"><span class="toc-number">1.6.4.1.</span> <span class="toc-text">1. Curriculum learning 确实有效</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E5%A4%A7%E8%A7%84%E6%A8%A1%E5%B9%B6%E8%A1%8C%E8%AE%AD%E7%BB%83%E6%9C%89%E7%94%A8"><span class="toc-number">1.6.4.2.</span> <span class="toc-text">2. 大规模并行训练有用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E7%9C%9F%E6%AD%A3%E7%9A%84%E4%BC%98%E5%8A%BF%E4%BD%93%E7%8E%B0%E5%9C%A8%E5%8A%A8%E6%80%81%E5%92%8C%E6%B7%B7%E5%90%88%E7%8E%AF%E5%A2%83"><span class="toc-number">1.6.4.3.</span> <span class="toc-text">3. 真正的优势体现在动态和混合环境</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-Safety-shield-%E4%B8%8D%E6%98%AF%E5%8F%AF%E6%9C%89%E5%8F%AF%E6%97%A0"><span class="toc-number">1.6.4.4.</span> <span class="toc-text">4. Safety shield 不是可有可无</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E7%9C%9F%E6%9C%BA%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BB%B6%E6%98%AF%E5%8F%AF%E4%BB%A5%E6%8E%A5%E5%8F%97%E7%9A%84"><span class="toc-number">1.6.4.5.</span> <span class="toc-text">5. 真机运行时延是可以接受的</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%AF%E5%90%A6%E6%9C%89%E7%9C%9F%E5%AE%9E%E6%97%A0%E4%BA%BA%E6%9C%BA%E5%AE%9E%E9%AA%8C%EF%BC%9F"><span class="toc-number">1.6.5.</span> <span class="toc-text">是否有真实无人机实验？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E9%AA%8C%E6%98%AF%E5%90%A6%E8%B6%B3%E4%BB%A5%E6%94%AF%E6%8C%81%E4%BD%9C%E8%80%85%E7%9A%84%E7%BB%93%E8%AE%BA%EF%BC%9F"><span class="toc-number">1.6.6.</span> <span class="toc-text">实验是否足以支持作者的结论？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%BF%99%E4%B8%AA%E6%96%B9%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B%E5%B1%80%E9%99%90%E6%80%A7%EF%BC%9F"><span class="toc-number">1.7.</span> <span class="toc-text">5. 这个方法有哪些局限性？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%8F%AF%E4%BB%A5%E5%A6%82%E4%BD%95%E5%9C%A8%E6%AD%A4%E5%9F%BA%E7%A1%80%E4%B8%8A%E5%88%9B%E6%96%B0%EF%BC%9F"><span class="toc-number">1.8.</span> <span class="toc-text">6. 可以如何在此基础上创新？</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%8E%A8%E8%8D%90%E7%9A%84%E7%BB%84%E5%90%88"><span class="toc-number">1.8.1.</span> <span class="toc-text">更推荐的组合</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%9C%80%E5%90%8E%E7%BB%99%E5%87%BA%E4%B8%80%E4%BB%BD%E7%AE%80%E7%9F%AD%E7%AC%94%E8%AE%B0"><span class="toc-number">1.9.</span> <span class="toc-text">7. 最后给出一份简短笔记</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E4%BD%93%E8%AF%84%E4%BB%B7"><span class="toc-number">1.10.</span> <span class="toc-text">总体评价</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="/img/uav-autonomy-all-in-one/forest.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架"></a><div class="content"><a class="title" href="/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/" title="UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架">UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</a><time datetime="2026-08-06T14:13:35.000Z" title="发表于 2026-08-06 22:13:35">2026-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-bn2h3y/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Docker 容器内 Fast-Planner 下载、编译与测试"></a><div class="content"><a class="title" href="/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/" title="Docker 容器内 Fast-Planner 下载、编译与测试">Docker 容器内 Fast-Planner 下载、编译与测试</a><time datetime="2026-07-13T02:00:00.000Z" title="发表于 2026-07-13 10:00:00">2026-07-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/09/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7%E4%B8%8E%E5%9B%9B%E6%97%8B%E7%BF%BC%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/" title="微分平坦性怎么判断：从质点、小车到四旋翼无人机"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-1i2z1b7/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="微分平坦性怎么判断：从质点、小车到四旋翼无人机"></a><div class="content"><a class="title" href="/2026/06/09/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7%E4%B8%8E%E5%9B%9B%E6%97%8B%E7%BF%BC%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/" title="微分平坦性怎么判断：从质点、小车到四旋翼无人机">微分平坦性怎么判断：从质点、小车到四旋翼无人机</a><time datetime="2026-06-09T14:30:00.000Z" title="发表于 2026-06-09 22:30:00">2026-06-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-mdl32z/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么"></a><div class="content"><a class="title" href="/2026/06/08/NavRL%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" title="NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</a><time datetime="2026-06-08T14:00:00.000Z" title="发表于 2026-06-08 22:00:00">2026-06-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDI0IDI0Ij48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgaWQ9InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAiIGF0dHJpYnV0ZU5hbWU9InIiIGJlZ2luPSIwO3N2Z1NwaW5uZXJzM0RvdHNTY2FsZTEuZW5kLTAuMjVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjMiIGZpbGw9ImN1cnJlbnRDb2xvciI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNnMiIGR1cj0iMC43NXMiIHZhbHVlcz0iMzsuMjszIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMjAiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIj48YW5pbWF0ZSBpZD0ic3ZnU3Bpbm5lcnMzRG90c1NjYWxlMSIgYXR0cmlidXRlTmFtZT0iciIgYmVnaW49InN2Z1NwaW5uZXJzM0RvdHNTY2FsZTAuZW5kLTAuNDVzIiBkdXI9IjAuNzVzIiB2YWx1ZXM9IjM7LjI7MyIvPjwvY2lyY2xlPjwvc3ZnPg==" data-original="https://picsum.photos/seed/ziqian-blog-fk72em/1600/900" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Vim编辑器使用教程"></a><div class="content"><a class="title" href="/2026/06/03/vim%E7%BC%96%E8%BE%91%E5%99%A8%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/" title="Vim编辑器使用教程">Vim编辑器使用教程</a><time datetime="2026-06-03T06:00:00.000Z" title="发表于 2026-06-03 14:00:00">2026-06-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Dreamer</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><div class="js-pjax"></div><script src="/js/visitor-config.js"></script><script src="/js/visitor-tracker.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.1"></script></div></div>
         <style>
             [bg-lazy] {
                 background-image: none !important;
