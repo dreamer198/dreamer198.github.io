@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">使用 SSH 远控局域网中的其他电脑</title>
+  <desc id="card-desc">Dreamer Island ENGINEERING TOOLS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-499a7429cd84" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07151f"/><stop offset=".62" stop-color="#102c36"/><stop offset="1" stop-color="#172b48"/></linearGradient>
+    <radialGradient id="card-glow-499a7429cd84"><stop stop-color="#66d3aa" stop-opacity=".28"/><stop offset="1" stop-color="#66d3aa" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-499a7429cd84" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#66d3aa"/><stop offset="1" stop-color="#7caaff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-499a7429cd84)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7caaff" opacity=".055"/>
+  <circle cx="1066.7" cy="461.2" r="510" fill="url(#card-glow-499a7429cd84)"/>
+  <g opacity=".62"><path d="M-120 89.1 Q8 155.7 120 136.4 Q238 42.5 350 129.4 Q468 41.6 580 57.8 Q698 23.8 810 129.8 Q928 100.1 1040 118.2 Q1158 171.1 1270 54.6 Q1388 34.3 1500 67.3" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.2"/><path d="M-120 251.7 Q8 236 120 228.7 Q238 183.3 350 295.5 Q468 272.7 580 248 Q698 176.5 810 272.9 Q928 175.7 1040 296.3 Q1158 329.1 1270 271.8 Q1388 314.2 1500 214.8" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/><path d="M-120 392.1 Q8 373.4 120 353.2 Q238 420.4 350 354.8 Q468 348.5 580 373 Q698 421 810 373.1 Q928 388.8 1040 347.7 Q1158 322.1 1270 353.5 Q1388 310.1 1500 343.4" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.2"/><path d="M-120 540.6 Q8 525.5 120 503.2 Q238 459.8 350 496.4 Q468 456.4 580 579.5 Q698 603.3 810 522.7 Q928 470.9 1040 504.5 Q1158 568.9 1270 589.7 Q1388 459.5 1500 568.2" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/><path d="M-120 664 Q8 703.6 120 664.3 Q238 627.8 350 689.6 Q468 633.4 580 635.7 Q698 635.1 810 646.6 Q928 673.4 1040 697.9 Q1158 588.6 1270 625.2 Q1388 722.5 1500 684.4" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.1"/><path d="M-120 816.1 Q8 872.8 120 793.3 Q238 772.3 350 785 Q468 865.1 580 796.7 Q698 879.7 810 795.7 Q928 867.3 1040 865.4 Q1158 765 1270 767.4 Q1388 882.5 1500 813.3" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1074.9 408.8) rotate(-1.1) scale(1.1)"><g fill="none" stroke="#7caaff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".66"><path d="M-320-160-104-42 18-208 142-28 326-154M-320 156-104-42-2 202 142-28 326 160M18-208 326-154M-2 202 326 160"/></g><g fill="none" stroke="#66d3aa" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="-104" cy="-42" r="42"/><circle cx="142" cy="-28" r="42"/><circle cx="18" cy="-208" r="24"/><circle cx="-2" cy="202" r="24"/><circle cx="-320" cy="-160" r="18"/><circle cx="-320" cy="156" r="18"/><circle cx="326" cy="-154" r="18"/><circle cx="326" cy="160" r="18"/></g><path d="M-104-42 142-28" fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 16"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-499a7429cd84)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#66d3aa" font-size="18" font-weight="700" letter-spacing="4">ENGINEERING TOOLS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">SSH</text>
+    <text x="112" y="542" fill="#7caaff" font-size="38" font-weight="650" letter-spacing="4">REMOTE ACCESS</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">TOOL GUIDE</text>
+  </g>
+</svg>

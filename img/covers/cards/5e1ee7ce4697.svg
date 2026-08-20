@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">FAST-LIO2 从 0 跑通教程</title>
+  <desc id="card-desc">Dreamer Island STATE ESTIMATION article card</desc>
+  <defs>
+    <linearGradient id="card-bg-5e1ee7ce4697" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0a1321"/><stop offset=".62" stop-color="#132c45"/><stop offset="1" stop-color="#24304b"/></linearGradient>
+    <radialGradient id="card-glow-5e1ee7ce4697"><stop stop-color="#73d9cf" stop-opacity=".28"/><stop offset="1" stop-color="#73d9cf" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-5e1ee7ce4697" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#73d9cf"/><stop offset="1" stop-color="#9a9dff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-5e1ee7ce4697)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#9a9dff" opacity=".055"/>
+  <circle cx="1069.7" cy="400.8" r="510" fill="url(#card-glow-5e1ee7ce4697)"/>
+  <g opacity=".62"><path d="M-120 95.4 Q8 171.6 120 60.5 Q238 144.6 350 125.4 Q468 156.8 580 76.5 Q698 122.5 810 62.5 Q928 65.6 1040 80.2 Q1158 130.9 1270 94.2 Q1388 136.5 1500 84.9" fill="none" stroke="#73d9cf" stroke-width="2" opacity="0.1"/><path d="M-120 250.2 Q8 177.3 120 231.2 Q238 181.9 350 237.4 Q468 188.5 580 215.8 Q698 179.2 810 292.6 Q928 170.2 1040 269.5 Q1158 253.5 1270 227.4 Q1388 243.3 1500 205.3" fill="none" stroke="#9a9dff" stroke-width="2" opacity="0.2"/><path d="M-120 381.9 Q8 384.4 120 367.4 Q238 297.6 350 408.2 Q468 430.7 580 396.4 Q698 447.4 810 427.3 Q928 319.6 1040 366 Q1158 461.2 1270 348.5 Q1388 345.5 1500 366.4" fill="none" stroke="#73d9cf" stroke-width="2" opacity="0.1"/><path d="M-120 523.5 Q8 471.7 120 564.3 Q238 580 350 535.9 Q468 607.3 580 555.8 Q698 567.8 810 484.8 Q928 545.8 1040 518.3 Q1158 453.6 1270 522.8 Q1388 551.2 1500 475.5" fill="none" stroke="#9a9dff" stroke-width="2" opacity="0.1"/><path d="M-120 686.7 Q8 642.2 120 638.3 Q238 680.5 350 642.9 Q468 657.3 580 664.6 Q698 769 810 707.7 Q928 642.7 1040 650 Q1158 684.5 1270 702.4 Q1388 669.2 1500 675.8" fill="none" stroke="#73d9cf" stroke-width="2" opacity="0.1"/><path d="M-120 812 Q8 833.6 120 791.5 Q238 882.9 350 810.4 Q468 756.7 580 790.6 Q698 737.4 810 825.5 Q928 745.7 1040 792.6 Q1158 842.8 1270 851.3 Q1388 874.7 1500 826.5" fill="none" stroke="#9a9dff" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1078.4 437.6) rotate(1.3) scale(1.2)"><g fill="none" stroke="#9a9dff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".42"><ellipse cy="-26" rx="334" ry="194"/><ellipse cy="-26" rx="256" ry="142"/><path d="M0-26-306-164M0-26 324-126M0-26-294 132M0-26 310 150"/></g><g fill="none" stroke="#73d9cf" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M-92-20h184v142H-92Z"/><ellipse cy="-20" rx="92" ry="42"/><ellipse cy="122" rx="92" ry="34"/><path d="M-54-20v-96h108v96"/></g><g fill="#efb866" opacity=".9"><circle cx="326.5" cy="-26" r="6.3"/><circle cx="260.7" cy="16.7" r="7.7"/><circle cx="242.3" cy="74.8" r="8.5"/><circle cx="218" cy="119.1" r="6.9"/><circle cx="107.5" cy="83" r="4.8"/><circle cx="34.8" cy="118.6" r="7.5"/><circle cx="-46.8" cy="145.3" r="6.6"/><circle cx="-137" cy="116.1" r="6.2"/><circle cx="-204.5" cy="53.9" r="5"/><circle cx="-183.5" cy="76.2" r="6.2"/><circle cx="-185.4" cy="5" r="4.9"/><circle cx="-251.5" cy="-26" r="8.2"/><circle cx="-306.3" cy="-79.8" r="4.6"/><circle cx="-227" cy="-128.9" r="4.6"/><circle cx="-130.5" cy="-107.8" r="6.8"/><circle cx="-108.3" cy="-159.2" r="4.2"/><circle cx="-31.9" cy="-216.1" r="7.1"/><circle cx="44" cy="-160.1" r="8.7"/><circle cx="94.3" cy="-117.4" r="7.7"/><circle cx="132.5" cy="-102" r="8.5"/><circle cx="185" cy="-125.1" r="8.1"/><circle cx="223.3" cy="-54.7" r="8.7"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-5e1ee7ce4697)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#73d9cf" font-size="18" font-weight="700" letter-spacing="4">STATE ESTIMATION</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">LIO</text>
+    <text x="112" y="542" fill="#9a9dff" font-size="38" font-weight="650" letter-spacing="4">MAPPING</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb866" font-size="14" font-weight="700" letter-spacing="4">SLAM GUIDE</text>
+  </g>
+</svg>

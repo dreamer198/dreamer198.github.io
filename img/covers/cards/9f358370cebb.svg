@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">Jetson Orin NX 双网口同时启用教程</title>
+  <desc id="card-desc">Dreamer Island EMBEDDED HARDWARE article card</desc>
+  <defs>
+    <linearGradient id="card-bg-9f358370cebb" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10151e"/><stop offset=".62" stop-color="#2b2925"/><stop offset="1" stop-color="#15383d"/></linearGradient>
+    <radialGradient id="card-glow-9f358370cebb"><stop stop-color="#e7b969" stop-opacity=".28"/><stop offset="1" stop-color="#e7b969" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-9f358370cebb" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#e7b969"/><stop offset="1" stop-color="#69d3c8"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-9f358370cebb)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#69d3c8" opacity=".055"/>
+  <circle cx="1106.5" cy="426.3" r="510" fill="url(#card-glow-9f358370cebb)"/>
+  <g opacity=".62"><path d="M-120 106.2 Q8 32.8 120 149.4 Q238 70.4 350 68.2 Q468 176.6 580 122 Q698 34.5 810 99.8 Q928 85.8 1040 84.2 Q1158 121.6 1270 119.8 Q1388 84.5 1500 65.8" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.2"/><path d="M-120 248.1 Q8 180.4 120 247.3 Q238 164.9 350 236.9 Q468 306.3 580 229.5 Q698 197.7 810 204.8 Q928 309.7 1040 206.1 Q1158 304.1 1270 274.8 Q1388 179.3 1500 268.6" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/><path d="M-120 399.3 Q8 448 120 363.9 Q238 322.6 350 379.8 Q468 414 580 428.8 Q698 471.4 810 375.7 Q928 373.3 1040 372.2 Q1158 321.2 1270 426.8 Q1388 375.6 1500 374.6" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.2"/><path d="M-120 519.7 Q8 440.4 120 528 Q238 451.1 350 489.3 Q468 505.2 580 478.2 Q698 582.9 810 471.4 Q928 475.1 1040 509.6 Q1158 582.8 1270 536.9 Q1388 467.1 1500 501.2" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/><path d="M-120 674.3 Q8 726.3 120 654.6 Q238 606.4 350 673.5 Q468 756.2 580 688.6 Q698 696.5 810 721.8 Q928 628.6 1040 681.8 Q1158 639.4 1270 699.9 Q1388 640.2 1500 671.8" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.2"/><path d="M-120 805.2 Q8 799.2 120 848.4 Q238 823.7 350 797.6 Q468 831.5 580 844 Q698 729.6 810 847.9 Q928 773.4 1040 841.4 Q1158 873.4 1270 817.3 Q1388 876.8 1500 763.3" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1078.7 445.9) rotate(0.3) scale(1.1)"><g fill="none" stroke="#69d3c8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".66"><path d="M-320-160-104-42 18-208 142-28 326-154M-320 156-104-42-2 202 142-28 326 160M18-208 326-154M-2 202 326 160"/></g><g fill="none" stroke="#e7b969" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="-104" cy="-42" r="42"/><circle cx="142" cy="-28" r="42"/><circle cx="18" cy="-208" r="24"/><circle cx="-2" cy="202" r="24"/><circle cx="-320" cy="-160" r="18"/><circle cx="-320" cy="156" r="18"/><circle cx="326" cy="-154" r="18"/><circle cx="326" cy="160" r="18"/></g><path d="M-104-42 142-28" fill="none" stroke="#8fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 16"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-9f358370cebb)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#e7b969" font-size="18" font-weight="700" letter-spacing="4">EMBEDDED HARDWARE</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">DUAL NIC</text>
+    <text x="112" y="542" fill="#69d3c8" font-size="38" font-weight="650" letter-spacing="4">ROUTING</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#8fa9ff" font-size="14" font-weight="700" letter-spacing="4">HARDWARE GUIDE</text>
+  </g>
+</svg>

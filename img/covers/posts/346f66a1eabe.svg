@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="cover-title cover-desc">
+  <title id="cover-title">Vim编辑器使用教程</title>
+  <desc id="cover-desc">Dreamer Island ENGINEERING TOOLS article cover</desc>
+  <defs>
+    <linearGradient id="bg-346f66a1eabe" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07151f"/><stop offset=".54" stop-color="#102c36"/><stop offset="1" stop-color="#172b48"/></linearGradient>
+    <radialGradient id="glow-346f66a1eabe"><stop stop-color="#66d3aa" stop-opacity=".25"/><stop offset="1" stop-color="#66d3aa" stop-opacity="0"/></radialGradient>
+    <pattern id="grid-346f66a1eabe" width="78" height="78" patternUnits="userSpaceOnUse"><path d="M78 0H0V78" fill="none" stroke="#7caaff" stroke-width="1" opacity=".11"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg-346f66a1eabe)"/>
+  <path d="M930-80 1660 280v700L650 916Z" fill="#7caaff" opacity=".045"/>
+  <circle cx="1024.3" cy="391.6" r="520" fill="url(#glow-346f66a1eabe)"/>
+  <rect width="1600" height="900" fill="url(#grid-346f66a1eabe)"/>
+  <g><path d="M-120 108 Q8 192.6 120 94.6 Q238 172.1 350 138.2 Q468 170.7 580 132.2 Q698 83.9 810 148.3 Q928 69.8 1040 130.7 Q1158 149.6 1270 74.3 Q1388 31.2 1500 105.4" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.1"/><path d="M-120 231.3 Q8 256.8 120 184 Q238 152.9 350 262.3 Q468 147.1 580 240.1 Q698 218.9 810 218.2 Q928 268.4 1040 219.1 Q1158 213.9 1270 239.9 Q1388 257.8 1500 205.6" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.2"/><path d="M-120 370.1 Q8 335.5 120 322.7 Q238 303.1 350 411.6 Q468 383.1 580 358.7 Q698 429.3 810 359.5 Q928 364.2 1040 342.1 Q1158 395.9 1270 414.8 Q1388 350.1 1500 383.2" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.2"/><path d="M-120 532.1 Q8 455.5 120 502.2 Q238 453.7 350 483.3 Q468 574.1 580 495.9 Q698 521.6 810 574.8 Q928 471 1040 533.3 Q1158 512.8 1270 566.2 Q1388 527.9 1500 508.6" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/><path d="M-120 682.7 Q8 609.6 120 667.1 Q238 753.9 350 711.9 Q468 707.4 580 673.8 Q698 763.7 810 695.5 Q928 658.4 1040 674.6 Q1158 667.4 1270 723.6 Q1388 662.3 1500 641.2" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.1"/><path d="M-120 822.4 Q8 829.2 120 846.7 Q238 858.7 350 870.6 Q468 762.4 580 871.2 Q698 761.2 810 794 Q928 738.4 1040 812.1 Q1158 739.9 1270 871.6 Q1388 784.6 1500 851" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/></g>
+  <g><circle cx="543.3" cy="573.3" r="2" fill="#efb35f" opacity="0.2"/><circle cx="1115.8" cy="734.6" r="3.5" fill="#66d3aa" opacity="0.2"/><circle cx="451.3" cy="81.2" r="4" fill="#66d3aa" opacity="0.4"/><circle cx="730.3" cy="301.8" r="2.5" fill="#66d3aa" opacity="0.2"/><circle cx="695.6" cy="258.7" r="5.1" fill="#66d3aa" opacity="0.3"/><circle cx="241" cy="364.1" r="4.4" fill="#efb35f" opacity="0.2"/><circle cx="124.9" cy="336.8" r="5.4" fill="#efb35f" opacity="0.4"/><circle cx="314.2" cy="148.4" r="5.7" fill="#efb35f" opacity="0.4"/><circle cx="1421.9" cy="746.4" r="2.6" fill="#66d3aa" opacity="0.2"/><circle cx="1059.9" cy="811.3" r="4.4" fill="#66d3aa" opacity="0.2"/><circle cx="825.5" cy="573.1" r="3.4" fill="#efb35f" opacity="0.4"/><circle cx="446.4" cy="558.2" r="2.8" fill="#66d3aa" opacity="0.3"/><circle cx="999.1" cy="724.2" r="5.3" fill="#66d3aa" opacity="0.3"/><circle cx="373.6" cy="670" r="3.4" fill="#66d3aa" opacity="0.2"/><circle cx="144.2" cy="228.1" r="3.9" fill="#efb35f" opacity="0.4"/><circle cx="500.3" cy="612.6" r="3.3" fill="#efb35f" opacity="0.2"/><circle cx="602.1" cy="306.3" r="5.5" fill="#efb35f" opacity="0.2"/><circle cx="736.2" cy="288" r="5.8" fill="#efb35f" opacity="0.2"/></g>
+  <g transform="translate(1075 420.4) rotate(0.8) scale(1)"><g fill="none" stroke="#7caaff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".66"><rect x="-352" y="-244" width="704" height="488" rx="26"/><path d="M-352-148h704"/></g><g fill="none" stroke="#66d3aa" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="m-242-38 86 70-86 70M-102 112H86"/><path d="M92-62h166M92 14h118M92 90h206" opacity=".78"/></g><path d="M-278-196h16M-228-196h16M-178-196h16" fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="92" y="104" fill="#f4f8fb" font-size="24" font-weight="700" letter-spacing="6">DREAMER ISLAND</text>
+    <path d="M92 136h190" stroke="#66d3aa" stroke-width="5"/>
+    <text x="92" y="176" fill="#66d3aa" font-size="17" font-weight="650" letter-spacing="4">ENGINEERING TOOLS</text>
+    <text x="92" y="782" fill="#dbe7ee" font-size="17" font-weight="600" letter-spacing="3" opacity=".88">VIM / EDITING</text>
+    <text x="92" y="826" fill="#efb35f" font-size="15" font-weight="700" letter-spacing="4">TOOL GUIDE / 346F66A1EABE</text>
+  </g>
+  <path d="M92 742h260" stroke="#f4f8fb" stroke-width="1" opacity=".24"/>
+  <path d="M1492 84v142M1421 155h142" stroke="#66d3aa" stroke-width="2" opacity=".4"/>
+</svg>

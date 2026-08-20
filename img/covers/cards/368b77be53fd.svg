@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">EGO-Planner ROS2 + MAVROS + PX4 完整教程：从仿真规划到 Offboard 桥接</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-368b77be53fd" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-368b77be53fd"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-368b77be53fd" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-368b77be53fd)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1103" cy="436.6" r="510" fill="url(#card-glow-368b77be53fd)"/>
+  <g opacity=".62"><path d="M-120 102.4 Q8 139.1 120 89 Q238 37.7 350 112.5 Q468 41.6 580 110.9 Q698 69.4 810 112.9 Q928 78.5 1040 137.5 Q1158 102.9 1270 147.9 Q1388 147.3 1500 139.9" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 225.9 Q8 144.8 120 262.4 Q238 191.9 350 197.8 Q468 169.9 580 250.1 Q698 181.2 810 267.9 Q928 299.5 1040 273.5 Q1158 205.1 1270 273 Q1388 307.7 1500 204.6" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 401.7 Q8 462.3 120 397.1 Q238 349.3 350 383.8 Q468 344 580 428.4 Q698 485.4 810 409.7 Q928 461.2 1040 406 Q1158 341.5 1270 447.6 Q1388 324.7 1500 386.9" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 533.7 Q8 498.1 120 572.3 Q238 494.5 350 534.1 Q468 530.9 580 490.1 Q698 547.6 810 506.1 Q928 591.8 1040 558.6 Q1158 601.3 1270 521.3 Q1388 546.9 1500 548.4" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 660.6 Q8 730.4 120 655.5 Q238 743.8 350 688.3 Q468 576.3 580 618.1 Q698 595 810 655.7 Q928 623.8 1040 684.7 Q1158 680.8 1270 642.2 Q1388 676.7 1500 671.8" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 830.8 Q8 827.4 120 825.8 Q238 860.1 350 803 Q468 758.2 580 810.3 Q698 805.3 810 855 Q928 776.5 1040 850.5 Q1158 775.4 1270 800.1 Q1388 903.7 1500 801.3" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1136.3 409.5) rotate(1) scale(1.1)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".54"><rect x="-358" y="-118" width="216" height="236"/><path d="M-310-54h120M-310 0h84M-310 54h108"/><path d="M-142 0C-24-184 94 176 266-26" stroke-dasharray="12 18"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="translate(252 -26) scale(.72)"><path d="M-96 0H96M0-78V78M-56-42 56 42M56-42-56 42"/><rect x="-48" y="-30" width="96" height="60"/><circle cx="-108" cy="-94" r="42"/><circle cx="108" cy="-94" r="42"/><circle cx="-108" cy="94" r="42"/><circle cx="108" cy="94" r="42"/></g><path d="M-118-26h112m-26-28 40 28-40 28" fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-368b77be53fd)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#62d7d1" font-size="18" font-weight="700" letter-spacing="4">FLIGHT SYSTEMS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">PLANNING</text>
+    <text x="112" y="542" fill="#7fa9ff" font-size="38" font-weight="650" letter-spacing="4">OFFBOARD</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">FLIGHT GUIDE</text>
+  </g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">从本地文件夹到 GitHub 新仓库：一步步推送指南</title>
+  <desc id="card-desc">Dreamer Island ENGINEERING TOOLS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-bf845ea0187c" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07151f"/><stop offset=".62" stop-color="#102c36"/><stop offset="1" stop-color="#172b48"/></linearGradient>
+    <radialGradient id="card-glow-bf845ea0187c"><stop stop-color="#66d3aa" stop-opacity=".28"/><stop offset="1" stop-color="#66d3aa" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-bf845ea0187c" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#66d3aa"/><stop offset="1" stop-color="#7caaff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-bf845ea0187c)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7caaff" opacity=".055"/>
+  <circle cx="1103.5" cy="434.3" r="510" fill="url(#card-glow-bf845ea0187c)"/>
+  <g opacity=".62"><path d="M-120 100.8 Q8 152.1 120 116.4 Q238 96.3 350 120.3 Q468 42.5 580 114.8 Q698 20.5 810 66.2 Q928 124.3 1040 71.3 Q1158 154.8 1270 118 Q1388 90.8 1500 61.1" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.2"/><path d="M-120 255.2 Q8 257.1 120 288.7 Q238 312.1 350 287.1 Q468 314 580 270.9 Q698 265.7 810 290 Q928 326.6 1040 219.9 Q1158 249.8 1270 232.2 Q1388 302.6 1500 218.6" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.2"/><path d="M-120 391.2 Q8 438.9 120 430.6 Q238 410 350 432.1 Q468 422 580 344.3 Q698 397.9 810 405.6 Q928 446.1 1040 440.7 Q1158 361.5 1270 351.9 Q1388 309.8 1500 402.8" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.1"/><path d="M-120 531.4 Q8 615.6 120 567.1 Q238 463.4 350 552.2 Q468 484 580 521.9 Q698 603 810 544.7 Q928 610.7 1040 552.4 Q1158 503.6 1270 499 Q1388 571.4 1500 542.1" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/><path d="M-120 660.3 Q8 696.7 120 658.1 Q238 597.2 350 623 Q468 641.3 580 660.1 Q698 719.1 810 664.9 Q928 691.3 1040 646.9 Q1158 613.9 1270 665 Q1388 669.8 1500 621.2" fill="none" stroke="#66d3aa" stroke-width="2" opacity="0.1"/><path d="M-120 836.3 Q8 762.3 120 872.6 Q238 835.9 350 838 Q468 818.4 580 813 Q698 849 810 846.9 Q928 883.8 1040 864.3 Q1158 861 1270 862.7 Q1388 801.5 1500 830.2" fill="none" stroke="#7caaff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1099.8 438.1) rotate(-1.5) scale(1.1)"><g fill="none" stroke="#7caaff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".7"><path d="M-216-236v164c0 104 82 102 168 102h94c104 0 174 62 174 152v72"/><path d="M-216-72v326M46 30v-214"/></g><g fill="none" stroke="#66d3aa" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="-216" cy="-236" r="30"/><circle cx="-216" cy="-72" r="30"/><circle cx="-216" cy="254" r="30"/><circle cx="46" cy="-184" r="30"/><circle cx="46" cy="30" r="30"/><circle cx="220" cy="254" r="30"/></g><path d="M-186-72h76" fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-bf845ea0187c)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#66d3aa" font-size="18" font-weight="700" letter-spacing="4">ENGINEERING TOOLS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">GIT</text>
+    <text x="112" y="542" fill="#7caaff" font-size="38" font-weight="650" letter-spacing="4">REMOTE</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">TOOL GUIDE</text>
+  </g>
+</svg>

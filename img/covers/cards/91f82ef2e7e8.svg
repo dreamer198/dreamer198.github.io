@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">OpenVINS搭建与测试</title>
+  <desc id="card-desc">Dreamer Island STATE ESTIMATION article card</desc>
+  <defs>
+    <linearGradient id="card-bg-91f82ef2e7e8" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0a1321"/><stop offset=".62" stop-color="#132c45"/><stop offset="1" stop-color="#24304b"/></linearGradient>
+    <radialGradient id="card-glow-91f82ef2e7e8"><stop stop-color="#73d9cf" stop-opacity=".28"/><stop offset="1" stop-color="#73d9cf" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-91f82ef2e7e8" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#73d9cf"/><stop offset="1" stop-color="#9a9dff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-91f82ef2e7e8)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#9a9dff" opacity=".055"/>
+  <circle cx="1056.4" cy="451.9" r="510" fill="url(#card-glow-91f82ef2e7e8)"/>
+  <g opacity=".62"><path d="M-120 80.6 Q8 2.5 120 72.6 Q238 92.5 350 93.4 Q468 43.3 580 75.5 Q698 79.1 810 128.1 Q928 -2.2 1040 52.4 Q1158 164.4 1270 54.1 Q1388 127.2 1500 54" fill="none" stroke="#73d9cf" stroke-width="2" opacity="0.1"/><path d="M-120 229 Q8 217.5 120 231.2 Q238 285.5 350 186 Q468 257.9 580 204.9 Q698 150.3 810 249 Q928 301.9 1040 183.8 Q1158 221.1 1270 220.9 Q1388 165.7 1500 187.8" fill="none" stroke="#9a9dff" stroke-width="2" opacity="0.1"/><path d="M-120 392.3 Q8 438.4 120 363.3 Q238 373.4 350 358.8 Q468 422.1 580 361.5 Q698 391.3 810 429.1 Q928 453 1040 439.1 Q1158 411 1270 393.7 Q1388 431.7 1500 364.6" fill="none" stroke="#73d9cf" stroke-width="2" opacity="0.2"/><path d="M-120 534.1 Q8 521.7 120 548.9 Q238 534.2 350 540.3 Q468 483.4 580 517.2 Q698 609.3 810 537.8 Q928 534.7 1040 581.5 Q1158 608.6 1270 491.5 Q1388 554.7 1500 512" fill="none" stroke="#9a9dff" stroke-width="2" opacity="0.2"/><path d="M-120 679.4 Q8 718.7 120 657.5 Q238 624.3 350 630.2 Q468 669.4 580 688.7 Q698 606.8 810 675.4 Q928 647.4 1040 665 Q1158 599.5 1270 667.9 Q1388 749.1 1500 670.2" fill="none" stroke="#73d9cf" stroke-width="2" opacity="0.1"/><path d="M-120 819.3 Q8 756 120 819.8 Q238 755.1 350 866.4 Q468 805.2 580 855.4 Q698 762.7 810 811.9 Q928 754.7 1040 833.3 Q1158 794 1270 850.9 Q1388 840.5 1500 812" fill="none" stroke="#9a9dff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1153.2 416.5) rotate(0.9) scale(1.1)"><g fill="none" stroke="#9a9dff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".54"><path d="M-352 212 304-208M-336-160 328 172"/><circle r="112"/><circle r="206"/><circle r="294" stroke-dasharray="10 20"/></g><g fill="none" stroke="#73d9cf" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle r="42"/><path d="M0-42V42M-42 0H42"/><path d="M-226 150c68-52 130-66 190-12s134 46 246-62"/></g><g fill="#efb866"><circle cx="-292" cy="-188" r="10"/><circle cx="-240" cy="82" r="7"/><circle cx="-106" cy="-226" r="8"/><circle cx="128" cy="-184" r="7"/><circle cx="246" cy="-42" r="9"/><circle cx="302" cy="178" r="8"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-91f82ef2e7e8)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#73d9cf" font-size="18" font-weight="700" letter-spacing="4">STATE ESTIMATION</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">VIO</text>
+    <text x="112" y="542" fill="#9a9dff" font-size="38" font-weight="650" letter-spacing="4">ESTIMATION</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb866" font-size="14" font-weight="700" letter-spacing="4">SLAM GUIDE</text>
+  </g>
+</svg>

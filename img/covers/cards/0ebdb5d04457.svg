@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-0ebdb5d04457" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-0ebdb5d04457"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-0ebdb5d04457" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-0ebdb5d04457)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1084.3" cy="440.1" r="510" fill="url(#card-glow-0ebdb5d04457)"/>
+  <g opacity=".62"><path d="M-120 108.3 Q8 155.8 120 89.4 Q238 141.2 350 90.4 Q468 122.3 580 65.5 Q698 91.7 810 127.5 Q928 97.9 1040 64 Q1158 165.3 1270 97.5 Q1388 174.5 1500 153.9" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 228.1 Q8 264.3 120 204.7 Q238 237.2 350 230.7 Q468 156.8 580 203.5 Q698 273.8 810 258.9 Q928 294.1 1040 189.4 Q1158 201 1270 253.9 Q1388 287.6 1500 226.9" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 372.1 Q8 361.5 120 340.5 Q238 298.2 350 336.4 Q468 310.6 580 365.4 Q698 300 810 374.8 Q928 417.8 1040 348 Q1158 325.4 1270 324.3 Q1388 433.2 1500 383.8" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 530.3 Q8 499.1 120 480.9 Q238 529.3 350 557.3 Q468 537.6 580 575.6 Q698 483.4 810 495 Q928 513.8 1040 562.3 Q1158 510.8 1270 506.1 Q1388 558.6 1500 521.8" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 661.9 Q8 688 120 625.4 Q238 623.6 350 682.3 Q468 735.4 580 696.1 Q698 735.1 810 622.5 Q928 667.8 1040 706.3 Q1158 732.6 1270 697.7 Q1388 633.7 1500 624.6" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 819.2 Q8 821.7 120 828.2 Q238 778 350 851.1 Q468 858.9 580 817.4 Q698 741 810 804 Q928 859.1 1040 769.5 Q1158 827.2 1270 833.1 Q1388 771.6 1500 805.6" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1133 403.5) rotate(-0.2) scale(1.2)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M-316 0h116M-80 0H36M156 0h116"/><path d="m-214-18 30 18-30 18M22-18 52 0 22 18M258-18l30 18-30 18"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="-366" y="-92" width="166" height="184"/><circle cx="-283" r="36"/><rect x="-80" y="-92" width="236" height="184"/><path d="M-38 42-2 0l34 24 78-86"/><rect x="272" y="-92" width="94" height="184"/><path d="M288 0h62M319-46v92"/></g><g fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M-350-124h134M-64-124h204M288-124h62"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-0ebdb5d04457)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#62d7d1" font-size="18" font-weight="700" letter-spacing="4">FLIGHT SYSTEMS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">ROS 2</text>
+    <text x="112" y="542" fill="#7fa9ff" font-size="38" font-weight="650" letter-spacing="4">PX4 BRIDGE</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">SYSTEM GUIDE</text>
+  </g>
+</svg>

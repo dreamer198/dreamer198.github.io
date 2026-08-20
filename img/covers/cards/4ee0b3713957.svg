@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">Gazebo仿真环境中的无人机视觉定位测试</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-4ee0b3713957" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-4ee0b3713957"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-4ee0b3713957" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-4ee0b3713957)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1099.7" cy="449.1" r="510" fill="url(#card-glow-4ee0b3713957)"/>
+  <g opacity=".62"><path d="M-120 87.3 Q8 36.8 120 105.6 Q238 28.6 350 120.7 Q468 111.2 580 43.1 Q698 148 810 57.6 Q928 94.8 1040 76.8 Q1158 30.8 1270 68.4 Q1388 11.5 1500 125.9" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 245.4 Q8 306.7 120 252.6 Q238 170.1 350 218.7 Q468 302.3 580 269.7 Q698 255.1 810 271.6 Q928 201.7 1040 196.9 Q1158 244.8 1270 212.5 Q1388 236.7 1500 211.7" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 386.3 Q8 387.1 120 373.9 Q238 440.1 350 393.6 Q468 398.8 580 363.4 Q698 308.6 810 431.1 Q928 460.3 1040 372.4 Q1158 426.9 1270 369.2 Q1388 344.6 1500 400.4" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 531.8 Q8 608.3 120 561.6 Q238 509.9 350 526.5 Q468 513.9 580 497.1 Q698 471.2 810 557.3 Q928 552.8 1040 497.7 Q1158 610.5 1270 523.9 Q1388 554.2 1500 554.3" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 678 Q8 748.9 120 697.1 Q238 638.5 350 724.9 Q468 661.9 580 649.7 Q698 734.1 810 685.8 Q928 749.1 1040 714.6 Q1158 688.4 1270 659.4 Q1388 699.1 1500 691.2" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 826.4 Q8 874.3 120 785.7 Q238 756 350 779 Q468 767.2 580 813.2 Q698 831.6 810 810.7 Q928 771.1 1040 792.9 Q1158 898.5 1270 869 Q1388 782.4 1500 866.8" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1151 445) rotate(0.2) scale(1.1)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".62"><path d="m-112-92 402-148v480L-112 92Z"/><path d="M-112-92 290 240M-112 92 290-240"/><rect x="-332" y="-132" width="220" height="264" rx="22"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="-222" r="72"/><circle cx="-222" r="22"/><path d="M-112-64h72v128h-72"/></g><g fill="#efb35f"><circle cx="62" cy="-118" r="8"/><circle cx="116" cy="46" r="9"/><circle cx="196" cy="-54" r="7"/><circle cx="240" cy="126" r="10"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-4ee0b3713957)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#62d7d1" font-size="18" font-weight="700" letter-spacing="4">FLIGHT SYSTEMS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">SIM</text>
+    <text x="112" y="542" fill="#7fa9ff" font-size="38" font-weight="650" letter-spacing="4">VISUAL POSE</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">TEST LOG</text>
+  </g>
+</svg>

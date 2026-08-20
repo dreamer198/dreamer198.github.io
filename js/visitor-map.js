@@ -356,10 +356,9 @@
     setStatus('loading', '正在加载访客来源数据...')
 
     try {
-      var response = await fetchWithTimeout(apiBase + '/api/summary?_=' + Date.now(), {
+      var response = await fetchWithTimeout(apiBase + '/api/summary', {
         mode: 'cors',
-        credentials: 'omit',
-        cache: 'no-store'
+        credentials: 'omit'
       }, 8000)
 
       if (!response.ok) throw new Error('HTTP ' + response.status)

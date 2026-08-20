@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title">
+  <title id="title">开发工具技术封面</title>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#061723"/><stop offset=".55" stop-color="#103a44"/><stop offset="1" stop-color="#192e51"/></linearGradient><pattern id="dots" width="36" height="36" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="2" fill="#73a7ff" opacity=".13"/></pattern></defs>
+  <rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#dots)"/>
+  <g transform="translate(800 450)"><rect x="-510" y="-286" width="1020" height="572" rx="18" fill="#07131d" stroke="#8fd1d4" stroke-opacity=".7" stroke-width="10"/><path d="M-510-190H510" stroke="#8fd1d4" stroke-opacity=".42" stroke-width="6"/><circle cx="-448" cy="-238" r="15" fill="#35b6bc"/><circle cx="-398" cy="-238" r="15" fill="#73a7ff"/><circle cx="-348" cy="-238" r="15" fill="#e0a04b"/>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"><path d="m-340-38 112 88-112 88" stroke="#35b6bc"/><path d="M-158 148H70" stroke="#eef6fa"/><path d="M92-55h262M92 18h192M92 91h320" stroke="#73a7ff" opacity=".84"/></g>
+  </g>
+</svg>

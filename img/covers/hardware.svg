@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title">
+  <title id="title">传感器硬件技术封面</title>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#071a25"/><stop offset=".58" stop-color="#123b42"/><stop offset="1" stop-color="#202f4b"/></linearGradient><pattern id="grid" width="72" height="72" patternUnits="userSpaceOnUse"><path d="M72 0H0V72" fill="none" stroke="#8fd1d4" stroke-opacity=".08"/></pattern></defs>
+  <rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#grid)"/>
+  <g transform="translate(800 450)" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="-250" y="-210" width="500" height="420" rx="24" stroke="#eef6fa" stroke-width="14"/><rect x="-128" y="-108" width="256" height="216" rx="12" stroke="#35b6bc" stroke-width="14"/>
+    <path d="M-250-148h-94m94 96h-94m94 104h-94M250-148h94m-94 96h94m-94 104h94M-162-210v-92m108 92v-92m108 92v-92m108 92v-92M-162 210v92m108-92v92m108-92v92m108-92v92" stroke="#73a7ff" stroke-width="12"/>
+    <circle cx="0" cy="0" r="62" stroke="#e0a04b" stroke-width="12"/><path d="M-440-260h72l42 42M440 260h-72l-42-42M440-260h-72l-42 42M-440 260h72l42-42" stroke="#35b6bc" stroke-width="9"/>
+  </g>
+</svg>

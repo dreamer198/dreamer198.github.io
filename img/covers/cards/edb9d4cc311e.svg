@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
+  <desc id="card-desc">Dreamer Island EMBEDDED HARDWARE article card</desc>
+  <defs>
+    <linearGradient id="card-bg-edb9d4cc311e" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10151e"/><stop offset=".62" stop-color="#2b2925"/><stop offset="1" stop-color="#15383d"/></linearGradient>
+    <radialGradient id="card-glow-edb9d4cc311e"><stop stop-color="#e7b969" stop-opacity=".28"/><stop offset="1" stop-color="#e7b969" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-edb9d4cc311e" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#e7b969"/><stop offset="1" stop-color="#69d3c8"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-edb9d4cc311e)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#69d3c8" opacity=".055"/>
+  <circle cx="1116.1" cy="432.5" r="510" fill="url(#card-glow-edb9d4cc311e)"/>
+  <g opacity=".62"><path d="M-120 102.1 Q8 26.4 120 59.2 Q238 58.2 350 116.2 Q468 132.5 580 73.8 Q698 32 810 88.4 Q928 77.1 1040 111.1 Q1158 60.8 1270 104.7 Q1388 34.5 1500 135.4" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.1"/><path d="M-120 244.3 Q8 271.3 120 249 Q238 226.6 350 197.7 Q468 167.2 580 208.6 Q698 202.3 810 198.1 Q928 259.8 1040 280.8 Q1158 194.6 1270 226.4 Q1388 295.4 1500 206.7" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/><path d="M-120 378.7 Q8 382.3 120 400.3 Q238 307.8 350 338.3 Q468 459.2 580 356.5 Q698 420.1 810 406.2 Q928 374.1 1040 335.1 Q1158 388.5 1270 347.6 Q1388 399.2 1500 332.1" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.2"/><path d="M-120 539.2 Q8 492.8 120 489.6 Q238 486.2 350 574.6 Q468 502.8 580 583.5 Q698 599.7 810 533.9 Q928 611.2 1040 567.6 Q1158 610.2 1270 578.3 Q1388 559.4 1500 490.8" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/><path d="M-120 678.7 Q8 664.5 120 674.9 Q238 747.2 350 656.4 Q468 654.8 580 681.9 Q698 649.3 810 658.4 Q928 729.7 1040 690.1 Q1158 715.9 1270 702.1 Q1388 674.3 1500 718" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.1"/><path d="M-120 821 Q8 835.3 120 853.1 Q238 864.8 350 830.2 Q468 855.7 580 803.4 Q698 767.9 810 837.5 Q928 803 1040 853.9 Q1158 842.9 1270 777.5 Q1388 736.1 1500 856.7" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1091 434.5) rotate(0.9) scale(1.1)"><g fill="none" stroke="#69d3c8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".66"><path d="M-210-220v-78M-210220v78M-310 -210h-78M310 -210h78"/><path d="M-126-220v-78M-126220v78M-310 -126h-78M310 -126h78"/><path d="M-42-220v-78M-42220v78M-310 -42h-78M310 -42h78"/><path d="M42-220v-78M42220v78M-310 42h-78M310 42h78"/><path d="M126-220v-78M126220v78M-310 126h-78M310 126h78"/><path d="M210-220v-78M210220v78M-310 210h-78M310 210h78"/><path d="M-210-120h92l62 62M210 122h-88l-64-64M-210 120h74l54-54M210-120h-70l-58 58"/></g><g fill="none" stroke="#e7b969" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="-310" y="-220" width="620" height="440" rx="30"/><rect x="-112" y="-104" width="224" height="208" rx="18"/><circle r="34"/></g><circle r="82" fill="none" stroke="#8fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-edb9d4cc311e)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#e7b969" font-size="18" font-weight="700" letter-spacing="4">EMBEDDED HARDWARE</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">JETSON</text>
+    <text x="112" y="542" fill="#69d3c8" font-size="38" font-weight="650" letter-spacing="4">FLASHING</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#8fa9ff" font-size="14" font-weight="700" letter-spacing="4">HARDWARE GUIDE</text>
+  </g>
+</svg>

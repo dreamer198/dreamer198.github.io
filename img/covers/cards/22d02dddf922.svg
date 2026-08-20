@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">Mid-360S 使用教程</title>
+  <desc id="card-desc">Dreamer Island EMBEDDED HARDWARE article card</desc>
+  <defs>
+    <linearGradient id="card-bg-22d02dddf922" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#10151e"/><stop offset=".62" stop-color="#2b2925"/><stop offset="1" stop-color="#15383d"/></linearGradient>
+    <radialGradient id="card-glow-22d02dddf922"><stop stop-color="#e7b969" stop-opacity=".28"/><stop offset="1" stop-color="#e7b969" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-22d02dddf922" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#e7b969"/><stop offset="1" stop-color="#69d3c8"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-22d02dddf922)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#69d3c8" opacity=".055"/>
+  <circle cx="1125" cy="444.4" r="510" fill="url(#card-glow-22d02dddf922)"/>
+  <g opacity=".62"><path d="M-120 97.1 Q8 126.6 120 112.4 Q238 26.7 350 48.7 Q468 83.4 580 55.8 Q698 54.2 810 108.8 Q928 99.5 1040 83.9 Q1158 162.8 1270 51.9 Q1388 28.1 1500 133.7" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.1"/><path d="M-120 234.8 Q8 242.4 120 225.3 Q238 279.6 350 255.5 Q468 266.2 580 207.4 Q698 277.3 810 251.3 Q928 206.8 1040 282.3 Q1158 207.6 1270 217.9 Q1388 284.8 1500 253" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/><path d="M-120 400.5 Q8 338.9 120 362.6 Q238 377.6 350 367.4 Q468 417.9 580 382.3 Q698 475.9 810 375.4 Q928 473.2 1040 357.2 Q1158 472.8 1270 409.8 Q1388 332.6 1500 350.6" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.2"/><path d="M-120 545.6 Q8 490.2 120 506.9 Q238 532.4 350 505.7 Q468 466.3 580 594 Q698 490.6 810 496.3 Q928 487.7 1040 525.9 Q1158 612.6 1270 567.5 Q1388 569 1500 528.5" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/><path d="M-120 678 Q8 645 120 642.4 Q238 632.7 350 669.4 Q468 696.1 580 716.1 Q698 638 810 641.2 Q928 676.3 1040 709.1 Q1158 732.6 1270 672.8 Q1388 683.3 1500 719.4" fill="none" stroke="#e7b969" stroke-width="2" opacity="0.1"/><path d="M-120 832.6 Q8 865.1 120 832.7 Q238 804.5 350 821.1 Q468 795.3 580 816.9 Q698 897.5 810 872.3 Q928 849 1040 791.4 Q1158 812.3 1270 792.7 Q1388 787.4 1500 821.2" fill="none" stroke="#69d3c8" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1096.1 429.2) rotate(0.3) scale(1.1)"><g fill="none" stroke="#69d3c8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".42"><ellipse cy="-26" rx="334" ry="194"/><ellipse cy="-26" rx="256" ry="142"/><path d="M0-26-306-164M0-26 324-126M0-26-294 132M0-26 310 150"/></g><g fill="none" stroke="#e7b969" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M-92-20h184v142H-92Z"/><ellipse cy="-20" rx="92" ry="42"/><ellipse cy="122" rx="92" ry="34"/><path d="M-54-20v-96h108v96"/></g><g fill="#8fa9ff" opacity=".9"><circle cx="209.5" cy="-26" r="5.8"/><circle cx="190.5" cy="26.5" r="5.6"/><circle cx="239.5" cy="29.3" r="6.2"/><circle cx="193.7" cy="68.8" r="5.6"/><circle cx="86.8" cy="148.9" r="4.2"/><circle cx="29" cy="147.9" r="5.1"/><circle cx="-27.7" cy="120.5" r="4.3"/><circle cx="-132.6" cy="125.2" r="6.7"/><circle cx="-149.1" cy="62.9" r="4.4"/><circle cx="-167.8" cy="66.2" r="6.3"/><circle cx="-193.8" cy="27.7" r="5"/><circle cx="-195.9" cy="-26" r="8.3"/><circle cx="-223.3" cy="-68" r="6.9"/><circle cx="-175" cy="-79.5" r="8.3"/><circle cx="-168.8" cy="-144.8" r="5.6"/><circle cx="-100" cy="-172.1" r="5.8"/><circle cx="-37.8" cy="-174.6" r="6.7"/><circle cx="31" cy="-121" r="4.5"/><circle cx="82.8" cy="-181.3" r="6.2"/><circle cx="162.1" cy="-143.1" r="8.6"/><circle cx="246.3" cy="-126.6" r="5.8"/><circle cx="300.6" cy="-77.2" r="5.9"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-22d02dddf922)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#e7b969" font-size="18" font-weight="700" letter-spacing="4">EMBEDDED HARDWARE</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">LIDAR</text>
+    <text x="112" y="542" fill="#69d3c8" font-size="38" font-weight="650" letter-spacing="4">POINT CLOUD</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#8fa9ff" font-size="14" font-weight="700" letter-spacing="4">SENSOR GUIDE</text>
+  </g>
+</svg>

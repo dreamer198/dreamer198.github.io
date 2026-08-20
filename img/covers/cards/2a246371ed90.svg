@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">Gazebo 仿真中跑通 PX4 + MID360 + FAST-LIO2 + EGO-Planner 完整链路</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-2a246371ed90" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-2a246371ed90"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-2a246371ed90" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-2a246371ed90)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1148.7" cy="440" r="510" fill="url(#card-glow-2a246371ed90)"/>
+  <g opacity=".62"><path d="M-120 85.1 Q8 153.2 120 93.5 Q238 1 350 39 Q468 118.9 580 118.2 Q698 53.1 810 91.5 Q928 68.1 1040 122.9 Q1158 130.6 1270 40.8 Q1388 15.5 1500 126.6" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 253.4 Q8 190.1 120 248.1 Q238 223.9 350 211.5 Q468 175.7 580 294.6 Q698 239.8 810 205.9 Q928 203.2 1040 280.4 Q1158 273 1270 222.8 Q1388 325.2 1500 279.3" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 394.3 Q8 394.7 120 355.2 Q238 461.7 350 388.2 Q468 477.8 580 360.8 Q698 429.7 810 357 Q928 373.4 1040 400.9 Q1158 335.7 1270 388.1 Q1388 322.2 1500 344.8" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 533.6 Q8 615.1 120 560.2 Q238 583.9 350 574.1 Q468 554.4 580 571.7 Q698 486.2 810 554.7 Q928 462.6 1040 484.4 Q1158 606 1270 550.3 Q1388 452.7 1500 581" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 668.4 Q8 673.9 120 677.8 Q238 668.2 350 674.8 Q468 730.2 580 695.5 Q698 589.4 810 673.3 Q928 621.7 1040 692.6 Q1158 753.2 1270 664.1 Q1388 659.4 1500 671.2" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 813.1 Q8 818.9 120 847.3 Q238 821.8 350 789.1 Q468 786.1 580 860 Q698 824.7 810 823.5 Q928 765.9 1040 841.5 Q1158 741 1270 851.5 Q1388 883 1500 764.5" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1110.9 436.1) rotate(-1.5) scale(1.1)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M-316 0h116M-80 0H36M156 0h116"/><path d="m-214-18 30 18-30 18M22-18 52 0 22 18M258-18l30 18-30 18"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="-366" y="-92" width="166" height="184"/><circle cx="-283" r="36"/><rect x="-80" y="-92" width="236" height="184"/><path d="M-38 42-2 0l34 24 78-86"/><rect x="272" y="-92" width="94" height="184"/><path d="M288 0h62M319-46v92"/></g><g fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M-350-124h134M-64-124h204M288-124h62"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-2a246371ed90)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#62d7d1" font-size="18" font-weight="700" letter-spacing="4">FLIGHT SYSTEMS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">LIO</text>
+    <text x="112" y="542" fill="#7fa9ff" font-size="38" font-weight="650" letter-spacing="4">PLANNING CHAIN</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">SYSTEM GUIDE</text>
+  </g>
+</svg>

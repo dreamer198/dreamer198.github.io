@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">博客搭建过程记录</title>
+  <desc id="card-desc">Dreamer Island WEB SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-79e45ce826e6" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d1721"/><stop offset=".62" stop-color="#18333c"/><stop offset="1" stop-color="#27304a"/></linearGradient>
+    <radialGradient id="card-glow-79e45ce826e6"><stop stop-color="#69d1ca" stop-opacity=".28"/><stop offset="1" stop-color="#69d1ca" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-79e45ce826e6" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#69d1ca"/><stop offset="1" stop-color="#89aaff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-79e45ce826e6)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#89aaff" opacity=".055"/>
+  <circle cx="1133.2" cy="465.6" r="510" fill="url(#card-glow-79e45ce826e6)"/>
+  <g opacity=".62"><path d="M-120 81.7 Q8 54.4 120 129.1 Q238 -0.9 350 62.6 Q468 57.8 580 42.3 Q698 132.1 810 40.5 Q928 9.2 1040 54.6 Q1158 34.8 1270 104.1 Q1388 121.6 1500 98" fill="none" stroke="#69d1ca" stroke-width="2" opacity="0.1"/><path d="M-120 249.5 Q8 296.3 120 224.8 Q238 232.3 350 256.3 Q468 326.4 580 258.5 Q698 321.5 810 263.5 Q928 206.4 1040 257.3 Q1158 295 1270 207.1 Q1388 281.6 1500 261.5" fill="none" stroke="#89aaff" stroke-width="2" opacity="0.1"/><path d="M-120 388.6 Q8 357.1 120 390.1 Q238 314.9 350 389.7 Q468 362.7 580 406.1 Q698 362.6 810 372.7 Q928 318.1 1040 340.2 Q1158 350.6 1270 392 Q1388 394.8 1500 381.3" fill="none" stroke="#69d1ca" stroke-width="2" opacity="0.1"/><path d="M-120 542.8 Q8 509.6 120 522.3 Q238 525 350 535.6 Q468 536.6 580 583.5 Q698 579.5 810 552.9 Q928 482.1 1040 502.6 Q1158 559.2 1270 533 Q1388 474.8 1500 560.9" fill="none" stroke="#89aaff" stroke-width="2" opacity="0.2"/><path d="M-120 690.6 Q8 677.5 120 675.9 Q238 669.5 350 722 Q468 672.7 580 677.2 Q698 691.8 810 649.5 Q928 766.4 1040 716.2 Q1158 649.6 1270 655.3 Q1388 657.2 1500 728.9" fill="none" stroke="#69d1ca" stroke-width="2" opacity="0.1"/><path d="M-120 822.7 Q8 788.6 120 776.6 Q238 866.9 350 778.5 Q468 830.4 580 792.6 Q698 867.5 810 855.9 Q928 870.3 1040 860.9 Q1158 851.2 1270 827.9 Q1388 815.7 1500 865.8" fill="none" stroke="#89aaff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1098.2 437) rotate(1.4) scale(1.1)"><g fill="none" stroke="#89aaff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".7"><rect x="-354" y="-244" width="708" height="488" rx="24"/><path d="M-354-146h708"/><rect x="-278" y="-72" width="210" height="232" rx="8"/><path d="M-18-70h284M-18 6h230M-18 82h256M-18 158h146"/></g><g fill="none" stroke="#69d1ca" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="m-238 74 52-68 52 42 44-54"/><path d="M-286-194h18M-234-194h18M-182-194h18"/></g><path d="M-18-70h196" fill="none" stroke="#e8b765" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-79e45ce826e6)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#69d1ca" font-size="18" font-weight="700" letter-spacing="4">WEB SYSTEMS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">HEXO</text>
+    <text x="112" y="542" fill="#89aaff" font-size="38" font-weight="650" letter-spacing="4">SITE BUILD</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#e8b765" font-size="14" font-weight="700" letter-spacing="4">BUILD LOG</text>
+  </g>
+</svg>

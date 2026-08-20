@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title">
+  <title id="title">博客建站技术封面</title>
+  <defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#071824"/><stop offset=".5" stop-color="#0e3f48"/><stop offset="1" stop-color="#203054"/></linearGradient><pattern id="grid" width="58" height="58" patternUnits="userSpaceOnUse"><path d="M58 0H0V58" fill="none" stroke="#73a7ff" stroke-opacity=".09"/></pattern></defs>
+  <rect width="1600" height="900" fill="url(#bg)"/><rect width="1600" height="900" fill="url(#grid)"/>
+  <g transform="translate(800 450)" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="-500" y="-292" width="1000" height="584" rx="20" stroke="#eef6fa" stroke-width="14"/><path d="M-500-184H500" stroke="#35b6bc" stroke-width="10"/><circle cx="-438" cy="-238" r="14" fill="#35b6bc" stroke="none"/><circle cx="-390" cy="-238" r="14" fill="#73a7ff" stroke="none"/><circle cx="-342" cy="-238" r="14" fill="#e0a04b" stroke="none"/><rect x="-410" y="-92" width="300" height="278" rx="8" stroke="#73a7ff" stroke-width="10"/><path d="M-64-90h430M-64 0h354M-64 90h392M-64 180h260" stroke="#eef6fa" stroke-width="14"/><path d="m-324 72 78-92 78 66" stroke="#e0a04b" stroke-width="12"/></g>
+</svg>

@@ -8,7 +8,6 @@
   if (!config.enabled || !apiBase) return
   if (isLocalhost && !config.trackLocalhost) return
 
-  var endpoint = apiBase + '/api/visit'
   var currentPath = null
 
   function emitVisitResult(data) {
@@ -23,17 +22,14 @@
     if (path === currentPath) return
     currentPath = path
 
+    var wantsSummary = /^\/visitors\/?$/.test(path)
+    var endpoint = apiBase + '/api/visit?' + (wantsSummary ? 'summary=1' : 'summary=0')
+
     window.fetch(endpoint, {
       method: 'POST',
       mode: 'cors',
       credentials: 'omit',
-      keepalive: true,
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        path: path
-      })
+      keepalive: true
     }).then(function (response) {
       if (!response.ok) return null
       return response.json()

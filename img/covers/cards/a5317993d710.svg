@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">无人机路径规划开源算法总结</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-a5317993d710" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-a5317993d710"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-a5317993d710" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-a5317993d710)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1100.8" cy="450.7" r="510" fill="url(#card-glow-a5317993d710)"/>
+  <g opacity=".62"><path d="M-120 90.9 Q8 17.4 120 74 Q238 168 350 119.9 Q468 42.7 580 130.3 Q698 50.8 810 89.2 Q928 161.3 1040 57.5 Q1158 154.8 1270 49.8 Q1388 67 1500 89.5" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 243.2 Q8 247.1 120 292.7 Q238 280.4 350 281.8 Q468 269 580 242.8 Q698 275.9 810 255.8 Q928 322.7 1040 223.8 Q1158 220.1 1270 293 Q1388 251.3 1500 232.8" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 382.8 Q8 340.4 120 411.8 Q238 411.7 350 383.9 Q468 333.3 580 383.6 Q698 399.2 810 358.4 Q928 431 1040 386.3 Q1158 412.1 1270 367.1 Q1388 398.6 1500 368.5" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 516.3 Q8 503 120 470.4 Q238 539.7 350 500 Q468 473.1 580 480.1 Q698 541 810 512.1 Q928 552.7 1040 490.6 Q1158 552.3 1270 523.1 Q1388 542.2 1500 548.2" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 684.7 Q8 714.8 120 649.4 Q238 631.6 350 683.9 Q468 651.2 580 650.2 Q698 633.1 810 636.3 Q928 766 1040 723.3 Q1158 724.9 1270 697.6 Q1388 768.2 1500 672.8" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 833.3 Q8 856 120 878.2 Q238 882.1 350 827.1 Q468 856.4 580 862.3 Q698 752.2 810 806 Q928 853.3 1040 849 Q1158 749.8 1270 836.2 Q1388 782.3 1500 854.1" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1138.9 444.2) rotate(-0.6) scale(1.1)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".34"><path d="M-342 -122.7C-240 -208.7-170 218.3-56 164.3S116 -192.6 198 -128.6S292 57.3 344 99.3"/><path d="M-342 -122.7C-226 -6.7-134 -156.6-22 -128.6S142 202.3 222 164.3S306 133.3 344 99.3"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M-342 -122.7C-236 -104.7-184 142.3-72 164.3S96 -110.6 190 -128.6S286 81.3 344 99.3"/><circle cx="-342" cy="-122.7" r="22"/><circle cx="344" cy="99.3" r="22"/></g><g fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".88"><path d="m-152-188 54-28 52 30-8 62-58 18-48-34Z"/><path d="m118 102 58-22 42 40-24 58-62 2-34-46Z"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-a5317993d710)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <text x="112" y="116" fill="#62d7d1" font-size="18" font-weight="700" letter-spacing="4">FLIGHT SYSTEMS</text>
+    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">PLANNING</text>
+    <text x="112" y="542" fill="#7fa9ff" font-size="38" font-weight="650" letter-spacing="4">ALGORITHM INDEX</text>
+    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
+    <text x="112" y="822" fill="#efb35f" font-size="14" font-weight="700" letter-spacing="4">REFERENCE INDEX</text>
+  </g>
+</svg>
