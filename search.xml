@@ -68,6 +68,664 @@ cd /home/ziqian/blog/myblogshexo clean &amp;&amp; hexo g &amp;&amp; hexo d &amp;
       </tags>
   </entry>
   <entry>
+    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
+    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
+    <content><![CDATA[
+适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
+
+
+一、准备工作
+
+一台运行 Ubuntu 20.04/22.04 的电脑（建议 20.04/22.04，x86_64）
+USB Type‑C 数据线（支持数据传输）
+Jetson SDK Manager（NVIDIA 官方工具）
+Jetson Orin NX 开发板、12V 供电与显示器（HDMI/DP）
+
+软件下载：
+
+SDK Manager: https://developer.nvidia.com/sdk-manager
+需登录 NVIDIA 账号（没有先注册）
+
+二、安装 SDK Manager
+
+下载 .deb 包后双击安装，或执行：
+
+sudo apt install ./sdkmanager_*_amd64.deb
+
+启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
+
+三、进入恢复模式（Recovery）
+
+用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
+断电 → 按住“REC/Recovery”键 → 上电 → 2 秒后松手
+此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
+
+常见位置提示：
+
+REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
+
+四、SDK Manager 配置与烧录
+
+Select Product Category: Jetson
+Hardware Configuration: 选择 Jetson Orin NX
+Target Operating System: Linux for Tegra
+Target Version: 选择推荐/最新 JetPack（与板卡兼容）
+选择 Host/Target 组件（默认即可）
+点击 Continue，按引导下载镜像与依赖 → 开始 Flash
+
+烧录阶段注意：
+
+全程保持 USB 连接稳定，避免移动触碰
+若网络慢，建议先开代理或稳定网络
+出现权限提示时，按指引使用 sudo 重试
+
+五、首次开机向导
+烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
+
+设置语言、时区、用户名/密码
+进入桌面后建议先运行：
+
+sudo apt update &amp;&amp; sudo apt upgrade -y
+六、常见问题排查（FAQ）
+
+PC 不识别设备（lsusb 看不到 NVIDIA）：
+
+
+检查是否严格按“按住 REC → 上电”顺序
+更换 USB‑C 线（必须支持数据）与 USB 口
+更换 PC 或操作系统版本（建议 Ubuntu 20.04/22.04）
+
+
+SDK Manager 卡在下载/校验：
+
+
+切换网络或配置代理后重试
+退出后重新登录 SDK Manager，会复用已下载数据
+
+
+烧录成功但无法进桌面：
+
+
+尝试重启；检查电源/显示器连接
+若持续异常，可重新进入 Recovery 再次烧录
+
+七、后续建议（可选）
+
+安装基础工具：
+
+sudo apt install -y git curl vim htop tmux
+
+使用 ToDesk/向日葵等远程工具便于维护
+后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
+
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>Jetson</tag>
+        <tag>系统烧录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Jetson Orin NX 双网口同时启用教程</title>
+    <url>/2026/08/11/Jetson-Orin-NX%E5%8F%8C%E7%BD%91%E5%8F%A3%E5%90%8C%E6%97%B6%E5%90%AF%E7%94%A8/</url>
+    <content><![CDATA[前言
+这次在 Jetson Orin NX 上同时连接普通设备和 Livox Mid-360S 时，连续遇到了两个问题：
+
+主板有两个物理网口，但系统只能看到一个网口。
+第二个网口修好后，两个网口仍然只能连接一个，连接第二个时第一个会断开。
+
+最后确认并不是 Jetson 的两个网口硬件互斥，而是第二个 Realtek 网卡缺少驱动，同时两个网口错误地共用了同一个 NetworkManager 配置。由于两个网口还在同一个 192.168.1.0/24 网段，又产生了路由冲突。
+本文先给出可以直接使用的一键脚本，再解释问题原因和手动排查方法。
+
+适用边界：下面的脚本是针对本文记录的 Jetson Orin NX、Realtek RTL8125/RTL8168 网卡和同网段地址规划验证的。其他载板、内核版本、网卡芯片或 IP 规划需要先修改配置并核对驱动，不应直接照搬。
+
+
+一、当前设备配置
+这台 Jetson 的网络规划如下：
+
+
+
+用途
+网口
+Jetson IP
+对端设备 IP
+
+
+
+
+普通设备网
+enP7p1s0
+192.168.1.123/24
+根据实际设备确定
+
+
+Mid-360S 专用网
+enP8p1s0
+192.168.1.102/24
+192.168.1.199
+
+
+SSH 和默认网络
+wlP1p1s0
+DHCP
+路由器
+
+
+
+实际网卡控制器：
+enP7p1s0 -&gt; Realtek RTL8125      -&gt; r8125enP8p1s0 -&gt; Realtek RTL8111/8168 -&gt; r8168
+
+执行脚本会重新连接两个有线网口。如果当前 SSH 正通过其中一个有线口连接，脚本会停止。建议通过 Wi-Fi、显示器或串口执行。
+
+二、一键解决脚本
+在 Jetson 上创建脚本：
+nano ~/enable_jetson_dual_eth.sh
+复制下面的全部内容。如果自己的网口名或 IP 不同，只修改最上方的“需要修改的配置”部分。
+#!/usr/bin/env bashset -Eeuo pipefail# ============================================================# 需要修改的配置# ============================================================# 普通设备网口GENERAL_IF=&quot;enP7p1s0&quot;GENERAL_IP=&quot;192.168.1.123/24&quot;GENERAL_PROFILE=&quot;device-enP7&quot;# Mid-360S 专用网口LIDAR_IF=&quot;enP8p1s0&quot;LIDAR_HOST_IP=&quot;192.168.1.102/24&quot;LIDAR_PROFILE=&quot;102&quot;LIDAR_IP=&quot;192.168.1.199&quot;# ============================================================if [[ $EUID -ne 0 ]]; then  echo &quot;请使用 sudo 运行：sudo bash $0&quot;  exit 1fifor command_name in lspci ip nmcli awk grep modprobe; do  if ! command -v &quot;$command_name&quot; &gt;/dev/null 2&gt;&amp;1; then    echo &quot;缺少命令：$command_name&quot;    exit 1  fidoneif [[ &quot;$GENERAL_IF&quot; == &quot;$LIDAR_IF&quot; ]]; then  echo &quot;两个用途不能配置到同一个网口&quot;  exit 1fiecho &quot;普通设备网口：$GENERAL_IF -&gt; $GENERAL_IP&quot;echo &quot;雷达专用网口：$LIDAR_IF -&gt; $LIDAR_HOST_IP&quot;echo &quot;Mid-360S：$LIDAR_IP&quot;# 当前 SSH 如果正经过目标有线口，直接重连可能导致脚本执行一半时断线。if [[ -n &quot;$&#123;SSH_CONNECTION:-&#125;&quot; ]]; then  SSH_CLIENT_IP=&quot;$&#123;SSH_CONNECTION%% *&#125;&quot;  SSH_ROUTE=&quot;$(ip -4 route get &quot;$SSH_CLIENT_IP&quot; 2&gt;/dev/null | head -n 1 || true)&quot;  if [[ &quot;$SSH_ROUTE&quot; == *&quot; dev $GENERAL_IF &quot;* || &quot;$SSH_ROUTE&quot; == *&quot; dev $LIDAR_IF &quot;* ]]; then    echo &quot;当前 SSH 正通过待重配网口连接：$SSH_ROUTE&quot;    echo &quot;请改用 Wi-Fi、显示器或串口后重新运行&quot;    exit 1  fifiecho &quot;[1/5] 检查 RTL8168 驱动&quot;RTL8168_INFO=&quot;$(lspci -nnk -d 10ec:8168 2&gt;/dev/null || true)&quot;if [[ -n &quot;$RTL8168_INFO&quot; ]] &amp;&amp; ! grep -q &quot;Kernel driver in use:&quot; &lt;&lt;&lt;&quot;$RTL8168_INFO&quot;; then  echo &quot;发现 RTL8168，但没有驱动，开始安装 r8168-dkms&quot;  if [[ ! -e &quot;/lib/modules/$(uname -r)/build&quot; ]]; then    echo &quot;缺少与 $(uname -r) 匹配的 Jetson 内核头文件&quot;    echo &quot;请先安装当前 L4T 对应的 nvidia-l4t-kernel-headers&quot;    exit 1  fi  apt-get update  env DEBIAN_FRONTEND=noninteractive apt-get install -y r8168-dkms  modprobe r8168  udevadm settle || trueelse  echo &quot;RTL8168 已经有驱动，跳过安装&quot;fifor interface_name in &quot;$GENERAL_IF&quot; &quot;$LIDAR_IF&quot;; do  if [[ ! -d &quot;/sys/class/net/$interface_name&quot; ]]; then    echo &quot;找不到网口：$interface_name&quot;    echo &quot;当前网口如下，请修改脚本顶部的网口名：&quot;    ip -br link    exit 1  fidoneecho &quot;[2/5] 备份 NetworkManager 配置&quot;BACKUP_DIR=&quot;/var/backups/jetson-dual-ethernet/$(date +%Y%m%d-%H%M%S)&quot;mkdir -p &quot;$BACKUP_DIR&quot;if [[ -d /etc/NetworkManager/system-connections ]]; then  cp -a /etc/NetworkManager/system-connections &quot;$BACKUP_DIR/&quot;fiecho &quot;配置已备份到：$BACKUP_DIR&quot;configure_profile() &#123;  local profile_name=&quot;$1&quot;  local interface_name=&quot;$2&quot;  local address=&quot;$3&quot;  local route_metric=&quot;$4&quot;  local autoconnect_priority=&quot;$5&quot;  if ! nmcli connection show &quot;$profile_name&quot; &gt;/dev/null 2&gt;&amp;1; then    nmcli connection add \      type ethernet \      ifname &quot;$interface_name&quot; \      con-name &quot;$profile_name&quot;  fi  nmcli connection modify &quot;$profile_name&quot; \    connection.interface-name &quot;$interface_name&quot; \    802-3-ethernet.mac-address &quot;&quot; \    connection.autoconnect yes \    connection.autoconnect-priority &quot;$autoconnect_priority&quot; \    ipv4.method manual \    ipv4.addresses &quot;$address&quot; \    ipv4.gateway &quot;&quot; \    ipv4.dns &quot;&quot; \    ipv4.ignore-auto-dns yes \    ipv4.never-default yes \    ipv4.route-metric &quot;$route_metric&quot; \    ipv4.routes &quot;&quot; \    ipv6.method disabled&#125;echo &quot;[3/5] 为两个网口创建独立配置&quot;nmcli device set &quot;$GENERAL_IF&quot; managed yesnmcli device set &quot;$LIDAR_IF&quot; managed yesconfigure_profile &quot;$GENERAL_PROFILE&quot; &quot;$GENERAL_IF&quot; &quot;$GENERAL_IP&quot; 100 50configure_profile &quot;$LIDAR_PROFILE&quot; &quot;$LIDAR_IF&quot; &quot;$LIDAR_HOST_IP&quot; 500 100# 两个网口处于同一 /24 网段时，强制 Mid-360S 从雷达专用口访问。nmcli connection modify &quot;$LIDAR_PROFILE&quot; \  ipv4.routes &quot;$LIDAR_IP/32 0.0.0.0 10&quot;echo &quot;[4/5] 激活两个网口&quot;nmcli connection reloadnmcli connection down &quot;$GENERAL_PROFILE&quot; &gt;/dev/null 2&gt;&amp;1 || truenmcli connection down &quot;$LIDAR_PROFILE&quot; &gt;/dev/null 2&gt;&amp;1 || truenmcli connection up &quot;$GENERAL_PROFILE&quot; ifname &quot;$GENERAL_IF&quot;nmcli connection up &quot;$LIDAR_PROFILE&quot; ifname &quot;$LIDAR_IF&quot;echo &quot;[5/5] 验证结果&quot;nmcli -f DEVICE,TYPE,STATE,CONNECTION device statusip -4 -br address show dev &quot;$GENERAL_IF&quot;ip -4 -br address show dev &quot;$LIDAR_IF&quot;echo &quot;Mid-360S 实际选路：&quot;ip -4 route get &quot;$LIDAR_IP&quot;if ping -I &quot;$LIDAR_IF&quot; -c 3 -W 1 &quot;$LIDAR_IP&quot;; then  echo &quot;配置成功：两个网口已独立启用，Mid-360S 可以访问&quot;else  echo &quot;两个网口配置已完成，但 Mid-360S 没有响应 ping&quot;  echo &quot;请检查雷达电源、网线和 LIDAR_IP&quot;  exit 1fi
+保存后执行：
+chmod +x ~/enable_jetson_dual_eth.shsudo ~/enable_jetson_dual_eth.sh
+脚本成功后，最后应看到：
+enP7p1s0  ethernet  connected  device-enP7enP8p1s0  ethernet  connected  102192.168.1.199 dev enP8p1s0 src 192.168.1.102
+脚本可以重复运行。每次修改前都会将 NetworkManager 配置备份到：
+/var/backups/jetson-dual-ethernet/
+三、问题一：为什么第二个网口无法打开
+先查看 PCI 网卡和驱动：
+lspci -nnk -d 10ec:
+当时可以看到两个控制器：
+RTL8125 2.5GbE ControllerRTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
+第一个控制器有：
+Kernel driver in use: r8125
+第二个 RTL8168 却没有 Kernel driver in use，并且执行下面的命令只能看到一个有线网口：
+ip -br link
+这说明 PCIe 已经识别到硬件，但内核没有为第二个控制器创建网络接口。此时执行 ip link set up 或在桌面网络设置中反复点击都没有用，必须先安装驱动：
+sudo apt-get install -y r8168-dkmssudo modprobe r8168
+安装后验证：
+dkms status | grep r8168lspci -nnk -d 10ec:8168ethtool -i enP8p1s0
+这台 Jetson 的最终结果为：
+r8168/8.049.02, 5.15.148-tegra, aarch64: installedKernel driver in use: r8168driver: r8168
+四、问题二：为什么打开一个网口，另一个就断开
+驱动安装完成后，两个网口的 carrier 都是 1，说明物理连接正常：
+for nic in enP7p1s0 enP8p1s0; do  printf &#x27;%s carrier=&#x27; &quot;$nic&quot;  cat &quot;/sys/class/net/$nic/carrier&quot;done
+继续查看 NetworkManager 配置：
+nmcli -f NAME,TYPE,DEVICE,AUTOCONNECT connection shownmcli -f \connection.id,connection.interface-name,802-3-ethernet.mac-address,ipv4.addresses \  connection show 102
+原来的 102 配置没有绑定网口：
+connection.interface-name: --802-3-ethernet.mac-address: --
+NetworkManager 会把这个配置应用到任意一个兼容的有线网口。插入另一根网线时，同一个配置就在两个接口之间迁移，因此表现为“连接一个，另一个断开”。
+正确做法是让每个接口拥有独立配置，并通过接口名固定：
+device-enP7 -&gt; enP7p1s0 -&gt; 192.168.1.123/24102         -&gt; enP8p1s0 -&gt; 192.168.1.102/24
+脚本中的关键配置就是：
+nmcli connection modify device-enP7 connection.interface-name enP7p1s0nmcli connection modify 102 connection.interface-name enP8p1s0
+五、两个网口在同一网段时的路由问题
+两个有线口都使用 192.168.1.0/24，系统会产生两条相同网段的路由：
+192.168.1.0/24 dev enP7p1s0 src 192.168.1.123 metric 100192.168.1.0/24 dev enP8p1s0 src 192.168.1.102 metric 500
+Linux 默认会选择 metric 更小的 enP7p1s0。这样即使 Mid-360S 接在 enP8p1s0，发往 192.168.1.199 的数据仍可能走错网口。
+解决方法是添加一条更精确的 /32 路由：
+sudo nmcli connection modify 102 \  ipv4.routes &quot;192.168.1.199/32 0.0.0.0 10&quot;
+检查实际选路：
+ip route get 192.168.1.199
+必须看到：
+192.168.1.199 dev enP8p1s0 src 192.168.1.102
+如果可以修改设备网段，更推荐让两个网口使用不同网段，例如：
+普通设备网：192.168.1.0/24雷达设备网：192.168.2.0/24
+不同网段不会产生这种路由歧义。
+六、Mid-360S 配置同步
+网络修好后，还要把 MID360s_config.json 中的 host_ip 改成雷达专用网口地址：
+&quot;host_ip&quot;: &quot;192.168.1.102&quot;
+雷达地址保持：
+&quot;ip&quot;: &quot;192.168.1.199&quot;
+如果这里仍然写成另一个网口的 192.168.1.123，可能出现能够 ping 通雷达，但 ROS 驱动收不到点云的情况。
+启动驱动后验证：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+在另一个终端检查频率：
+ros2 topic hz /livox/lidar --window 20ros2 topic hz /livox/imu --window 100
+这次实际测试结果为：
+/livox/lidar  约 10 Hz/livox/imu    约 200 Hz
+七、快速排查命令
+以后遇到类似问题，按照下面的顺序检查即可：
+# 1. PCIe 是否识别到两个控制器，驱动是否已经绑定lspci -nnk -d 10ec:# 2. 内核是否创建了两个网口ip -br link# 3. 两个接口分别使用什么驱动ethtool -i enP7p1s0ethtool -i enP8p1s0# 4. 网线是否真正连接cat /sys/class/net/enP7p1s0/carriercat /sys/class/net/enP8p1s0/carrier# 5. 两个接口是否分别连接到独立 profilenmcli -f DEVICE,TYPE,STATE,CONNECTION device status# 6. 查看地址和路由ip -4 -br addressip -4 route# 7. 确认 Mid-360S 最终走哪个网口ip route get 192.168.1.199# 8. 强制从雷达口测试ping -I enP8p1s0 192.168.1.199
+八、常见问题
+1. 安装 r8168-dkms 时报找不到内核头文件
+检查：
+ls -ld &quot;/lib/modules/$(uname -r)/build&quot;
+需要安装与当前 Jetson Linux/L4T 版本匹配的 nvidia-l4t-kernel-headers。不要使用与当前 *-tegra 内核不匹配的 generic 头文件。
+2. 设置 MAC 后提示没有合适的设备
+运行时 MAC、克隆 MAC 和永久 MAC 可能不同：
+nmcli -f GENERAL.HWADDR,GENERAL.PERM-HWADDR device show enP7p1s0ethtool -P enP7p1s0
+如果接口名稳定，直接使用 connection.interface-name 绑定即可。本文脚本会清空 profile 中的 MAC 限制，避免当前 MAC 和永久 MAC 不一致导致连接失败。
+3. 两个网口都显示 connected，但雷达仍然不通
+重点检查实际路由，而不是只看网口状态：
+ip route get 192.168.1.199
+如果没有走 enP8p1s0，重新添加 /32 路由并激活配置：
+sudo nmcli connection modify 102 \  ipv4.routes &quot;192.168.1.199/32 0.0.0.0 10&quot;sudo nmcli connection up 102 ifname enP8p1s0
+4. 重启后又恢复原状
+检查两个 profile 是否开启自动连接并绑定正确接口：
+nmcli -f \connection.id,connection.interface-name,connection.autoconnect,ipv4.addresses,ipv4.routes \  connection show device-enP7nmcli -f \connection.id,connection.interface-name,connection.autoconnect,ipv4.addresses,ipv4.routes \  connection show 102
+总结
+本次问题由三个环节共同造成：
+RTL8168 没有驱动  -&gt; 第二个网口没有出现在系统中两个网口共用一个未绑定接口的 NetworkManager profile  -&gt; 连接一个时另一个断开两个网口处于相同的 192.168.1.0/24 网段  -&gt; 发往 Mid-360S 的数据可能走错网口
+对应的解决方法是：
+
+安装并加载 r8168-dkms。
+为两个网口创建独立 profile，并通过接口名绑定。
+不给设备专用网口配置默认网关。
+使用 /32 路由将 192.168.1.199 固定到 enP8p1s0。
+将 Livox 配置中的 host_ip 修改为 192.168.1.102。
+
+完成后，两个网口可以同时连接各自设备，并在 Jetson 重启后自动恢复。
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>Jetson</tag>
+        <tag>NetworkManager</tag>
+        <tag>双网口</tag>
+        <tag>Livox</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mid-360S 使用教程</title>
+    <url>/2026/05/06/Mid360s%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言
+Livox Mid-360S 是一款常用于移动机器人、无人机、SLAM、建图和避障的 3D 激光雷达。它通过以太网输出数据，在 ROS 2 中通常配合 Livox-SDK2 和 livox_ros_driver2 使用。
+本文记录 Ubuntu 22.04 + ROS 2 Humble 下从硬件连接、网络配置、驱动安装到点云查看的完整流程。
+
+一、硬件与网络准备
+1. 连接设备
+Mid-360S  ├── 电源：DC 9~27 V  └── 网口：连接电脑网口或交换机
+注意事项：
+
+电脑和雷达必须在同一个网段。
+多网卡电脑要确认使用的是连接雷达的有线网卡。
+初次调试建议关闭防火墙，避免 UDP 数据被拦截。
+
+sudo ufw disable
+查看网卡名称：
+ip addr
+常见网卡名有 enp108s0、eno1、eth0 等。注意：ip addr 输出中接口名后面的冒号只是显示格式，命令里一般不要带这个冒号。
+2. 配置电脑 IP
+电脑 IP 只需要满足两点：
+
+和雷达 IP 在同一网段。
+不与雷达或局域网中其他设备冲突。
+
+例如雷达在 192.168.1.0/24 网段，可以把电脑网卡设置为 192.168.1.5：
+sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
+其中 enp108s0 需要替换为自己的有线网卡名。
+3. 确认雷达 IP
+如果已经知道雷达 IP，直接跳到下一步。否则可以通过以下方式获取：
+
+看设备标签、说明书或出厂配置文档。
+用官方的 Livox 工具在同网段内发现设备。
+使用 Mid-360 协议中的广播发现功能获取 lidar_ip 和 cmd_port。
+
+确认网络连通：
+ping 192.168.1.100
+如果 ping 不通，优先检查电源、网线、网卡名、电脑 IP 和雷达 IP 是否正确。
+二、安装 SDK 与 ROS 驱动
+1. 安装 Livox-SDK2
+Livox-SDK2 是 Livox 雷达的底层通信 SDK，livox_ros_driver2 编译时需要依赖它。
+sudo apt updatesudo apt install -y git cmake build-essentialmkdir -p ~/codecd ~/codegit clone https://github.com/Livox-SDK/Livox-SDK2.gitcd Livox-SDK2mkdir -p build &amp;&amp; cd buildcmake ..make -j$(nproc)sudo make install
+如果运行时报找不到动态库，将 /usr/local/lib 加入环境变量：
+echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+2. 安装 livox_ros_driver2
+创建工作空间并编译：
+mkdir -p ~/livox_ws/srccd ~/livox_ws/srcgit clone https://github.com/Livox-SDK/livox_ros_driver2.gitcd ~/livox_ws/src/livox_ros_driver2source /opt/ros/humble/setup.bash./build.sh humble
+加载 ROS 2 工作空间：
+cd ~/livox_wssource install/setup.bash
+也可以写入 ~/.bashrc：
+echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+三、修改 Mid-360S 配置
+进入驱动配置目录：
+cd ~/livox_ws/src/livox_ros_driver2/configls
+通常会看到 MID360_config.json、HAP_config.json、mixed_HAP_MID360_config.json 等文件。Mid-360S 可以按 Mid-360 系列流程配置；如果驱动版本提供了 MID360S_config.json 或 MID360s_config.json，优先使用对应文件。
+gedit MID360s_config.json
+重点检查：
+
+
+
+字段
+含义
+
+
+
+
+host_ip
+电脑有线网卡 IP，例如 192.168.1.5
+
+
+lidar_configs[].ip
+雷达 IP，例如 192.168.1.100
+
+
+pcl_data_type
+点云数据类型，常用 1
+
+
+pattern_mode
+扫描模式，常用 0，表示非重复扫描
+
+
+extrinsic_parameter
+Livox 驱动层外参，不等同于 ROS TF
+
+
+
+示例配置片段：
+&#123;  &quot;MID360s&quot;: &#123;    &quot;lidar_net_info&quot;: &#123;      &quot;cmd_data_port&quot;: 56100,      &quot;push_msg_port&quot;: 56200,      &quot;point_data_port&quot;: 56300,      &quot;imu_data_port&quot;: 56400,      &quot;log_data_port&quot;: 56500    &#125;,    &quot;host_net_info&quot;: [      &#123;        &quot;host_ip&quot;: &quot;192.168.1.5&quot;,        &quot;cmd_data_port&quot;: 56101,        &quot;push_msg_port&quot;: 56201,        &quot;point_data_port&quot;: 56301,        &quot;imu_data_port&quot;: 56401,        &quot;log_data_port&quot;: 56501      &#125;    ]  &#125;,  &quot;lidar_configs&quot;: [    &#123;      &quot;ip&quot;: &quot;192.168.1.100&quot;,      &quot;pcl_data_type&quot;: 1,      &quot;pattern_mode&quot;: 0,      &quot;extrinsic_parameter&quot;: &#123;        &quot;roll&quot;: 0.0,        &quot;pitch&quot;: 0.0,        &quot;yaw&quot;: 0.0,        &quot;x&quot;: 0,        &quot;y&quot;: 0,        &quot;z&quot;: 0      &#125;    &#125;  ]&#125;
+extrinsic_parameter 的建议用法：
+只验证通信：保持全 0让驱动直接输出补偿后的点云：在 json 中设置外参让 ROS 系统知道雷达和机体的坐标关系：发布 TF 或在算法中设置外参
+不要在 MID360s_config.json、TF 和 SLAM 配置里重复补偿同一个安装角度。
+如果修改源码目录中的配置后没有生效，可能是运行时加载了 install 目录中的旧配置。建议重新编译并使用软链接安装：
+cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
+四、启动与验证
+cd ~/livox_wssource /opt/ros/humble/setup.bashsource install/setup.bash
+1. 启动 RViz 查看点云
+ros2 launch livox_ros_driver2 rviz_MID360_launch.py
+如果有 Mid-360S 专用 launch 文件，则使用对应文件名：
+ros2 launch livox_ros_driver2 rviz_MID360s_launch.py
+只查看雷达原始坐标系下的点云时，RViz 的 Fixed Frame 通常设置为：
+livox_frame
+2. 只启动数据发布节点
+如果不需要打开 RViz，可以启动消息发布 launch：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+具体文件名以 launch_ROS2 目录中的实际内容为准。
+3. 查看 ROS 2 话题
+ros2 topic list
+常见话题：
+/livox/lidar/livox/imu
+ros2 topic info /livox/lidarros2 topic info /livox/imuros2 topic hz /livox/lidarros2 topic hz /livox/imu
+如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，通常可以直接给 RViz、SLAM、建图或避障算法使用。
+4. 录制 rosbag
+mkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
+播放 rosbag：
+ros2 bag play &lt;bag目录&gt;
+如需录制所有话题：
+ros2 bag record -a
+五、接入算法时需要确认什么
+Mid-360S 常用于 FAST-LIO、LIO-SAM、VINS、YOPO 等感知或定位模块。接入算法时重点检查三件事。
+1. 话题名称
+pointCloudTopic: &quot;/livox/lidar&quot;imuTopic: &quot;/livox/imu&quot;
+2. 坐标系
+驱动默认 frame 常见为：
+livox_frame
+如果算法使用 base_link、body、camera_init 等坐标系，需要让 TF、算法配置和消息中的 frame_id 保持一致。
+3. 外参位置
+三类外参作用不同，不要混用：
+MID360s_config.json / extrinsic_parameter  -&gt; 影响驱动发布出来的点云坐标  -&gt; 不会发布 ROS TFROS TF / static_transform_publisher / robot_state_publisher  -&gt; 描述 ROS 坐标系之间的关系  -&gt; RViz 和部分算法会按 TF 做坐标变换SLAM / 控制算法中的 extrinsic_T、extrinsic_R  -&gt; 算法内部使用的雷达到机体或雷达到 IMU 外参
+如果雷达前倾 30 度、安装在机体上方 10 cm，可以选择下面两种方式之一。
+方式一：在 json 中设置 extrinsic_parameter，让驱动直接输出补偿后的点云：
+&quot;extrinsic_parameter&quot;: &#123;  &quot;roll&quot;: 0.0,  &quot;pitch&quot;: -30.0,  &quot;yaw&quot;: 0.0,  &quot;x&quot;: 0,  &quot;y&quot;: 0,  &quot;z&quot;: 100&#125;
+方式二：保持 json 外参为 0，单独发布静态 TF：
+ros2 run tf2_ros static_transform_publisher \  --x 0 --y 0 --z 0.10 \  --roll 0 --pitch -0.5236 --yaw 0 \  --frame-id base_link \  --child-frame-id livox_frame
+然后将 RViz 的 Fixed Frame 设置为：
+base_link
+调试阶段可以先在算法中使用零外参：
+extrinsic_T: [0.0, 0.0, 0.0]extrinsic_R: [1.0, 0.0, 0.0,              0.0, 1.0, 0.0,              0.0, 0.0, 1.0]
+实际运行 SLAM 或控制算法时，再根据安装位置修改。核心原则是：同一个角度或位移只补偿一次。
+六、常见问题
+1. ping 不通雷达
+
+检查雷达电源和网线。
+确认电脑 IP 和雷达 IP 在同一网段。
+确认命令里使用的是正确网卡名。
+
+ip addr
+必要时重新配置电脑网卡：
+sudo ip addr flush dev enp108s0sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
+2. 编译时报找不到 Livox-SDK2
+ls /usr/local/lib | grep livoxls /usr/local/include | grep livox
+如果没有结果，重新安装 SDK：
+cd ~/code/Livox-SDK2/buildcmake ..make -j$(nproc)sudo make install
+3. 运行时报找不到动态库
+error while loading shared libraries: liblivox_lidar_sdk_shared.so
+echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+4. RViz 打开后没有点云
+
+只看原始点云时，Fixed Frame 设为 livox_frame。
+通过 TF 看机体系点云时，Fixed Frame 设为 base_link。
+确认 /livox/lidar 存在，并且有发布频率。
+确认 host_ip 是电脑网卡 IP，lidar_configs[].ip 是雷达 IP。
+
+ros2 topic listros2 topic hz /livox/lidar
+5. 改了 json 外参后点云没有变化或还是歪
+先确认修改的是实际加载的配置文件：
+grep -n &quot;user_config_path&quot; ~/livox_ws/src/livox_ros_driver2/launch_ROS2/*.py
+然后重新编译并加载环境：
+cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
+如果通过 TF 查看点云，检查 TF 是否存在：
+ros2 run tf2_ros tf2_echo base_link livox_frame
+6. 点云很卡
+打开对应 launch 文件，适当降低 publish_freq：
+&#123;&quot;publish_freq&quot;: 5.0&#125;
+7. 多雷达时无法区分话题
+可以启用 multi_topic，让不同雷达发布到独立话题。配置思路：
+multi_topic = 1每个雷达配置不同的 lidar_ip必要时给每个雷达配置不同网段或不同网卡
+参考资料
+
+Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
+livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
+Mid-360(S) 通信协议：https://livox-wiki-en.readthedocs.io/en/latest/
+
+总结
+Mid-360S 的基本使用流程可以概括为：
+连接电源和网线  -&gt; 配置电脑网卡 IP  -&gt; 安装 Livox-SDK2  -&gt; 编译 livox_ros_driver2  -&gt; 修改 json 中的 host_ip 和 lidar_configs[].ip  -&gt; ros2 launch 启动  -&gt; RViz 查看点云或录制 rosbag
+接入 SLAM 或机器人系统时，重点关注点云话题、IMU 话题、frame_id 和雷达到机体外参。MID360s_config.json 中的 extrinsic_parameter 会影响驱动输出点云，但它不是 ROS TF。
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>Livox</tag>
+        <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>激光雷达</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>RealSense D435i安装与使用教程</title>
+    <url>/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言
+Intel RealSense D435i 是一款带 IMU 的深度相机，常用于 SLAM、VIO、视觉导航等任务。本文记录在 Ubuntu 22.04 + ROS2 Humble 环境下的安装、启动和常见问题处理。
+一、安装驱动
+1. 添加软件源
+# 添加 GPG keysudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FB0B24895113F120sudo apt-key export FB0B24895113F120 | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/librealsense.gpg# 添加 RealSense 软件源echo &#x27;deb [signed-by=/etc/apt/trusted.gpg.d/librealsense.gpg] https://librealsense.intel.com/Debian/apt-repo jammy main&#x27; | sudo tee /etc/apt/sources.list.d/librealsense.list
+2. 安装 librealsense
+sudo apt updatesudo apt install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg
+3. 安装 ROS2 驱动包
+sudo apt install -y ros-humble-realsense2-camera
+4. 验证安装
+连接相机后运行：
+realsense-viewer
+如果可以看到相机图像和 IMU 数据，说明驱动安装成功。
+
+更详细的驱动安装说明可参考：CSDN教程
+
+二、ROS2 启动方式
+VIO 常用配置：双目红外 + IMU
+适合 VINS-Fusion、OpenVINS 等视觉惯性算法：
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_accel:=true \  enable_gyro:=true \  unite_imu_method:=2 \  gyro_fps:=200 \  depth_module.infra_profile:=640,480,30
+RGB-D 配置
+适合需要彩色图像和深度图像的任务：
+ros2 launch realsense2_camera rs_launch.py \  enable_color:=true \  enable_depth:=true \  enable_infra1:=false \  enable_infra2:=false \  enable_accel:=false \  enable_gyro:=false
+默认配置
+不指定参数时，使用驱动默认配置：
+ros2 launch realsense2_camera rs_launch.py
+三、常用参数
+
+
+
+参数
+说明
+常用值
+
+
+
+
+enable_color
+是否启用彩色相机
+true / false
+
+
+enable_depth
+是否启用深度相机
+true / false
+
+
+enable_infra1
+是否启用左红外相机
+true / false
+
+
+enable_infra2
+是否启用右红外相机
+true / false
+
+
+enable_accel
+是否启用加速度计
+true / false
+
+
+enable_gyro
+是否启用陀螺仪
+true / false
+
+
+unite_imu_method
+IMU 融合方式：0 不融合，1 线性插值，2 拷贝
+2
+
+
+gyro_fps
+陀螺仪采样率
+200
+
+
+accel_fps
+加速度计采样率
+200
+
+
+depth_module.infra_profile
+红外图像分辨率和帧率
+640,480,30
+
+
+
+四、运行时设置
+关闭激光发射器
+室外 VIO 或被动双目场景中，通常需要关闭激光投影器：
+ros2 param set /camera/camera depth_module.emitter_enabled 0
+查看可用参数
+ros2 param list /camera/camera
+修改参数
+ros2 param set /camera/camera &lt;参数名&gt; &lt;参数值&gt;
+五、常用话题
+相机启动后，常用话题如下：
+
+
+
+话题名
+消息类型
+说明
+
+
+
+
+/camera/infra1/image_raw
+sensor_msgs/msg/Image
+左红外图像
+
+
+/camera/infra2/image_raw
+sensor_msgs/msg/Image
+右红外图像
+
+
+/camera/color/image_raw
+sensor_msgs/msg/Image
+彩色图像
+
+
+/camera/depth/image_rect_raw
+sensor_msgs/msg/Image
+深度图像
+
+
+/camera/accel/sample
+sensor_msgs/msg/Imu
+加速度计数据
+
+
+/camera/gyro/sample
+sensor_msgs/msg/Imu
+陀螺仪数据
+
+
+/camera/imu
+sensor_msgs/msg/Imu
+融合后的 IMU 数据
+
+
+
+六、RViz2 可视化
+启动 RViz2：
+rviz2
+常用显示项：
+
+Image：查看红外图像、彩色图像
+PointCloud2：查看点云，需要启用深度相机
+TF：查看相机坐标系关系
+
+七、性能优化
+
+按需开启数据流，不用的彩色、深度或红外数据可以关闭。
+适当降低分辨率和帧率，减少 USB 带宽和 CPU 占用。
+VIO 场景建议设置 unite_imu_method:=2，使用融合后的 IMU 话题。
+室外或被动双目场景建议关闭激光发射器。
+
+八、常见问题
+1. 相机无法识别
+检查 USB 连接和设备识别情况：
+lsusb | grep Intelrealsense-viewer
+优先使用 USB 3.0 接口，并避免通过低质量扩展坞连接。
+2. ROS2 无法启动相机
+检查 RealSense 相关包是否已安装：
+dpkg -l | grep realsense
+必要时重新安装 ROS2 驱动包：
+sudo apt install --reinstall ros-humble-realsense2-camera
+3. IMU 数据不同步
+启动时加入：
+unite_imu_method:=2
+然后重启相机节点。
+4. 帧率不稳定
+常见原因是 USB 带宽不足。可以尝试：
+
+使用 USB 3.0 接口
+降低图像分辨率
+降低帧率
+关闭暂时不用的数据流
+
+参考资源
+
+Intel RealSense官方文档
+librealsense2 GitHub
+realsense2_camera ROS2包装
+
+]]></content>
+      <categories>
+        <category>传感器硬件</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>RealSense</tag>
+        <tag>IMU</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>《动手学强化学习》阅读笔记</title>
     <url>/2025/11/17/RL%E5%8A%A8%E6%89%8B%E5%AD%A6%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[本文是《动手学强化学习》一书的学习笔记，记录了强化学习的基础概念、关键算法与理论框架。力求结构清晰、概念到位，便于入门与复习。
@@ -184,6 +842,216 @@ Sutton &amp; Barto. Reinforcement Learning: An Introduction
       <tags>
         <tag>强化学习</tag>
         <tag>机器学习</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>FAST-LIO2 从 0 跑通教程</title>
+    <url>/2026/05/06/FAST-LIO2%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言
+前面已经跑通了 Mid-360S，接下来把 /livox/lidar 和 /livox/imu 接入 FAST-LIO2，实现实时激光惯性里程计和建图。
+本文环境：
+Ubuntu 22.04ROS 2 HumbleLivox Mid-360SFAST_LIO_ROS2
+
+一、准备环境
+加载 ROS 2 Humble：
+source /opt/ros/humble/setup.bashecho $ROS_DISTRO
+正常应输出：
+humble
+安装依赖：
+sudo apt updatesudo apt install -y \  git \  cmake \  build-essential \  python3-colcon-common-extensions \  python3-rosdep \  libpcl-dev \  libeigen3-dev \  ros-humble-pcl-ros \  ros-humble-rviz2
+如果没有初始化过 rosdep：
+sudo rosdep initrosdep update
+如果提示已经初始化过，忽略 sudo rosdep init 的报错，直接执行 rosdep update 即可。
+二、确认 Mid-360S 数据正常
+先加载 Livox 驱动环境：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bash
+启动 Mid-360S：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+这里要注意：跑 FAST-LIO2 时要用 msg_MID360s_launch.py，不要用 rviz_MID360s_launch.py。前者发布的是 FAST-LIO2 需要的 Livox 自定义点云消息。
+另开终端检查话题：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 topic list
+应该能看到：
+/livox/lidar/livox/imu
+检查消息类型：
+ros2 topic info /livox/lidarros2 topic info /livox/imu
+推荐结果：
+/livox/lidar: livox_ros_driver2/msg/CustomMsg/livox/imu: sensor_msgs/msg/Imu
+如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，说明启动方式不对，换回 msg_MID360s_launch.py。
+三、下载并编译 FAST-LIO2
+创建工作空间：
+mkdir -p ~/fastlio_ws/srccd ~/fastlio_ws/src
+下载 ROS2 版本：
+git clone https://github.com/Ericsii/FAST_LIO_ROS2.git --recursive
+编译：
+cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashrosdep install --from-paths src --ignore-src -ycolcon build --symlink-install
+加载环境：
+source ~/fastlio_ws/install/setup.bash
+也可以写入 ~/.bashrc：
+echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcecho &#x27;source ~/fastlio_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
+四、检查配置文件
+进入配置目录：
+cd ~/fastlio_ws/src/FAST_LIO_ROS2/configls
+实际可以看到：
+avia.yaml  horizon.yaml  mid360.yaml  ouster64.yaml  velodyne.yaml
+Mid-360S 跑 FAST-LIO2 时直接使用仓库自带的 mid360.yaml 即可：
+Livox 驱动启动文件：msg_MID360s_launch.pyFAST-LIO2 配置文件：mid360.yaml
+打开配置：
+gedit mid360.yaml
+第一次跑通时，建议先保持默认参数，只确认下面几个关键项：
+common:  lid_topic: &quot;/livox/lidar&quot;  imu_topic: &quot;/livox/imu&quot;  time_sync_en: falsepreprocess:  lidar_type: 1  scan_line: 4  blind: 0.5  timestamp_unit: 3  scan_rate: 10mapping:  fov_degree: 360.0  det_range: 100.0  extrinsic_est_en: truepublish:  map_en: true  scan_publish_en: true  dense_publish_en: falsepcd_save:  pcd_save_en: true  interval: -1
+其中最重要的是：
+
+
+
+参数
+说明
+
+
+
+
+lid_topic
+点云话题，保持 /livox/lidar
+
+
+imu_topic
+IMU 话题，保持 /livox/imu
+
+
+lidar_type
+Livox 系列为 1
+
+
+timestamp_unit
+默认 3，不要随意改
+
+
+extrinsic_est_en
+默认 true，先让 FAST-LIO2 在线估计外参
+
+
+
+后续如果已经有准确的雷达-IMU 外参，再把 extrinsic_est_en 改为 false，并填写自己的 extrinsic_T 和 extrinsic_R。
+五、启动 FAST-LIO2
+开两个终端。
+终端 1：启动雷达
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
+终端 2：启动 FAST-LIO2
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+若不设置rviz:=false，执行后 RViz2 会自动打开，不需要额外再运行 rviz2。
+刚启动后先让雷达静止几秒，再缓慢移动。第一次测试建议在房间、走廊等有明显结构的环境中进行。
+六、查看建图结果
+RViz2 中重点看这些内容：
+Fixed Frame: camera_initPointCloud2: /Laser_mapPointCloud2: /cloud_registeredOdometry: /OdometryPath: /path
+如果 RViz2 中没有地图，先检查 FAST-LIO2 是否有输出：
+ros2 topic hz /Laser_mapros2 topic hz /Odometry
+如果有频率，多半是 RViz2 的 Fixed Frame 或显示项没设对。
+七、保存地图
+配置中已经开启：
+pcd_save:  pcd_save_en: true  interval: -1
+先查看保存地图服务：
+ros2 service list | grep map
+如果看到 /map_save，调用：
+ros2 service call /map_save std_srvs/srv/Trigger
+这个 ROS2 版本的 /map_save 会按照配置文件里的 map_file_path 保存地图。mid360.yaml 默认是：
+map_file_path: &quot;./test.pcd&quot;
+这里的 ./test.pcd 是相对路径，实际会保存在启动 FAST-LIO2 时终端所在的目录。比如在 ~ 目录启动 FAST-LIO2，地图就是 ~/test.pcd。
+建议改成绝对路径，避免保存后找不到文件：
+map_file_path: &quot;/home/dreamer198/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd&quot;
+重新启动 FAST-LIO2 后，再调用 /map_save，然后查看：
+ls -lh ~/fastlio_ws/src/FAST_LIO_ROS2/PCD
+查看 PCD 地图：
+pcl_viewer ~/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd
+八、录包测试
+实机调试时可以录一段 bag，后面离线反复测试：
+mkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
+播放：
+ros2 bag play &lt;bag目录&gt;
+离线测试时，先启动 FAST-LIO2：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
+再播放 bag：
+ros2 bag play ~/bags/&lt;bag目录&gt;
+九、常见问题
+1. FAST-LIO2 没有点云输入
+检查点云类型：
+ros2 topic info /livox/lidar
+应该是：
+livox_ros_driver2/msg/CustomMsg
+如果不是，重新用下面命令启动雷达：
+ros2 launch livox_ros_driver2 msg_MID360s_launch.py
+2. 找不到 livox_ros_driver2/msg/CustomMsg
+编译或运行 FAST-LIO2 前，需要先加载 Livox 工作空间：
+source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bash
+如果是编译时报错：
+cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashcolcon build --symlink-install
+3. Jetson 通过 SSH 启动时报 RViz2 显示错误
+如果在 Jetson 上通过 SSH 远程执行：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
+出现类似错误：
+qt.qpa.xcb: could not connect to displayCould not load the Qt platform plugin &quot;xcb&quot;
+这说明当前 SSH 终端没有图形显示环境，RViz2 打不开。这个错误只影响 RViz2，不代表 FAST-LIO2 本身一定有问题。
+mapping.launch.py 默认会启动 RViz2，如果 Jetson 是无屏幕运行，或者只是通过 SSH 远程跑算法，可以先关闭 RViz2：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+然后在另一台带显示器的电脑上查看话题：
+ros2 topic listros2 topic hz /Odometryros2 topic hz /Laser_map
+如果两台电脑配置了 ROS 2 多机通信，也可以在自己的主力电脑上单独打开 RViz2 来看 Jetson 发布的话题。
+4. Jetson 运行时报 libusb_set_option
+如果 FAST-LIO2 节点直接退出，并出现：
+/lib/aarch64-linux-gnu/libpcl_io.so.1.12: undefined symbol: libusb_set_option
+这通常不是 FAST-LIO2 参数问题，而是 PCL 加载 libusb 时发生了动态库版本冲突。常见原因是系统里同时存在多个 libusb-1.0.so，例如 /usr/local/lib 下的旧版本 libusb 覆盖了 Ubuntu apt 安装的版本，导致 /lib/aarch64-linux-gnu/libpcl_io.so.1.12 找不到 libusb_set_option 符号。
+先检查 PCL 实际链接到了哪个 libusb：
+ldd /lib/aarch64-linux-gnu/libpcl_io.so.1.12 | grep usb
+再检查系统库里有没有这个符号：
+nm -D /lib/aarch64-linux-gnu/libusb-1.0.so.0 | grep libusb_set_option
+如果第二条命令能看到 libusb_set_option，说明系统自带的 libusb 是正常的，多半是运行时加载了别处的旧库。可以先用 LD_PRELOAD 临时指定系统库测试：
+LD_PRELOAD=/lib/aarch64-linux-gnu/libusb-1.0.so.0 \ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+如果这样能启动，说明就是 libusb 动态库冲突。接着检查是否存在 /usr/local/lib 里的旧库：
+ls -l /usr/local/lib | grep libusbldconfig -p | grep libusb
+如果确认 /usr/local/lib/libusb-1.0.so* 是旧版本残留，可以先备份再刷新动态库缓存：
+sudo mkdir -p /usr/local/lib/libusb_backupsudo mv /usr/local/lib/libusb-1.0.so* /usr/local/lib/libusb_backup/sudo ldconfig
+然后重新测试：
+ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
+如果系统库本身缺失或损坏，可以重装相关包：
+sudo apt updatesudo apt install --reinstall -y libusb-1.0-0 libusb-1.0-0-dev libpcl-dev ros-humble-pcl-ros
+建议处理顺序：
+
+先加 rviz:=false，排除远程图形界面问题。
+再用 ldd 和 nm 检查 libusb 是否冲突。
+用 LD_PRELOAD 做临时验证。
+确认后清理 /usr/local/lib 里的旧 libusb。
+
+5. 地图漂移明显
+先检查：
+
+启动后是否静止了几秒。
+是否在玻璃、空旷区域、长直走廊等退化场景。
+/livox/lidar 和 /livox/imu 是否稳定发布。
+mid360.yaml 中的话题名是否正确。
+外参是否和实际安装差别很大。
+
+第一次跑通建议先保持 mid360.yaml 默认参数。后续追求精度时，再重点处理时间同步、外参标定和安装刚性。
+6. 编译内存不够
+降低并行数：
+cd ~/fastlio_wscolcon build --symlink-install --parallel-workers 2
+参考资料
+
+FAST-LIO2 官方仓库：https://github.com/hku-mars/FAST_LIO
+FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
+livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
+Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
+
+总结
+Mid-360S 跑 FAST-LIO2 的核心流程：
+启动 Mid-360S：msg_MID360s_launch.py编译 FAST_LIO_ROS2使用配置文件：mid360.yaml启动 FAST-LIO2：ros2 launch fast_lio mapping.launch.py config_file:=mid360.yamlRViz2 查看 /Laser_map、/Odometry、/path
+]]></content>
+      <categories>
+        <category>SLAM与定位</category>
+      </categories>
+      <tags>
+        <tag>Livox</tag>
+        <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>FAST-LIO2</tag>
+        <tag>SLAM</tag>
       </tags>
   </entry>
   <entry>
@@ -812,664 +1680,6 @@ NavRL 在动态和混合环境中的碰撞次数明显低于对比方法；安�
       </tags>
   </entry>
   <entry>
-    <title>Jetson Orin NX 系统烧录全流程（SDK Manager）</title>
-    <url>/2025/11/12/Jetson-%E7%B3%BB%E7%BB%9F%E7%83%A7%E5%BD%95/</url>
-    <content><![CDATA[
-适用机型：Jetson Orin NX（其它 Jetson 机型流程类似）。使用 NVIDIA 官方 Jetson SDK Manager 完成系统镜像烧录与驱动安装。
-
-
-一、准备工作
-
-一台运行 Ubuntu 20.04/22.04 的电脑（建议 20.04/22.04，x86_64）
-USB Type‑C 数据线（支持数据传输）
-Jetson SDK Manager（NVIDIA 官方工具）
-Jetson Orin NX 开发板、12V 供电与显示器（HDMI/DP）
-
-软件下载：
-
-SDK Manager: https://developer.nvidia.com/sdk-manager
-需登录 NVIDIA 账号（没有先注册）
-
-二、安装 SDK Manager
-
-下载 .deb 包后双击安装，或执行：
-
-sudo apt install ./sdkmanager_*_amd64.deb
-
-启动并登录（Ubuntu 菜单搜索 “SDK Manager”）。
-
-三、进入恢复模式（Recovery）
-
-用 USB‑C 线连接 PC 与开发板短边的 Type‑C 口（USB 口旁）
-断电 → 按住“REC/Recovery”键 → 上电 → 2 秒后松手
-此时风扇通常不转，PC 端可通过 lsusb 看到 NVIDIA 设备（可选检查）
-
-常见位置提示：
-
-REC 键与电源键位置请参考官方丝印；若不确定，尝试多次按键顺序（先按住 REC，再上电）
-
-四、SDK Manager 配置与烧录
-
-Select Product Category: Jetson
-Hardware Configuration: 选择 Jetson Orin NX
-Target Operating System: Linux for Tegra
-Target Version: 选择推荐/最新 JetPack（与板卡兼容）
-选择 Host/Target 组件（默认即可）
-点击 Continue，按引导下载镜像与依赖 → 开始 Flash
-
-烧录阶段注意：
-
-全程保持 USB 连接稳定，避免移动触碰
-若网络慢，建议先开代理或稳定网络
-出现权限提示时，按指引使用 sudo 重试
-
-五、首次开机向导
-烧录完成后，断开 USB，接入显示器与键鼠，重启进入系统：
-
-设置语言、时区、用户名/密码
-进入桌面后建议先运行：
-
-sudo apt update &amp;&amp; sudo apt upgrade -y
-六、常见问题排查（FAQ）
-
-PC 不识别设备（lsusb 看不到 NVIDIA）：
-
-
-检查是否严格按“按住 REC → 上电”顺序
-更换 USB‑C 线（必须支持数据）与 USB 口
-更换 PC 或操作系统版本（建议 Ubuntu 20.04/22.04）
-
-
-SDK Manager 卡在下载/校验：
-
-
-切换网络或配置代理后重试
-退出后重新登录 SDK Manager，会复用已下载数据
-
-
-烧录成功但无法进桌面：
-
-
-尝试重启；检查电源/显示器连接
-若持续异常，可重新进入 Recovery 再次烧录
-
-七、后续建议（可选）
-
-安装基础工具：
-
-sudo apt install -y git curl vim htop tmux
-
-使用 ToDesk/向日葵等远程工具便于维护
-后续进行 ROS 2、PX4、MAVROS 等环境搭建，可参考《ROS2 Humble + PX4 仿真 + MAVROS 环境搭建指南》
-
-]]></content>
-      <categories>
-        <category>传感器硬件</category>
-      </categories>
-      <tags>
-        <tag>Jetson</tag>
-        <tag>系统烧录</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Jetson Orin NX 双网口同时启用教程</title>
-    <url>/2026/08/11/Jetson-Orin-NX%E5%8F%8C%E7%BD%91%E5%8F%A3%E5%90%8C%E6%97%B6%E5%90%AF%E7%94%A8/</url>
-    <content><![CDATA[前言
-这次在 Jetson Orin NX 上同时连接普通设备和 Livox Mid-360S 时，连续遇到了两个问题：
-
-主板有两个物理网口，但系统只能看到一个网口。
-第二个网口修好后，两个网口仍然只能连接一个，连接第二个时第一个会断开。
-
-最后确认并不是 Jetson 的两个网口硬件互斥，而是第二个 Realtek 网卡缺少驱动，同时两个网口错误地共用了同一个 NetworkManager 配置。由于两个网口还在同一个 192.168.1.0/24 网段，又产生了路由冲突。
-本文先给出可以直接使用的一键脚本，再解释问题原因和手动排查方法。
-
-适用边界：下面的脚本是针对本文记录的 Jetson Orin NX、Realtek RTL8125/RTL8168 网卡和同网段地址规划验证的。其他载板、内核版本、网卡芯片或 IP 规划需要先修改配置并核对驱动，不应直接照搬。
-
-
-一、当前设备配置
-这台 Jetson 的网络规划如下：
-
-
-
-用途
-网口
-Jetson IP
-对端设备 IP
-
-
-
-
-普通设备网
-enP7p1s0
-192.168.1.123/24
-根据实际设备确定
-
-
-Mid-360S 专用网
-enP8p1s0
-192.168.1.102/24
-192.168.1.199
-
-
-SSH 和默认网络
-wlP1p1s0
-DHCP
-路由器
-
-
-
-实际网卡控制器：
-enP7p1s0 -&gt; Realtek RTL8125      -&gt; r8125enP8p1s0 -&gt; Realtek RTL8111/8168 -&gt; r8168
-
-执行脚本会重新连接两个有线网口。如果当前 SSH 正通过其中一个有线口连接，脚本会停止。建议通过 Wi-Fi、显示器或串口执行。
-
-二、一键解决脚本
-在 Jetson 上创建脚本：
-nano ~/enable_jetson_dual_eth.sh
-复制下面的全部内容。如果自己的网口名或 IP 不同，只修改最上方的“需要修改的配置”部分。
-#!/usr/bin/env bashset -Eeuo pipefail# ============================================================# 需要修改的配置# ============================================================# 普通设备网口GENERAL_IF=&quot;enP7p1s0&quot;GENERAL_IP=&quot;192.168.1.123/24&quot;GENERAL_PROFILE=&quot;device-enP7&quot;# Mid-360S 专用网口LIDAR_IF=&quot;enP8p1s0&quot;LIDAR_HOST_IP=&quot;192.168.1.102/24&quot;LIDAR_PROFILE=&quot;102&quot;LIDAR_IP=&quot;192.168.1.199&quot;# ============================================================if [[ $EUID -ne 0 ]]; then  echo &quot;请使用 sudo 运行：sudo bash $0&quot;  exit 1fifor command_name in lspci ip nmcli awk grep modprobe; do  if ! command -v &quot;$command_name&quot; &gt;/dev/null 2&gt;&amp;1; then    echo &quot;缺少命令：$command_name&quot;    exit 1  fidoneif [[ &quot;$GENERAL_IF&quot; == &quot;$LIDAR_IF&quot; ]]; then  echo &quot;两个用途不能配置到同一个网口&quot;  exit 1fiecho &quot;普通设备网口：$GENERAL_IF -&gt; $GENERAL_IP&quot;echo &quot;雷达专用网口：$LIDAR_IF -&gt; $LIDAR_HOST_IP&quot;echo &quot;Mid-360S：$LIDAR_IP&quot;# 当前 SSH 如果正经过目标有线口，直接重连可能导致脚本执行一半时断线。if [[ -n &quot;$&#123;SSH_CONNECTION:-&#125;&quot; ]]; then  SSH_CLIENT_IP=&quot;$&#123;SSH_CONNECTION%% *&#125;&quot;  SSH_ROUTE=&quot;$(ip -4 route get &quot;$SSH_CLIENT_IP&quot; 2&gt;/dev/null | head -n 1 || true)&quot;  if [[ &quot;$SSH_ROUTE&quot; == *&quot; dev $GENERAL_IF &quot;* || &quot;$SSH_ROUTE&quot; == *&quot; dev $LIDAR_IF &quot;* ]]; then    echo &quot;当前 SSH 正通过待重配网口连接：$SSH_ROUTE&quot;    echo &quot;请改用 Wi-Fi、显示器或串口后重新运行&quot;    exit 1  fifiecho &quot;[1/5] 检查 RTL8168 驱动&quot;RTL8168_INFO=&quot;$(lspci -nnk -d 10ec:8168 2&gt;/dev/null || true)&quot;if [[ -n &quot;$RTL8168_INFO&quot; ]] &amp;&amp; ! grep -q &quot;Kernel driver in use:&quot; &lt;&lt;&lt;&quot;$RTL8168_INFO&quot;; then  echo &quot;发现 RTL8168，但没有驱动，开始安装 r8168-dkms&quot;  if [[ ! -e &quot;/lib/modules/$(uname -r)/build&quot; ]]; then    echo &quot;缺少与 $(uname -r) 匹配的 Jetson 内核头文件&quot;    echo &quot;请先安装当前 L4T 对应的 nvidia-l4t-kernel-headers&quot;    exit 1  fi  apt-get update  env DEBIAN_FRONTEND=noninteractive apt-get install -y r8168-dkms  modprobe r8168  udevadm settle || trueelse  echo &quot;RTL8168 已经有驱动，跳过安装&quot;fifor interface_name in &quot;$GENERAL_IF&quot; &quot;$LIDAR_IF&quot;; do  if [[ ! -d &quot;/sys/class/net/$interface_name&quot; ]]; then    echo &quot;找不到网口：$interface_name&quot;    echo &quot;当前网口如下，请修改脚本顶部的网口名：&quot;    ip -br link    exit 1  fidoneecho &quot;[2/5] 备份 NetworkManager 配置&quot;BACKUP_DIR=&quot;/var/backups/jetson-dual-ethernet/$(date +%Y%m%d-%H%M%S)&quot;mkdir -p &quot;$BACKUP_DIR&quot;if [[ -d /etc/NetworkManager/system-connections ]]; then  cp -a /etc/NetworkManager/system-connections &quot;$BACKUP_DIR/&quot;fiecho &quot;配置已备份到：$BACKUP_DIR&quot;configure_profile() &#123;  local profile_name=&quot;$1&quot;  local interface_name=&quot;$2&quot;  local address=&quot;$3&quot;  local route_metric=&quot;$4&quot;  local autoconnect_priority=&quot;$5&quot;  if ! nmcli connection show &quot;$profile_name&quot; &gt;/dev/null 2&gt;&amp;1; then    nmcli connection add \      type ethernet \      ifname &quot;$interface_name&quot; \      con-name &quot;$profile_name&quot;  fi  nmcli connection modify &quot;$profile_name&quot; \    connection.interface-name &quot;$interface_name&quot; \    802-3-ethernet.mac-address &quot;&quot; \    connection.autoconnect yes \    connection.autoconnect-priority &quot;$autoconnect_priority&quot; \    ipv4.method manual \    ipv4.addresses &quot;$address&quot; \    ipv4.gateway &quot;&quot; \    ipv4.dns &quot;&quot; \    ipv4.ignore-auto-dns yes \    ipv4.never-default yes \    ipv4.route-metric &quot;$route_metric&quot; \    ipv4.routes &quot;&quot; \    ipv6.method disabled&#125;echo &quot;[3/5] 为两个网口创建独立配置&quot;nmcli device set &quot;$GENERAL_IF&quot; managed yesnmcli device set &quot;$LIDAR_IF&quot; managed yesconfigure_profile &quot;$GENERAL_PROFILE&quot; &quot;$GENERAL_IF&quot; &quot;$GENERAL_IP&quot; 100 50configure_profile &quot;$LIDAR_PROFILE&quot; &quot;$LIDAR_IF&quot; &quot;$LIDAR_HOST_IP&quot; 500 100# 两个网口处于同一 /24 网段时，强制 Mid-360S 从雷达专用口访问。nmcli connection modify &quot;$LIDAR_PROFILE&quot; \  ipv4.routes &quot;$LIDAR_IP/32 0.0.0.0 10&quot;echo &quot;[4/5] 激活两个网口&quot;nmcli connection reloadnmcli connection down &quot;$GENERAL_PROFILE&quot; &gt;/dev/null 2&gt;&amp;1 || truenmcli connection down &quot;$LIDAR_PROFILE&quot; &gt;/dev/null 2&gt;&amp;1 || truenmcli connection up &quot;$GENERAL_PROFILE&quot; ifname &quot;$GENERAL_IF&quot;nmcli connection up &quot;$LIDAR_PROFILE&quot; ifname &quot;$LIDAR_IF&quot;echo &quot;[5/5] 验证结果&quot;nmcli -f DEVICE,TYPE,STATE,CONNECTION device statusip -4 -br address show dev &quot;$GENERAL_IF&quot;ip -4 -br address show dev &quot;$LIDAR_IF&quot;echo &quot;Mid-360S 实际选路：&quot;ip -4 route get &quot;$LIDAR_IP&quot;if ping -I &quot;$LIDAR_IF&quot; -c 3 -W 1 &quot;$LIDAR_IP&quot;; then  echo &quot;配置成功：两个网口已独立启用，Mid-360S 可以访问&quot;else  echo &quot;两个网口配置已完成，但 Mid-360S 没有响应 ping&quot;  echo &quot;请检查雷达电源、网线和 LIDAR_IP&quot;  exit 1fi
-保存后执行：
-chmod +x ~/enable_jetson_dual_eth.shsudo ~/enable_jetson_dual_eth.sh
-脚本成功后，最后应看到：
-enP7p1s0  ethernet  connected  device-enP7enP8p1s0  ethernet  connected  102192.168.1.199 dev enP8p1s0 src 192.168.1.102
-脚本可以重复运行。每次修改前都会将 NetworkManager 配置备份到：
-/var/backups/jetson-dual-ethernet/
-三、问题一：为什么第二个网口无法打开
-先查看 PCI 网卡和驱动：
-lspci -nnk -d 10ec:
-当时可以看到两个控制器：
-RTL8125 2.5GbE ControllerRTL8111/8168/8411 PCI Express Gigabit Ethernet Controller
-第一个控制器有：
-Kernel driver in use: r8125
-第二个 RTL8168 却没有 Kernel driver in use，并且执行下面的命令只能看到一个有线网口：
-ip -br link
-这说明 PCIe 已经识别到硬件，但内核没有为第二个控制器创建网络接口。此时执行 ip link set up 或在桌面网络设置中反复点击都没有用，必须先安装驱动：
-sudo apt-get install -y r8168-dkmssudo modprobe r8168
-安装后验证：
-dkms status | grep r8168lspci -nnk -d 10ec:8168ethtool -i enP8p1s0
-这台 Jetson 的最终结果为：
-r8168/8.049.02, 5.15.148-tegra, aarch64: installedKernel driver in use: r8168driver: r8168
-四、问题二：为什么打开一个网口，另一个就断开
-驱动安装完成后，两个网口的 carrier 都是 1，说明物理连接正常：
-for nic in enP7p1s0 enP8p1s0; do  printf &#x27;%s carrier=&#x27; &quot;$nic&quot;  cat &quot;/sys/class/net/$nic/carrier&quot;done
-继续查看 NetworkManager 配置：
-nmcli -f NAME,TYPE,DEVICE,AUTOCONNECT connection shownmcli -f \connection.id,connection.interface-name,802-3-ethernet.mac-address,ipv4.addresses \  connection show 102
-原来的 102 配置没有绑定网口：
-connection.interface-name: --802-3-ethernet.mac-address: --
-NetworkManager 会把这个配置应用到任意一个兼容的有线网口。插入另一根网线时，同一个配置就在两个接口之间迁移，因此表现为“连接一个，另一个断开”。
-正确做法是让每个接口拥有独立配置，并通过接口名固定：
-device-enP7 -&gt; enP7p1s0 -&gt; 192.168.1.123/24102         -&gt; enP8p1s0 -&gt; 192.168.1.102/24
-脚本中的关键配置就是：
-nmcli connection modify device-enP7 connection.interface-name enP7p1s0nmcli connection modify 102 connection.interface-name enP8p1s0
-五、两个网口在同一网段时的路由问题
-两个有线口都使用 192.168.1.0/24，系统会产生两条相同网段的路由：
-192.168.1.0/24 dev enP7p1s0 src 192.168.1.123 metric 100192.168.1.0/24 dev enP8p1s0 src 192.168.1.102 metric 500
-Linux 默认会选择 metric 更小的 enP7p1s0。这样即使 Mid-360S 接在 enP8p1s0，发往 192.168.1.199 的数据仍可能走错网口。
-解决方法是添加一条更精确的 /32 路由：
-sudo nmcli connection modify 102 \  ipv4.routes &quot;192.168.1.199/32 0.0.0.0 10&quot;
-检查实际选路：
-ip route get 192.168.1.199
-必须看到：
-192.168.1.199 dev enP8p1s0 src 192.168.1.102
-如果可以修改设备网段，更推荐让两个网口使用不同网段，例如：
-普通设备网：192.168.1.0/24雷达设备网：192.168.2.0/24
-不同网段不会产生这种路由歧义。
-六、Mid-360S 配置同步
-网络修好后，还要把 MID360s_config.json 中的 host_ip 改成雷达专用网口地址：
-&quot;host_ip&quot;: &quot;192.168.1.102&quot;
-雷达地址保持：
-&quot;ip&quot;: &quot;192.168.1.199&quot;
-如果这里仍然写成另一个网口的 192.168.1.123，可能出现能够 ping 通雷达，但 ROS 驱动收不到点云的情况。
-启动驱动后验证：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-在另一个终端检查频率：
-ros2 topic hz /livox/lidar --window 20ros2 topic hz /livox/imu --window 100
-这次实际测试结果为：
-/livox/lidar  约 10 Hz/livox/imu    约 200 Hz
-七、快速排查命令
-以后遇到类似问题，按照下面的顺序检查即可：
-# 1. PCIe 是否识别到两个控制器，驱动是否已经绑定lspci -nnk -d 10ec:# 2. 内核是否创建了两个网口ip -br link# 3. 两个接口分别使用什么驱动ethtool -i enP7p1s0ethtool -i enP8p1s0# 4. 网线是否真正连接cat /sys/class/net/enP7p1s0/carriercat /sys/class/net/enP8p1s0/carrier# 5. 两个接口是否分别连接到独立 profilenmcli -f DEVICE,TYPE,STATE,CONNECTION device status# 6. 查看地址和路由ip -4 -br addressip -4 route# 7. 确认 Mid-360S 最终走哪个网口ip route get 192.168.1.199# 8. 强制从雷达口测试ping -I enP8p1s0 192.168.1.199
-八、常见问题
-1. 安装 r8168-dkms 时报找不到内核头文件
-检查：
-ls -ld &quot;/lib/modules/$(uname -r)/build&quot;
-需要安装与当前 Jetson Linux/L4T 版本匹配的 nvidia-l4t-kernel-headers。不要使用与当前 *-tegra 内核不匹配的 generic 头文件。
-2. 设置 MAC 后提示没有合适的设备
-运行时 MAC、克隆 MAC 和永久 MAC 可能不同：
-nmcli -f GENERAL.HWADDR,GENERAL.PERM-HWADDR device show enP7p1s0ethtool -P enP7p1s0
-如果接口名稳定，直接使用 connection.interface-name 绑定即可。本文脚本会清空 profile 中的 MAC 限制，避免当前 MAC 和永久 MAC 不一致导致连接失败。
-3. 两个网口都显示 connected，但雷达仍然不通
-重点检查实际路由，而不是只看网口状态：
-ip route get 192.168.1.199
-如果没有走 enP8p1s0，重新添加 /32 路由并激活配置：
-sudo nmcli connection modify 102 \  ipv4.routes &quot;192.168.1.199/32 0.0.0.0 10&quot;sudo nmcli connection up 102 ifname enP8p1s0
-4. 重启后又恢复原状
-检查两个 profile 是否开启自动连接并绑定正确接口：
-nmcli -f \connection.id,connection.interface-name,connection.autoconnect,ipv4.addresses,ipv4.routes \  connection show device-enP7nmcli -f \connection.id,connection.interface-name,connection.autoconnect,ipv4.addresses,ipv4.routes \  connection show 102
-总结
-本次问题由三个环节共同造成：
-RTL8168 没有驱动  -&gt; 第二个网口没有出现在系统中两个网口共用一个未绑定接口的 NetworkManager profile  -&gt; 连接一个时另一个断开两个网口处于相同的 192.168.1.0/24 网段  -&gt; 发往 Mid-360S 的数据可能走错网口
-对应的解决方法是：
-
-安装并加载 r8168-dkms。
-为两个网口创建独立 profile，并通过接口名绑定。
-不给设备专用网口配置默认网关。
-使用 /32 路由将 192.168.1.199 固定到 enP8p1s0。
-将 Livox 配置中的 host_ip 修改为 192.168.1.102。
-
-完成后，两个网口可以同时连接各自设备，并在 Jetson 重启后自动恢复。
-]]></content>
-      <categories>
-        <category>传感器硬件</category>
-      </categories>
-      <tags>
-        <tag>Jetson</tag>
-        <tag>NetworkManager</tag>
-        <tag>双网口</tag>
-        <tag>Livox</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>RealSense D435i安装与使用教程</title>
-    <url>/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言
-Intel RealSense D435i 是一款带 IMU 的深度相机，常用于 SLAM、VIO、视觉导航等任务。本文记录在 Ubuntu 22.04 + ROS2 Humble 环境下的安装、启动和常见问题处理。
-一、安装驱动
-1. 添加软件源
-# 添加 GPG keysudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys FB0B24895113F120sudo apt-key export FB0B24895113F120 | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/librealsense.gpg# 添加 RealSense 软件源echo &#x27;deb [signed-by=/etc/apt/trusted.gpg.d/librealsense.gpg] https://librealsense.intel.com/Debian/apt-repo jammy main&#x27; | sudo tee /etc/apt/sources.list.d/librealsense.list
-2. 安装 librealsense
-sudo apt updatesudo apt install -y librealsense2-dkms librealsense2-utils librealsense2-dev librealsense2-dbg
-3. 安装 ROS2 驱动包
-sudo apt install -y ros-humble-realsense2-camera
-4. 验证安装
-连接相机后运行：
-realsense-viewer
-如果可以看到相机图像和 IMU 数据，说明驱动安装成功。
-
-更详细的驱动安装说明可参考：CSDN教程
-
-二、ROS2 启动方式
-VIO 常用配置：双目红外 + IMU
-适合 VINS-Fusion、OpenVINS 等视觉惯性算法：
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=false \  enable_depth:=false \  enable_infra1:=true \  enable_infra2:=true \  enable_accel:=true \  enable_gyro:=true \  unite_imu_method:=2 \  gyro_fps:=200 \  depth_module.infra_profile:=640,480,30
-RGB-D 配置
-适合需要彩色图像和深度图像的任务：
-ros2 launch realsense2_camera rs_launch.py \  enable_color:=true \  enable_depth:=true \  enable_infra1:=false \  enable_infra2:=false \  enable_accel:=false \  enable_gyro:=false
-默认配置
-不指定参数时，使用驱动默认配置：
-ros2 launch realsense2_camera rs_launch.py
-三、常用参数
-
-
-
-参数
-说明
-常用值
-
-
-
-
-enable_color
-是否启用彩色相机
-true / false
-
-
-enable_depth
-是否启用深度相机
-true / false
-
-
-enable_infra1
-是否启用左红外相机
-true / false
-
-
-enable_infra2
-是否启用右红外相机
-true / false
-
-
-enable_accel
-是否启用加速度计
-true / false
-
-
-enable_gyro
-是否启用陀螺仪
-true / false
-
-
-unite_imu_method
-IMU 融合方式：0 不融合，1 线性插值，2 拷贝
-2
-
-
-gyro_fps
-陀螺仪采样率
-200
-
-
-accel_fps
-加速度计采样率
-200
-
-
-depth_module.infra_profile
-红外图像分辨率和帧率
-640,480,30
-
-
-
-四、运行时设置
-关闭激光发射器
-室外 VIO 或被动双目场景中，通常需要关闭激光投影器：
-ros2 param set /camera/camera depth_module.emitter_enabled 0
-查看可用参数
-ros2 param list /camera/camera
-修改参数
-ros2 param set /camera/camera &lt;参数名&gt; &lt;参数值&gt;
-五、常用话题
-相机启动后，常用话题如下：
-
-
-
-话题名
-消息类型
-说明
-
-
-
-
-/camera/infra1/image_raw
-sensor_msgs/msg/Image
-左红外图像
-
-
-/camera/infra2/image_raw
-sensor_msgs/msg/Image
-右红外图像
-
-
-/camera/color/image_raw
-sensor_msgs/msg/Image
-彩色图像
-
-
-/camera/depth/image_rect_raw
-sensor_msgs/msg/Image
-深度图像
-
-
-/camera/accel/sample
-sensor_msgs/msg/Imu
-加速度计数据
-
-
-/camera/gyro/sample
-sensor_msgs/msg/Imu
-陀螺仪数据
-
-
-/camera/imu
-sensor_msgs/msg/Imu
-融合后的 IMU 数据
-
-
-
-六、RViz2 可视化
-启动 RViz2：
-rviz2
-常用显示项：
-
-Image：查看红外图像、彩色图像
-PointCloud2：查看点云，需要启用深度相机
-TF：查看相机坐标系关系
-
-七、性能优化
-
-按需开启数据流，不用的彩色、深度或红外数据可以关闭。
-适当降低分辨率和帧率，减少 USB 带宽和 CPU 占用。
-VIO 场景建议设置 unite_imu_method:=2，使用融合后的 IMU 话题。
-室外或被动双目场景建议关闭激光发射器。
-
-八、常见问题
-1. 相机无法识别
-检查 USB 连接和设备识别情况：
-lsusb | grep Intelrealsense-viewer
-优先使用 USB 3.0 接口，并避免通过低质量扩展坞连接。
-2. ROS2 无法启动相机
-检查 RealSense 相关包是否已安装：
-dpkg -l | grep realsense
-必要时重新安装 ROS2 驱动包：
-sudo apt install --reinstall ros-humble-realsense2-camera
-3. IMU 数据不同步
-启动时加入：
-unite_imu_method:=2
-然后重启相机节点。
-4. 帧率不稳定
-常见原因是 USB 带宽不足。可以尝试：
-
-使用 USB 3.0 接口
-降低图像分辨率
-降低帧率
-关闭暂时不用的数据流
-
-参考资源
-
-Intel RealSense官方文档
-librealsense2 GitHub
-realsense2_camera ROS2包装
-
-]]></content>
-      <categories>
-        <category>传感器硬件</category>
-      </categories>
-      <tags>
-        <tag>RealSense</tag>
-        <tag>ROS2</tag>
-        <tag>IMU</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mid-360S 使用教程</title>
-    <url>/2026/05/06/Mid360s%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言
-Livox Mid-360S 是一款常用于移动机器人、无人机、SLAM、建图和避障的 3D 激光雷达。它通过以太网输出数据，在 ROS 2 中通常配合 Livox-SDK2 和 livox_ros_driver2 使用。
-本文记录 Ubuntu 22.04 + ROS 2 Humble 下从硬件连接、网络配置、驱动安装到点云查看的完整流程。
-
-一、硬件与网络准备
-1. 连接设备
-Mid-360S  ├── 电源：DC 9~27 V  └── 网口：连接电脑网口或交换机
-注意事项：
-
-电脑和雷达必须在同一个网段。
-多网卡电脑要确认使用的是连接雷达的有线网卡。
-初次调试建议关闭防火墙，避免 UDP 数据被拦截。
-
-sudo ufw disable
-查看网卡名称：
-ip addr
-常见网卡名有 enp108s0、eno1、eth0 等。注意：ip addr 输出中接口名后面的冒号只是显示格式，命令里一般不要带这个冒号。
-2. 配置电脑 IP
-电脑 IP 只需要满足两点：
-
-和雷达 IP 在同一网段。
-不与雷达或局域网中其他设备冲突。
-
-例如雷达在 192.168.1.0/24 网段，可以把电脑网卡设置为 192.168.1.5：
-sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
-其中 enp108s0 需要替换为自己的有线网卡名。
-3. 确认雷达 IP
-如果已经知道雷达 IP，直接跳到下一步。否则可以通过以下方式获取：
-
-看设备标签、说明书或出厂配置文档。
-用官方的 Livox 工具在同网段内发现设备。
-使用 Mid-360 协议中的广播发现功能获取 lidar_ip 和 cmd_port。
-
-确认网络连通：
-ping 192.168.1.100
-如果 ping 不通，优先检查电源、网线、网卡名、电脑 IP 和雷达 IP 是否正确。
-二、安装 SDK 与 ROS 驱动
-1. 安装 Livox-SDK2
-Livox-SDK2 是 Livox 雷达的底层通信 SDK，livox_ros_driver2 编译时需要依赖它。
-sudo apt updatesudo apt install -y git cmake build-essentialmkdir -p ~/codecd ~/codegit clone https://github.com/Livox-SDK/Livox-SDK2.gitcd Livox-SDK2mkdir -p build &amp;&amp; cd buildcmake ..make -j$(nproc)sudo make install
-如果运行时报找不到动态库，将 /usr/local/lib 加入环境变量：
-echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-2. 安装 livox_ros_driver2
-创建工作空间并编译：
-mkdir -p ~/livox_ws/srccd ~/livox_ws/srcgit clone https://github.com/Livox-SDK/livox_ros_driver2.gitcd ~/livox_ws/src/livox_ros_driver2source /opt/ros/humble/setup.bash./build.sh humble
-加载 ROS 2 工作空间：
-cd ~/livox_wssource install/setup.bash
-也可以写入 ~/.bashrc：
-echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-三、修改 Mid-360S 配置
-进入驱动配置目录：
-cd ~/livox_ws/src/livox_ros_driver2/configls
-通常会看到 MID360_config.json、HAP_config.json、mixed_HAP_MID360_config.json 等文件。Mid-360S 可以按 Mid-360 系列流程配置；如果驱动版本提供了 MID360S_config.json 或 MID360s_config.json，优先使用对应文件。
-gedit MID360s_config.json
-重点检查：
-
-
-
-字段
-含义
-
-
-
-
-host_ip
-电脑有线网卡 IP，例如 192.168.1.5
-
-
-lidar_configs[].ip
-雷达 IP，例如 192.168.1.100
-
-
-pcl_data_type
-点云数据类型，常用 1
-
-
-pattern_mode
-扫描模式，常用 0，表示非重复扫描
-
-
-extrinsic_parameter
-Livox 驱动层外参，不等同于 ROS TF
-
-
-
-示例配置片段：
-&#123;  &quot;MID360s&quot;: &#123;    &quot;lidar_net_info&quot;: &#123;      &quot;cmd_data_port&quot;: 56100,      &quot;push_msg_port&quot;: 56200,      &quot;point_data_port&quot;: 56300,      &quot;imu_data_port&quot;: 56400,      &quot;log_data_port&quot;: 56500    &#125;,    &quot;host_net_info&quot;: [      &#123;        &quot;host_ip&quot;: &quot;192.168.1.5&quot;,        &quot;cmd_data_port&quot;: 56101,        &quot;push_msg_port&quot;: 56201,        &quot;point_data_port&quot;: 56301,        &quot;imu_data_port&quot;: 56401,        &quot;log_data_port&quot;: 56501      &#125;    ]  &#125;,  &quot;lidar_configs&quot;: [    &#123;      &quot;ip&quot;: &quot;192.168.1.100&quot;,      &quot;pcl_data_type&quot;: 1,      &quot;pattern_mode&quot;: 0,      &quot;extrinsic_parameter&quot;: &#123;        &quot;roll&quot;: 0.0,        &quot;pitch&quot;: 0.0,        &quot;yaw&quot;: 0.0,        &quot;x&quot;: 0,        &quot;y&quot;: 0,        &quot;z&quot;: 0      &#125;    &#125;  ]&#125;
-extrinsic_parameter 的建议用法：
-只验证通信：保持全 0让驱动直接输出补偿后的点云：在 json 中设置外参让 ROS 系统知道雷达和机体的坐标关系：发布 TF 或在算法中设置外参
-不要在 MID360s_config.json、TF 和 SLAM 配置里重复补偿同一个安装角度。
-如果修改源码目录中的配置后没有生效，可能是运行时加载了 install 目录中的旧配置。建议重新编译并使用软链接安装：
-cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
-四、启动与验证
-cd ~/livox_wssource /opt/ros/humble/setup.bashsource install/setup.bash
-1. 启动 RViz 查看点云
-ros2 launch livox_ros_driver2 rviz_MID360_launch.py
-如果有 Mid-360S 专用 launch 文件，则使用对应文件名：
-ros2 launch livox_ros_driver2 rviz_MID360s_launch.py
-只查看雷达原始坐标系下的点云时，RViz 的 Fixed Frame 通常设置为：
-livox_frame
-2. 只启动数据发布节点
-如果不需要打开 RViz，可以启动消息发布 launch：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-具体文件名以 launch_ROS2 目录中的实际内容为准。
-3. 查看 ROS 2 话题
-ros2 topic list
-常见话题：
-/livox/lidar/livox/imu
-ros2 topic info /livox/lidarros2 topic info /livox/imuros2 topic hz /livox/lidarros2 topic hz /livox/imu
-如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，通常可以直接给 RViz、SLAM、建图或避障算法使用。
-4. 录制 rosbag
-mkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
-播放 rosbag：
-ros2 bag play &lt;bag目录&gt;
-如需录制所有话题：
-ros2 bag record -a
-五、接入算法时需要确认什么
-Mid-360S 常用于 FAST-LIO、LIO-SAM、VINS、YOPO 等感知或定位模块。接入算法时重点检查三件事。
-1. 话题名称
-pointCloudTopic: &quot;/livox/lidar&quot;imuTopic: &quot;/livox/imu&quot;
-2. 坐标系
-驱动默认 frame 常见为：
-livox_frame
-如果算法使用 base_link、body、camera_init 等坐标系，需要让 TF、算法配置和消息中的 frame_id 保持一致。
-3. 外参位置
-三类外参作用不同，不要混用：
-MID360s_config.json / extrinsic_parameter  -&gt; 影响驱动发布出来的点云坐标  -&gt; 不会发布 ROS TFROS TF / static_transform_publisher / robot_state_publisher  -&gt; 描述 ROS 坐标系之间的关系  -&gt; RViz 和部分算法会按 TF 做坐标变换SLAM / 控制算法中的 extrinsic_T、extrinsic_R  -&gt; 算法内部使用的雷达到机体或雷达到 IMU 外参
-如果雷达前倾 30 度、安装在机体上方 10 cm，可以选择下面两种方式之一。
-方式一：在 json 中设置 extrinsic_parameter，让驱动直接输出补偿后的点云：
-&quot;extrinsic_parameter&quot;: &#123;  &quot;roll&quot;: 0.0,  &quot;pitch&quot;: -30.0,  &quot;yaw&quot;: 0.0,  &quot;x&quot;: 0,  &quot;y&quot;: 0,  &quot;z&quot;: 100&#125;
-方式二：保持 json 外参为 0，单独发布静态 TF：
-ros2 run tf2_ros static_transform_publisher \  --x 0 --y 0 --z 0.10 \  --roll 0 --pitch -0.5236 --yaw 0 \  --frame-id base_link \  --child-frame-id livox_frame
-然后将 RViz 的 Fixed Frame 设置为：
-base_link
-调试阶段可以先在算法中使用零外参：
-extrinsic_T: [0.0, 0.0, 0.0]extrinsic_R: [1.0, 0.0, 0.0,              0.0, 1.0, 0.0,              0.0, 0.0, 1.0]
-实际运行 SLAM 或控制算法时，再根据安装位置修改。核心原则是：同一个角度或位移只补偿一次。
-六、常见问题
-1. ping 不通雷达
-
-检查雷达电源和网线。
-确认电脑 IP 和雷达 IP 在同一网段。
-确认命令里使用的是正确网卡名。
-
-ip addr
-必要时重新配置电脑网卡：
-sudo ip addr flush dev enp108s0sudo ip addr add 192.168.1.5/24 dev enp108s0sudo ip link set enp108s0 up
-2. 编译时报找不到 Livox-SDK2
-ls /usr/local/lib | grep livoxls /usr/local/include | grep livox
-如果没有结果，重新安装 SDK：
-cd ~/code/Livox-SDK2/buildcmake ..make -j$(nproc)sudo make install
-3. 运行时报找不到动态库
-error while loading shared libraries: liblivox_lidar_sdk_shared.so
-echo &#x27;export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-4. RViz 打开后没有点云
-
-只看原始点云时，Fixed Frame 设为 livox_frame。
-通过 TF 看机体系点云时，Fixed Frame 设为 base_link。
-确认 /livox/lidar 存在，并且有发布频率。
-确认 host_ip 是电脑网卡 IP，lidar_configs[].ip 是雷达 IP。
-
-ros2 topic listros2 topic hz /livox/lidar
-5. 改了 json 外参后点云没有变化或还是歪
-先确认修改的是实际加载的配置文件：
-grep -n &quot;user_config_path&quot; ~/livox_ws/src/livox_ros_driver2/launch_ROS2/*.py
-然后重新编译并加载环境：
-cd ~/livox_wscolcon build --symlink-installsource install/setup.bash
-如果通过 TF 查看点云，检查 TF 是否存在：
-ros2 run tf2_ros tf2_echo base_link livox_frame
-6. 点云很卡
-打开对应 launch 文件，适当降低 publish_freq：
-&#123;&quot;publish_freq&quot;: 5.0&#125;
-7. 多雷达时无法区分话题
-可以启用 multi_topic，让不同雷达发布到独立话题。配置思路：
-multi_topic = 1每个雷达配置不同的 lidar_ip必要时给每个雷达配置不同网段或不同网卡
-参考资料
-
-Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
-livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
-Mid-360(S) 通信协议：https://livox-wiki-en.readthedocs.io/en/latest/
-
-总结
-Mid-360S 的基本使用流程可以概括为：
-连接电源和网线  -&gt; 配置电脑网卡 IP  -&gt; 安装 Livox-SDK2  -&gt; 编译 livox_ros_driver2  -&gt; 修改 json 中的 host_ip 和 lidar_configs[].ip  -&gt; ros2 launch 启动  -&gt; RViz 查看点云或录制 rosbag
-接入 SLAM 或机器人系统时，重点关注点云话题、IMU 话题、frame_id 和雷达到机体外参。MID360s_config.json 中的 extrinsic_parameter 会影响驱动输出点云，但它不是 ROS TF。
-]]></content>
-      <categories>
-        <category>传感器硬件</category>
-      </categories>
-      <tags>
-        <tag>Livox</tag>
-        <tag>ROS2</tag>
-        <tag>Mid-360S</tag>
-        <tag>激光雷达</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Mid-360S + FAST-LIO2 + MAVROS + PX4 真机部署测试</title>
     <url>/2026/05/06/Mid360-FAST-LIO-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95/</url>
     <content><![CDATA[前言
@@ -1776,219 +1986,9 @@ FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
       <tags>
         <tag>Livox</tag>
         <tag>Mid-360S</tag>
+        <tag>FAST-LIO2</tag>
         <tag>PX4</tag>
         <tag>MAVROS</tag>
-        <tag>FAST-LIO2</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>FAST-LIO2 从 0 跑通教程</title>
-    <url>/2026/05/06/FAST-LIO2%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言
-前面已经跑通了 Mid-360S，接下来把 /livox/lidar 和 /livox/imu 接入 FAST-LIO2，实现实时激光惯性里程计和建图。
-本文环境：
-Ubuntu 22.04ROS 2 HumbleLivox Mid-360SFAST_LIO_ROS2
-
-一、准备环境
-加载 ROS 2 Humble：
-source /opt/ros/humble/setup.bashecho $ROS_DISTRO
-正常应输出：
-humble
-安装依赖：
-sudo apt updatesudo apt install -y \  git \  cmake \  build-essential \  python3-colcon-common-extensions \  python3-rosdep \  libpcl-dev \  libeigen3-dev \  ros-humble-pcl-ros \  ros-humble-rviz2
-如果没有初始化过 rosdep：
-sudo rosdep initrosdep update
-如果提示已经初始化过，忽略 sudo rosdep init 的报错，直接执行 rosdep update 即可。
-二、确认 Mid-360S 数据正常
-先加载 Livox 驱动环境：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bash
-启动 Mid-360S：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-这里要注意：跑 FAST-LIO2 时要用 msg_MID360s_launch.py，不要用 rviz_MID360s_launch.py。前者发布的是 FAST-LIO2 需要的 Livox 自定义点云消息。
-另开终端检查话题：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 topic list
-应该能看到：
-/livox/lidar/livox/imu
-检查消息类型：
-ros2 topic info /livox/lidarros2 topic info /livox/imu
-推荐结果：
-/livox/lidar: livox_ros_driver2/msg/CustomMsg/livox/imu: sensor_msgs/msg/Imu
-如果 /livox/lidar 是 sensor_msgs/msg/PointCloud2，说明启动方式不对，换回 msg_MID360s_launch.py。
-三、下载并编译 FAST-LIO2
-创建工作空间：
-mkdir -p ~/fastlio_ws/srccd ~/fastlio_ws/src
-下载 ROS2 版本：
-git clone https://github.com/Ericsii/FAST_LIO_ROS2.git --recursive
-编译：
-cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashrosdep install --from-paths src --ignore-src -ycolcon build --symlink-install
-加载环境：
-source ~/fastlio_ws/install/setup.bash
-也可以写入 ~/.bashrc：
-echo &#x27;source ~/livox_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcecho &#x27;source ~/fastlio_ws/install/setup.bash&#x27; &gt;&gt; ~/.bashrcsource ~/.bashrc
-四、检查配置文件
-进入配置目录：
-cd ~/fastlio_ws/src/FAST_LIO_ROS2/configls
-实际可以看到：
-avia.yaml  horizon.yaml  mid360.yaml  ouster64.yaml  velodyne.yaml
-Mid-360S 跑 FAST-LIO2 时直接使用仓库自带的 mid360.yaml 即可：
-Livox 驱动启动文件：msg_MID360s_launch.pyFAST-LIO2 配置文件：mid360.yaml
-打开配置：
-gedit mid360.yaml
-第一次跑通时，建议先保持默认参数，只确认下面几个关键项：
-common:  lid_topic: &quot;/livox/lidar&quot;  imu_topic: &quot;/livox/imu&quot;  time_sync_en: falsepreprocess:  lidar_type: 1  scan_line: 4  blind: 0.5  timestamp_unit: 3  scan_rate: 10mapping:  fov_degree: 360.0  det_range: 100.0  extrinsic_est_en: truepublish:  map_en: true  scan_publish_en: true  dense_publish_en: falsepcd_save:  pcd_save_en: true  interval: -1
-其中最重要的是：
-
-
-
-参数
-说明
-
-
-
-
-lid_topic
-点云话题，保持 /livox/lidar
-
-
-imu_topic
-IMU 话题，保持 /livox/imu
-
-
-lidar_type
-Livox 系列为 1
-
-
-timestamp_unit
-默认 3，不要随意改
-
-
-extrinsic_est_en
-默认 true，先让 FAST-LIO2 在线估计外参
-
-
-
-后续如果已经有准确的雷达-IMU 外参，再把 extrinsic_est_en 改为 false，并填写自己的 extrinsic_T 和 extrinsic_R。
-五、启动 FAST-LIO2
-开两个终端。
-终端 1：启动雷达
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashros2 launch livox_ros_driver2 msg_MID360s_launch.py
-终端 2：启动 FAST-LIO2
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-若不设置rviz:=false，执行后 RViz2 会自动打开，不需要额外再运行 rviz2。
-刚启动后先让雷达静止几秒，再缓慢移动。第一次测试建议在房间、走廊等有明显结构的环境中进行。
-六、查看建图结果
-RViz2 中重点看这些内容：
-Fixed Frame: camera_initPointCloud2: /Laser_mapPointCloud2: /cloud_registeredOdometry: /OdometryPath: /path
-如果 RViz2 中没有地图，先检查 FAST-LIO2 是否有输出：
-ros2 topic hz /Laser_mapros2 topic hz /Odometry
-如果有频率，多半是 RViz2 的 Fixed Frame 或显示项没设对。
-七、保存地图
-配置中已经开启：
-pcd_save:  pcd_save_en: true  interval: -1
-先查看保存地图服务：
-ros2 service list | grep map
-如果看到 /map_save，调用：
-ros2 service call /map_save std_srvs/srv/Trigger
-这个 ROS2 版本的 /map_save 会按照配置文件里的 map_file_path 保存地图。mid360.yaml 默认是：
-map_file_path: &quot;./test.pcd&quot;
-这里的 ./test.pcd 是相对路径，实际会保存在启动 FAST-LIO2 时终端所在的目录。比如在 ~ 目录启动 FAST-LIO2，地图就是 ~/test.pcd。
-建议改成绝对路径，避免保存后找不到文件：
-map_file_path: &quot;/home/dreamer198/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd&quot;
-重新启动 FAST-LIO2 后，再调用 /map_save，然后查看：
-ls -lh ~/fastlio_ws/src/FAST_LIO_ROS2/PCD
-查看 PCD 地图：
-pcl_viewer ~/fastlio_ws/src/FAST_LIO_ROS2/PCD/test.pcd
-八、录包测试
-实机调试时可以录一段 bag，后面离线反复测试：
-mkdir -p ~/bagscd ~/bagsros2 bag record /livox/lidar /livox/imu
-播放：
-ros2 bag play &lt;bag目录&gt;
-离线测试时，先启动 FAST-LIO2：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bashros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
-再播放 bag：
-ros2 bag play ~/bags/&lt;bag目录&gt;
-九、常见问题
-1. FAST-LIO2 没有点云输入
-检查点云类型：
-ros2 topic info /livox/lidar
-应该是：
-livox_ros_driver2/msg/CustomMsg
-如果不是，重新用下面命令启动雷达：
-ros2 launch livox_ros_driver2 msg_MID360s_launch.py
-2. 找不到 livox_ros_driver2/msg/CustomMsg
-编译或运行 FAST-LIO2 前，需要先加载 Livox 工作空间：
-source /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashsource ~/fastlio_ws/install/setup.bash
-如果是编译时报错：
-cd ~/fastlio_wssource /opt/ros/humble/setup.bashsource ~/livox_ws/install/setup.bashcolcon build --symlink-install
-3. Jetson 通过 SSH 启动时报 RViz2 显示错误
-如果在 Jetson 上通过 SSH 远程执行：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml
-出现类似错误：
-qt.qpa.xcb: could not connect to displayCould not load the Qt platform plugin &quot;xcb&quot;
-这说明当前 SSH 终端没有图形显示环境，RViz2 打不开。这个错误只影响 RViz2，不代表 FAST-LIO2 本身一定有问题。
-mapping.launch.py 默认会启动 RViz2，如果 Jetson 是无屏幕运行，或者只是通过 SSH 远程跑算法，可以先关闭 RViz2：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-然后在另一台带显示器的电脑上查看话题：
-ros2 topic listros2 topic hz /Odometryros2 topic hz /Laser_map
-如果两台电脑配置了 ROS 2 多机通信，也可以在自己的主力电脑上单独打开 RViz2 来看 Jetson 发布的话题。
-4. Jetson 运行时报 libusb_set_option
-如果 FAST-LIO2 节点直接退出，并出现：
-/lib/aarch64-linux-gnu/libpcl_io.so.1.12: undefined symbol: libusb_set_option
-这通常不是 FAST-LIO2 参数问题，而是 PCL 加载 libusb 时发生了动态库版本冲突。常见原因是系统里同时存在多个 libusb-1.0.so，例如 /usr/local/lib 下的旧版本 libusb 覆盖了 Ubuntu apt 安装的版本，导致 /lib/aarch64-linux-gnu/libpcl_io.so.1.12 找不到 libusb_set_option 符号。
-先检查 PCL 实际链接到了哪个 libusb：
-ldd /lib/aarch64-linux-gnu/libpcl_io.so.1.12 | grep usb
-再检查系统库里有没有这个符号：
-nm -D /lib/aarch64-linux-gnu/libusb-1.0.so.0 | grep libusb_set_option
-如果第二条命令能看到 libusb_set_option，说明系统自带的 libusb 是正常的，多半是运行时加载了别处的旧库。可以先用 LD_PRELOAD 临时指定系统库测试：
-LD_PRELOAD=/lib/aarch64-linux-gnu/libusb-1.0.so.0 \ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-如果这样能启动，说明就是 libusb 动态库冲突。接着检查是否存在 /usr/local/lib 里的旧库：
-ls -l /usr/local/lib | grep libusbldconfig -p | grep libusb
-如果确认 /usr/local/lib/libusb-1.0.so* 是旧版本残留，可以先备份再刷新动态库缓存：
-sudo mkdir -p /usr/local/lib/libusb_backupsudo mv /usr/local/lib/libusb-1.0.so* /usr/local/lib/libusb_backup/sudo ldconfig
-然后重新测试：
-ros2 launch fast_lio mapping.launch.py config_file:=mid360.yaml rviz:=false
-如果系统库本身缺失或损坏，可以重装相关包：
-sudo apt updatesudo apt install --reinstall -y libusb-1.0-0 libusb-1.0-0-dev libpcl-dev ros-humble-pcl-ros
-建议处理顺序：
-
-先加 rviz:=false，排除远程图形界面问题。
-再用 ldd 和 nm 检查 libusb 是否冲突。
-用 LD_PRELOAD 做临时验证。
-确认后清理 /usr/local/lib 里的旧 libusb。
-
-5. 地图漂移明显
-先检查：
-
-启动后是否静止了几秒。
-是否在玻璃、空旷区域、长直走廊等退化场景。
-/livox/lidar 和 /livox/imu 是否稳定发布。
-mid360.yaml 中的话题名是否正确。
-外参是否和实际安装差别很大。
-
-第一次跑通建议先保持 mid360.yaml 默认参数。后续追求精度时，再重点处理时间同步、外参标定和安装刚性。
-6. 编译内存不够
-降低并行数：
-cd ~/fastlio_wscolcon build --symlink-install --parallel-workers 2
-参考资料
-
-FAST-LIO2 官方仓库：https://github.com/hku-mars/FAST_LIO
-FAST-LIO2 ROS2 移植版本：https://github.com/Ericsii/FAST_LIO_ROS2
-livox_ros_driver2：https://github.com/Livox-SDK/livox_ros_driver2
-Livox-SDK2：https://github.com/Livox-SDK/Livox-SDK2
-
-总结
-Mid-360S 跑 FAST-LIO2 的核心流程：
-启动 Mid-360S：msg_MID360s_launch.py编译 FAST_LIO_ROS2使用配置文件：mid360.yaml启动 FAST-LIO2：ros2 launch fast_lio mapping.launch.py config_file:=mid360.yamlRViz2 查看 /Laser_map、/Odometry、/path
-]]></content>
-      <categories>
-        <category>SLAM与定位</category>
-      </categories>
-      <tags>
-        <tag>Livox</tag>
-        <tag>ROS2</tag>
-        <tag>Mid-360S</tag>
-        <tag>FAST-LIO2</tag>
-        <tag>SLAM</tag>
       </tags>
   </entry>
   <entry>
@@ -3925,6 +3925,146 @@ Diff-Planner-PX4：https://github.com/dreamer198/Diff-Planner-PX4
       </tags>
   </entry>
   <entry>
+    <title>Docker 容器内 Fast-Planner 下载、编译与测试</title>
+    <url>/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[前言
+本文是《Docker使用教程》的后续，默认已经按照其中的步骤创建了以下环境：
+
+容器名：ros_noetic
+基础镜像：osrf/ros:noetic-desktop-full
+宿主机 ~/docker/ros_root 已挂载到容器 /root
+X11 目录和认证文件已经挂载，容器可以运行 RViz
+
+这里的“全新容器”是指容器已经创建，但还没有下载 Fast-Planner，也没有安装项目依赖。本文不再重复安装 Docker、拉取 ROS 镜像或创建容器，只介绍如何在这个容器中下载、编译和测试 dreamer198/Fast-Planner。
+
+本文默认容器内使用 root 用户，因此 ~ 就是 /root，安装命令不需要 sudo。没有特别说明时，命令都在容器内执行；需要在宿主机执行的命令会单独标出。
+Fast-Planner 官方验证过 Ubuntu 20.04 + ROS Noetic。本文只运行项目自带的轻量仿真，不包含 PX4、Gazebo 或真机控制。
+一、进入已经创建的容器
+如果创建容器后已经停在 root@... 提示符，可以直接进入下一节。
+如果容器已经退出，在宿主机执行：
+docker start -ai ros_noetic
+如果容器已经在后台运行，则执行：
+docker exec -it ros_noetic bash
+进入后确认 ROS 版本：
+source /opt/ros/noetic/setup.bashrosversion -d
+输出应为：
+noetic
+二、安装编译依赖
+ROS Noetic Desktop Full 已经包含 ROS 和 RViz，不需要再次安装。只补充源码编译需要的工具和库：
+apt updateapt install -y \  git \  build-essential \  cmake \  libarmadillo-dev \  libeigen3-dev \  libpcl-dev \  qtbase5-dev \  ros-noetic-cmake-modules \  ros-noetic-cv-bridge \  ros-noetic-dynamic-reconfigure \  ros-noetic-image-transport \  ros-noetic-pcl-ros
+安装 NLopt 2.7.1
+Fast-Planner 的 bspline_opt 会从 /usr/local/include 和 /usr/local/lib/libnlopt.so 查找 NLopt。按照项目 README 指定的 v2.7.1 编译安装：
+mkdir -p /root/depscd /root/depsgit clone --branch v2.7.1 --depth 1 https://github.com/stevengj/nlopt.gitcmake -S nlopt -B nlopt/build \  -DCMAKE_BUILD_TYPE=Release \  -DCMAKE_INSTALL_PREFIX=/usr/local \  -DCMAKE_INSTALL_LIBDIR=libcmake --build nlopt/build -j&quot;$(nproc)&quot;cmake --install nlopt/buildldconfig
+检查头文件和动态库：
+test -f /usr/local/include/nlopt.hpp &amp;&amp; echo &quot;nlopt.hpp: OK&quot;test -f /usr/local/lib/libnlopt.so &amp;&amp; echo &quot;libnlopt.so: OK&quot;
+两行都显示 OK 后再继续。
+三、下载 Fast-Planner
+新建独立的 catkin 工作空间，并将代码克隆到 src 中：
+mkdir -p /root/fast_planner_ws/srccd /root/fast_planner_ws/srcgit clone https://github.com/dreamer198/Fast-Planner.git
+确认下载地址并记录当前版本：
+cd /root/fast_planner_ws/src/Fast-Plannergit remote get-url origingit rev-parse --short HEAD
+第一条命令应输出：
+https://github.com/dreamer198/Fast-Planner.git
+记录第二条命令输出的 commit，后续遇到问题时可以确认使用的是不是同一版代码。
+四、编译工作空间
+source /opt/ros/noetic/setup.bashcd /root/fast_planner_wscatkin_make -DCMAKE_BUILD_TYPE=Release -j&quot;$(nproc)&quot;
+如果容器可用内存较少，编译进程可能被系统终止。此时降低并行数重新编译：
+catkin_make -DCMAKE_BUILD_TYPE=Release -j2
+编译完成后加载工作空间，并确认 ROS 能找到核心包：
+source /root/fast_planner_ws/devel/setup.bashrospack find plan_manage
+正常情况下会输出：
+/root/fast_planner_ws/src/Fast-Planner/fast_planner/plan_manage
+项目没有提供覆盖这些规划流程的自动化单元测试，因此下面通过仓库自带的仿真 Demo 完成功能测试。
+五、运行 Kinodynamic 规划测试
+该测试需要两个终端，它们都进入同一个 ros_noetic 容器。第一个终端运行 RViz，第二个终端运行规划器和轻量仿真器。
+1. 终端 1：启动 RViz
+如果 RViz 还没有图形显示权限，先在宿主机执行：
+xhost +SI:localuser:root
+然后在宿主机进入正在运行的容器：
+docker exec -it \  -e DISPLAY=&quot;$DISPLAY&quot; \  -e QT_X11_NO_MITSHM=1 \  ros_noetic bash
+在容器内启动 RViz：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage rviz.launch
+2. 终端 2：启动规划器
+在宿主机新开一个终端：
+docker exec -it ros_noetic bash
+进入容器后执行：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage kino_replan.launch
+3. 在 RViz 中发送目标
+等待 RViz 中出现随机障碍物和无人机模型，然后：
+
+确认 RViz 的 Fixed Frame 为 world。
+点击工具栏中的 2D Nav Goal。
+在地图内没有障碍物的位置点击并拖动，发送一个目标点。
+
+当前仓库的 Kinodynamic Demo 默认使用手动目标模式。目标的 X、Y 坐标来自点击位置，飞行高度默认为 1 m。正常情况下会立即生成 B-spline 轨迹，无人机随后沿轨迹飞向目标。
+六、检查测试结果
+在宿主机再开一个终端并进入同一容器：
+docker exec -it ros_noetic bash
+加载环境：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bash
+先确认节点已经启动：
+rosnode list
+列表中应能看到规划器、轨迹服务器、仿真器和点云渲染等节点。再检查里程计是否持续发布：
+rostopic hz /state_ukf/odom
+看到稳定频率后按 Ctrl+C 退出，再检查仿真点云：
+rostopic hz /pcl_render_node/cloud
+点云同样应持续更新，看到频率后按 Ctrl+C 退出。接着检查规划输出：
+rostopic echo -n 1 /planning/bspline
+这条命令会等待下一条轨迹消息。保持命令运行，回到 RViz 再发送一次目标；终端打印出 B-spline 消息并自动退出，说明规划器已经生成轨迹。
+在无人机执行轨迹期间，还可以检查控制指令：
+rostopic hz /planning/pos_cmd
+如果能看到持续更新的频率，说明“目标输入 -&gt; 路径规划 -&gt; 轨迹下发”链路已经跑通。
+七、运行 Topological 规划测试
+先在运行 kino_replan.launch 的终端按 Ctrl+C 停止 Kinodynamic Demo，RViz 可以继续运行。不要同时启动两个 Demo，因为它们会创建同名节点并使用相同话题。
+然后在规划器终端执行：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage topo_replan.launch
+这个仓库的 topo_replan.launch 已经默认使用 flight_type=1，可以直接在 RViz 中通过 2D Nav Goal 发送目标，不需要修改 launch 文件。看到多条拓扑候选路径和最终轨迹，并且无人机开始执行轨迹，即表示 Topological Demo 测试通过。
+八、后续重新运行
+代码和编译结果都位于 /root。按照《Docker使用教程》的挂载方式，它们会同步保存在宿主机 ~/docker/ros_root 中。apt 安装的软件和 /usr/local 下的 NLopt 属于容器文件系统；停止再启动同一个容器时仍然存在，但删除容器后不会由 /root 挂载保留。
+下次启动同一个容器后不需要重新下载和编译，只需在每个新终端加载环境：
+source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bash
+然后分别启动：
+roslaunch plan_manage rviz.launch
+以及二选一：
+roslaunch plan_manage kino_replan.launch
+roslaunch plan_manage topo_replan.launch
+如果本次测试结束后不再运行容器中的图形程序，可以在宿主机撤销临时的 X11 授权：
+xhost -SI:localuser:root
+九、常见问题
+1. roslaunch 找不到 plan_manage
+说明当前终端没有加载工作空间，或者编译没有成功：
+source /opt/ros/noetic/setup.bashcd /root/fast_planner_wscatkin_make -DCMAKE_BUILD_TYPE=Release -j2source devel/setup.bashrospack find plan_manage
+2. 链接时找不到 libnlopt.so
+检查 NLopt 的安装位置并刷新缓存：
+ls -l /usr/local/include/nlopt.hppls -l /usr/local/lib/libnlopt.soldconfigldconfig -p | grep nlopt
+项目明确查找 /usr/local/lib/libnlopt.so。如果动态库被安装到了 /usr/local/lib64，重新执行第二节的 CMake 命令，并保留 -DCMAKE_INSTALL_LIBDIR=lib。
+3. RViz 无法打开或提示 X11 权限错误
+先退出到宿主机，确认容器仍然按照《Docker使用教程》挂载了 /tmp/.X11-unix 和 .Xauthority，然后执行：
+xhost +SI:localuser:root
+再使用第五节中带 DISPLAY 的 docker exec 命令进入容器并启动 RViz。
+4. RViz 中有地图，但点击目标后没有轨迹
+依次检查输入和输出：
+rostopic echo -n 1 /move_base_simple/goalrostopic echo -n 1 /waypoint_generator/waypointsrostopic echo -n 1 /planning/bspline
+每条命令都应先运行，再回到 RViz 发送一次新目标。同时确认目标位于地图范围内、没有落在障碍物中，并且当前只运行了一个规划 Demo。
+参考资料
+
+dreamer198/Fast-Planner
+Fast-Planner 上游仓库
+NLopt v2.7.1
+
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>路径规划</tag>
+        <tag>Docker</tag>
+        <tag>ROS1</tag>
+        <tag>Fast-Planner</tag>
+        <tag>RViz</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>EGO-Planner ROS2 + MAVROS + PX4 完整教程：从仿真规划到 Offboard 桥接</title>
     <url>/2026/05/07/EGO-Planner-ROS2%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[前言
@@ -4279,150 +4419,10 @@ PX4 Offboard 模式文档：https://docs.px4.io/main/en/flight_modes/offboard.ht
       </categories>
       <tags>
         <tag>ROS2</tag>
+        <tag>FAST-LIO2</tag>
         <tag>PX4</tag>
         <tag>MAVROS</tag>
-        <tag>FAST-LIO2</tag>
         <tag>EGO-Planner</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Docker 容器内 Fast-Planner 下载、编译与测试</title>
-    <url>/2026/07/13/Fast-Planner%E5%A4%8D%E7%8E%B0%E6%95%99%E7%A8%8B/</url>
-    <content><![CDATA[前言
-本文是《Docker使用教程》的后续，默认已经按照其中的步骤创建了以下环境：
-
-容器名：ros_noetic
-基础镜像：osrf/ros:noetic-desktop-full
-宿主机 ~/docker/ros_root 已挂载到容器 /root
-X11 目录和认证文件已经挂载，容器可以运行 RViz
-
-这里的“全新容器”是指容器已经创建，但还没有下载 Fast-Planner，也没有安装项目依赖。本文不再重复安装 Docker、拉取 ROS 镜像或创建容器，只介绍如何在这个容器中下载、编译和测试 dreamer198/Fast-Planner。
-
-本文默认容器内使用 root 用户，因此 ~ 就是 /root，安装命令不需要 sudo。没有特别说明时，命令都在容器内执行；需要在宿主机执行的命令会单独标出。
-Fast-Planner 官方验证过 Ubuntu 20.04 + ROS Noetic。本文只运行项目自带的轻量仿真，不包含 PX4、Gazebo 或真机控制。
-一、进入已经创建的容器
-如果创建容器后已经停在 root@... 提示符，可以直接进入下一节。
-如果容器已经退出，在宿主机执行：
-docker start -ai ros_noetic
-如果容器已经在后台运行，则执行：
-docker exec -it ros_noetic bash
-进入后确认 ROS 版本：
-source /opt/ros/noetic/setup.bashrosversion -d
-输出应为：
-noetic
-二、安装编译依赖
-ROS Noetic Desktop Full 已经包含 ROS 和 RViz，不需要再次安装。只补充源码编译需要的工具和库：
-apt updateapt install -y \  git \  build-essential \  cmake \  libarmadillo-dev \  libeigen3-dev \  libpcl-dev \  qtbase5-dev \  ros-noetic-cmake-modules \  ros-noetic-cv-bridge \  ros-noetic-dynamic-reconfigure \  ros-noetic-image-transport \  ros-noetic-pcl-ros
-安装 NLopt 2.7.1
-Fast-Planner 的 bspline_opt 会从 /usr/local/include 和 /usr/local/lib/libnlopt.so 查找 NLopt。按照项目 README 指定的 v2.7.1 编译安装：
-mkdir -p /root/depscd /root/depsgit clone --branch v2.7.1 --depth 1 https://github.com/stevengj/nlopt.gitcmake -S nlopt -B nlopt/build \  -DCMAKE_BUILD_TYPE=Release \  -DCMAKE_INSTALL_PREFIX=/usr/local \  -DCMAKE_INSTALL_LIBDIR=libcmake --build nlopt/build -j&quot;$(nproc)&quot;cmake --install nlopt/buildldconfig
-检查头文件和动态库：
-test -f /usr/local/include/nlopt.hpp &amp;&amp; echo &quot;nlopt.hpp: OK&quot;test -f /usr/local/lib/libnlopt.so &amp;&amp; echo &quot;libnlopt.so: OK&quot;
-两行都显示 OK 后再继续。
-三、下载 Fast-Planner
-新建独立的 catkin 工作空间，并将代码克隆到 src 中：
-mkdir -p /root/fast_planner_ws/srccd /root/fast_planner_ws/srcgit clone https://github.com/dreamer198/Fast-Planner.git
-确认下载地址并记录当前版本：
-cd /root/fast_planner_ws/src/Fast-Plannergit remote get-url origingit rev-parse --short HEAD
-第一条命令应输出：
-https://github.com/dreamer198/Fast-Planner.git
-记录第二条命令输出的 commit，后续遇到问题时可以确认使用的是不是同一版代码。
-四、编译工作空间
-source /opt/ros/noetic/setup.bashcd /root/fast_planner_wscatkin_make -DCMAKE_BUILD_TYPE=Release -j&quot;$(nproc)&quot;
-如果容器可用内存较少，编译进程可能被系统终止。此时降低并行数重新编译：
-catkin_make -DCMAKE_BUILD_TYPE=Release -j2
-编译完成后加载工作空间，并确认 ROS 能找到核心包：
-source /root/fast_planner_ws/devel/setup.bashrospack find plan_manage
-正常情况下会输出：
-/root/fast_planner_ws/src/Fast-Planner/fast_planner/plan_manage
-项目没有提供覆盖这些规划流程的自动化单元测试，因此下面通过仓库自带的仿真 Demo 完成功能测试。
-五、运行 Kinodynamic 规划测试
-该测试需要两个终端，它们都进入同一个 ros_noetic 容器。第一个终端运行 RViz，第二个终端运行规划器和轻量仿真器。
-1. 终端 1：启动 RViz
-如果 RViz 还没有图形显示权限，先在宿主机执行：
-xhost +SI:localuser:root
-然后在宿主机进入正在运行的容器：
-docker exec -it \  -e DISPLAY=&quot;$DISPLAY&quot; \  -e QT_X11_NO_MITSHM=1 \  ros_noetic bash
-在容器内启动 RViz：
-source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage rviz.launch
-2. 终端 2：启动规划器
-在宿主机新开一个终端：
-docker exec -it ros_noetic bash
-进入容器后执行：
-source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage kino_replan.launch
-3. 在 RViz 中发送目标
-等待 RViz 中出现随机障碍物和无人机模型，然后：
-
-确认 RViz 的 Fixed Frame 为 world。
-点击工具栏中的 2D Nav Goal。
-在地图内没有障碍物的位置点击并拖动，发送一个目标点。
-
-当前仓库的 Kinodynamic Demo 默认使用手动目标模式。目标的 X、Y 坐标来自点击位置，飞行高度默认为 1 m。正常情况下会立即生成 B-spline 轨迹，无人机随后沿轨迹飞向目标。
-六、检查测试结果
-在宿主机再开一个终端并进入同一容器：
-docker exec -it ros_noetic bash
-加载环境：
-source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bash
-先确认节点已经启动：
-rosnode list
-列表中应能看到规划器、轨迹服务器、仿真器和点云渲染等节点。再检查里程计是否持续发布：
-rostopic hz /state_ukf/odom
-看到稳定频率后按 Ctrl+C 退出，再检查仿真点云：
-rostopic hz /pcl_render_node/cloud
-点云同样应持续更新，看到频率后按 Ctrl+C 退出。接着检查规划输出：
-rostopic echo -n 1 /planning/bspline
-这条命令会等待下一条轨迹消息。保持命令运行，回到 RViz 再发送一次目标；终端打印出 B-spline 消息并自动退出，说明规划器已经生成轨迹。
-在无人机执行轨迹期间，还可以检查控制指令：
-rostopic hz /planning/pos_cmd
-如果能看到持续更新的频率，说明“目标输入 -&gt; 路径规划 -&gt; 轨迹下发”链路已经跑通。
-七、运行 Topological 规划测试
-先在运行 kino_replan.launch 的终端按 Ctrl+C 停止 Kinodynamic Demo，RViz 可以继续运行。不要同时启动两个 Demo，因为它们会创建同名节点并使用相同话题。
-然后在规划器终端执行：
-source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bashroslaunch plan_manage topo_replan.launch
-这个仓库的 topo_replan.launch 已经默认使用 flight_type=1，可以直接在 RViz 中通过 2D Nav Goal 发送目标，不需要修改 launch 文件。看到多条拓扑候选路径和最终轨迹，并且无人机开始执行轨迹，即表示 Topological Demo 测试通过。
-八、后续重新运行
-代码和编译结果都位于 /root。按照《Docker使用教程》的挂载方式，它们会同步保存在宿主机 ~/docker/ros_root 中。apt 安装的软件和 /usr/local 下的 NLopt 属于容器文件系统；停止再启动同一个容器时仍然存在，但删除容器后不会由 /root 挂载保留。
-下次启动同一个容器后不需要重新下载和编译，只需在每个新终端加载环境：
-source /opt/ros/noetic/setup.bashsource /root/fast_planner_ws/devel/setup.bash
-然后分别启动：
-roslaunch plan_manage rviz.launch
-以及二选一：
-roslaunch plan_manage kino_replan.launch
-roslaunch plan_manage topo_replan.launch
-如果本次测试结束后不再运行容器中的图形程序，可以在宿主机撤销临时的 X11 授权：
-xhost -SI:localuser:root
-九、常见问题
-1. roslaunch 找不到 plan_manage
-说明当前终端没有加载工作空间，或者编译没有成功：
-source /opt/ros/noetic/setup.bashcd /root/fast_planner_wscatkin_make -DCMAKE_BUILD_TYPE=Release -j2source devel/setup.bashrospack find plan_manage
-2. 链接时找不到 libnlopt.so
-检查 NLopt 的安装位置并刷新缓存：
-ls -l /usr/local/include/nlopt.hppls -l /usr/local/lib/libnlopt.soldconfigldconfig -p | grep nlopt
-项目明确查找 /usr/local/lib/libnlopt.so。如果动态库被安装到了 /usr/local/lib64，重新执行第二节的 CMake 命令，并保留 -DCMAKE_INSTALL_LIBDIR=lib。
-3. RViz 无法打开或提示 X11 权限错误
-先退出到宿主机，确认容器仍然按照《Docker使用教程》挂载了 /tmp/.X11-unix 和 .Xauthority，然后执行：
-xhost +SI:localuser:root
-再使用第五节中带 DISPLAY 的 docker exec 命令进入容器并启动 RViz。
-4. RViz 中有地图，但点击目标后没有轨迹
-依次检查输入和输出：
-rostopic echo -n 1 /move_base_simple/goalrostopic echo -n 1 /waypoint_generator/waypointsrostopic echo -n 1 /planning/bspline
-每条命令都应先运行，再回到 RViz 发送一次新目标。同时确认目标位于地图范围内、没有落在障碍物中，并且当前只运行了一个规划 Demo。
-参考资料
-
-dreamer198/Fast-Planner
-Fast-Planner 上游仓库
-NLopt v2.7.1
-
-]]></content>
-      <categories>
-        <category>无人机开发</category>
-      </categories>
-      <tags>
-        <tag>路径规划</tag>
-        <tag>Docker</tag>
-        <tag>ROS1</tag>
-        <tag>Fast-Planner</tag>
-        <tag>RViz</tag>
       </tags>
   </entry>
   <entry>
@@ -4800,13 +4800,51 @@ BACKEND=tmux \~/code/start_sim_px4_mid360_fastlio_ego.sh restart
         <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>ROS2</tag>
         <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>FAST-LIO2</tag>
         <tag>PX4</tag>
         <tag>MAVROS</tag>
-        <tag>FAST-LIO2</tag>
         <tag>Gazebo</tag>
         <tag>EGO-Planner</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Gazebo 仿真环境搭建</title>
+    <url>/2026/05/13/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[本文记录 Gazebo + PX4 SITL 仿真环境的基础启动流程，包括加载仓库世界、启动普通无人机、启动搭载 MID360 的无人机，以及将 MID360 点云桥接到 ROS 2。
+
+一、启动 Gazebo 世界
+打开第一个终端，进入 PX4 工程并加载 Gazebo 环境：
+cd ~/PX4-Autopilotsource build/px4_sitl_default/rootfs/gz_env.shgz sim -r Tools/simulation/gz/worlds/warehouse_world.sdf
+该命令会启动 warehouse_world 仓库仿真场景。
+二、启动普通无人机
+打开第二个终端，启动带下视相机的 X500 无人机：
+cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
+其中 PX4_GZ_STANDALONE=1 表示 Gazebo 已经单独启动，PX4 只负责加载模型并运行 SITL。
+三、启动搭载 MID360 的无人机
+如果需要激光雷达点云数据，改用搭载 MID360 的无人机模型：
+cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_GZ_MODELS=$PWD/Tools/simulation/gz/worlds \PX4_GZ_WORLDS=$PWD/Tools/simulation/gz/worlds \GZ_SIM_RESOURCE_PATH=$PWD/Tools/simulation/gz/worlds:$PWD/Tools/simulation/gz/models:$GZ_SIM_RESOURCE_PATH \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down_mid360 \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \PX4_PARAM_NAV_DLL_ACT=0 \./build/px4_sitl_default/bin/px4 -i 0
+这里需要额外配置 PX4_GZ_MODELS、PX4_GZ_WORLDS 和 GZ_SIM_RESOURCE_PATH，确保 Gazebo 能找到自定义世界和模型资源。
+四、桥接 MID360 点云
+打开第三个终端，将 Gazebo 中的 MID360 点云桥接到 ROS 2：
+GZ_LIDAR_TOPIC=/world/warehouse_world/model/x500_mono_cam_down_mid360_0/link/lidar_sensor_link/sensor/lidar/scan/pointsros2 run ros_gz_bridge parameter_bridge \  &quot;$&#123;GZ_LIDAR_TOPIC&#125;@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked&quot; \  --ros-args -r &quot;$&#123;GZ_LIDAR_TOPIC&#125;:=/mid360/points&quot;
+桥接成功后，ROS 2 中会得到点云话题：
+/mid360/points
+可以用下面的命令确认话题是否正常发布：
+ros2 topic list | grep mid360ros2 topic echo /mid360/points --once
+五、启动顺序
+推荐按下面的顺序启动：
+1. 启动 Gazebo 世界2. 启动 PX4 SITL 无人机3. 桥接 MID360 点云4. 启动后续算法节点，例如 FAST-LIO2、EGO-Planner
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>Mid-360S</tag>
+        <tag>ROS2</tag>
+        <tag>PX4</tag>
+        <tag>Gazebo</tag>
       </tags>
   </entry>
   <entry>
@@ -5006,44 +5044,6 @@ MAVROS文档
         <tag>PX4</tag>
         <tag>Gazebo</tag>
         <tag>视觉定位</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Gazebo 仿真环境搭建</title>
-    <url>/2026/05/13/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[本文记录 Gazebo + PX4 SITL 仿真环境的基础启动流程，包括加载仓库世界、启动普通无人机、启动搭载 MID360 的无人机，以及将 MID360 点云桥接到 ROS 2。
-
-一、启动 Gazebo 世界
-打开第一个终端，进入 PX4 工程并加载 Gazebo 环境：
-cd ~/PX4-Autopilotsource build/px4_sitl_default/rootfs/gz_env.shgz sim -r Tools/simulation/gz/worlds/warehouse_world.sdf
-该命令会启动 warehouse_world 仓库仿真场景。
-二、启动普通无人机
-打开第二个终端，启动带下视相机的 X500 无人机：
-cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \./build/px4_sitl_default/bin/px4 -i 0
-其中 PX4_GZ_STANDALONE=1 表示 Gazebo 已经单独启动，PX4 只负责加载模型并运行 SITL。
-三、启动搭载 MID360 的无人机
-如果需要激光雷达点云数据，改用搭载 MID360 的无人机模型：
-cd ~/PX4-AutopilotPX4_GZ_STANDALONE=1 \PX4_GZ_WORLD=warehouse_world \PX4_GZ_MODELS=$PWD/Tools/simulation/gz/worlds \PX4_GZ_WORLDS=$PWD/Tools/simulation/gz/worlds \GZ_SIM_RESOURCE_PATH=$PWD/Tools/simulation/gz/worlds:$PWD/Tools/simulation/gz/models:$GZ_SIM_RESOURCE_PATH \PX4_SYS_AUTOSTART=4014 \PX4_SIM_MODEL=gz_x500_mono_cam_down_mid360 \PX4_GZ_MODEL_POSE=&quot;0,0,0.2,0,0,0&quot; \PX4_PARAM_NAV_DLL_ACT=0 \./build/px4_sitl_default/bin/px4 -i 0
-这里需要额外配置 PX4_GZ_MODELS、PX4_GZ_WORLDS 和 GZ_SIM_RESOURCE_PATH，确保 Gazebo 能找到自定义世界和模型资源。
-四、桥接 MID360 点云
-打开第三个终端，将 Gazebo 中的 MID360 点云桥接到 ROS 2：
-GZ_LIDAR_TOPIC=/world/warehouse_world/model/x500_mono_cam_down_mid360_0/link/lidar_sensor_link/sensor/lidar/scan/pointsros2 run ros_gz_bridge parameter_bridge \  &quot;$&#123;GZ_LIDAR_TOPIC&#125;@sensor_msgs/msg/PointCloud2[gz.msgs.PointCloudPacked&quot; \  --ros-args -r &quot;$&#123;GZ_LIDAR_TOPIC&#125;:=/mid360/points&quot;
-桥接成功后，ROS 2 中会得到点云话题：
-/mid360/points
-可以用下面的命令确认话题是否正常发布：
-ros2 topic list | grep mid360ros2 topic echo /mid360/points --once
-五、启动顺序
-推荐按下面的顺序启动：
-1. 启动 Gazebo 世界2. 启动 PX4 SITL 无人机3. 桥接 MID360 点云4. 启动后续算法节点，例如 FAST-LIO2、EGO-Planner
-]]></content>
-      <categories>
-        <category>无人机开发</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>Mid-360S</tag>
-        <tag>PX4</tag>
-        <tag>Gazebo</tag>
       </tags>
   </entry>
   <entry>
@@ -5558,100 +5558,6 @@ ros2 launch onboard_control mainTree.launch.py uav_id:=1 fcu_url:=&quot;serial:/
       </tags>
   </entry>
   <entry>
-    <title>ROS2 自定义消息接口</title>
-    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
-    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）
-本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic/message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
-
-适用环境（示例命令为 Linux + bash）：
-
-ROS 2 Humble
-已创建工作空间 ~/ros2_ws 并包含 src 目录
-构建工具：colcon；构建类型：ament_cmake
-
-五步法总览
-
-创建接口包（ament_cmake + rosidl）
-在 msg/ 目录编写消息（.msg）
-配置 CMakeLists.txt
-配置 package.xml
-编译并验证接口
-
-
-1) 创建接口包
-cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
-–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
-进入包目录并创建接口文件夹：
-cd onboard_msgsmkdir -p msg
-
-2) 定义消息（.msg）
-2) 定义消息（.msg）
-根据无人机集群业务，定义三个消息：命令、参数、多机状态。
-根据无人机集群业务，定义两类消息：命令与多机状态。
-msg/OnboardCommand.msg
-在 msg/OnboardCommand.msg 中：
-uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
-uint16 target_id	# 目标无人机编号
-在 msg/OnboardState.msg 中：
-uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
-建议的包结构（节选）：
-onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
-
-3) 配置 CMakeLists.txt
-在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
-cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
-
-4) 配置 package.xml
-确保依赖与接口生成组声明完整：
-&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
-
-5) 编译与环境加载
-在工作空间根目录编译该包，并加载环境：
-cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
-验证接口是否可见：
-ros2 interface list | grep onboard_msgs
-查看具体定义：
-ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
-
-CLI 快速试用（发布/回显）
-使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
-发布一条命令到 /uav/cmd：
-ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
-回显无人机状态（若已有节点发布到 /uav/state）：
-ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
-提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
-
-在其他包中使用该接口（CMake 示例）
-若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
-find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
-并在 package.xml 中添加：
-&lt;depend&gt;onboard_msgs&lt;/depend&gt;
-
-常见错误与排查
-
-忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
-未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
-构建后未 source install/setup.bash → 终端会找不到接口定义。
-CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
-多机/多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
-
-
-参考
-
-ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
-Tutorials: https://docs.ros2.org
-
-]]></content>
-      <categories>
-        <category>无人机开发</category>
-      </categories>
-      <tags>
-        <tag>ROS2</tag>
-        <tag>集群通信</tag>
-        <tag>自定义消息</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>UAV Autonomy All-in-One：统一仿真、真机与多规划器的无人机自主飞行框架</title>
     <url>/2026/08/06/UAV-Autonomy-All-in-One%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D/</url>
     <content><![CDATA[在复现无人机路径规划算法时，我逐渐发现，真正困难的不只是把某个算法编译起来，而是让定位、规划、控制、任务和飞控组成一条稳定、可复用的完整链路。不同项目的依赖和接口各不相同，切换算法时经常需要重新整理环境。
@@ -5751,6 +5657,100 @@ dreamer198/UAV-Autonomy-All-in-One
       </tags>
   </entry>
   <entry>
+    <title>ROS2 自定义消息接口</title>
+    <url>/2025/11/05/ROS2-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%A3/</url>
+    <content><![CDATA[ROS2 自定义消息接口：五步完成（含无人机集群示例）
+本文以无人机（UAV）集群通信为例，从零开始完成 ROS 2 自定义消息接口（topic/message）的创建、编译、验证与使用。最终会得到一个接口包 onboard_msgs，内含两类消息：OnboardCommand 与 OnboardState。
+
+适用环境（示例命令为 Linux + bash）：
+
+ROS 2 Humble
+已创建工作空间 ~/ros2_ws 并包含 src 目录
+构建工具：colcon；构建类型：ament_cmake
+
+五步法总览
+
+创建接口包（ament_cmake + rosidl）
+在 msg/ 目录编写消息（.msg）
+配置 CMakeLists.txt
+配置 package.xml
+编译并验证接口
+
+
+1) 创建接口包
+cd ~/ros2_ws/srcros2 pkg create onboard_msgs \  --build-type ament_cmake \  --dependencies rosidl_default_generators\  --license Apache-2.0
+–dependencies后面跟接口定义的消息所需的依赖，rosidl_default_generators为必须项
+进入包目录并创建接口文件夹：
+cd onboard_msgsmkdir -p msg
+
+2) 定义消息（.msg）
+2) 定义消息（.msg）
+根据无人机集群业务，定义三个消息：命令、参数、多机状态。
+根据无人机集群业务，定义两类消息：命令与多机状态。
+msg/OnboardCommand.msg
+在 msg/OnboardCommand.msg 中：
+uint16 target_id   # 目标无人机编号string name        # 命令名称string params      # 命令参数（JSON 格式）
+uint16 target_id	# 目标无人机编号
+在 msg/OnboardState.msg 中：
+uint16 uav_id     # 无人机编号float64 lat_deg   # 纬度float64 lon_deg   # 经度float64 alt_msl   # 平均海平面高度float32 battery   # 电量百分比
+建议的包结构（节选）：
+onboard_msgs/├─ CMakeLists.txt├─ package.xml└─ msg/   ├─ OnboardCommand.msg   └─ OnboardState.msg
+
+3) 配置 CMakeLists.txt
+在包根目录打开 CMakeLists.txt，加入如下关键段落（保留已有的最低模板行）：
+cmake_minimum_required(VERSION 3.8)project(onboard_msgs)find_package(ament_cmake REQUIRED)find_package(rosidl_default_generators REQUIRED)# 声明需要生成的接口rosidl_generate_interfaces($&#123;PROJECT_NAME&#125;  &quot;msg/OnboardCommand.msg&quot;  &quot;msg/OnboardState.msg&quot;)ament_package()
+
+4) 配置 package.xml
+确保依赖与接口生成组声明完整：
+&lt;?xml version=&quot;1.0&quot;?&gt;&lt;?xml-model href=&quot;http://download.ros.org/schema/package_format3.xsd&quot; schematypens=&quot;http://www.w3.org/2001/XMLSchema&quot;?&gt;&lt;package format=&quot;3&quot;&gt;  &lt;name&gt;onboard_msgs&lt;/name&gt;  &lt;version&gt;0.0.1&lt;/version&gt;  &lt;description&gt;TO DO&lt;/description&gt;  &lt;maintainer email=&quot;you@example.com&quot;&gt;Your Name&lt;/maintainer&gt;  &lt;license&gt;Apache-2.0&lt;/license&gt;  &lt;!-- 构建工具 --&gt;  &lt;buildtool_depend&gt;ament_cmake&lt;/buildtool_depend&gt;  &lt;!-- 用于生成接口代码 --&gt;  &lt;buildtool_depend&gt;rosidl_default_generators&lt;/buildtool_depend&gt;  &lt;!-- 运行期 --&gt;  &lt;!-- 用于供其它包调用接口 --&gt;  &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt;  &lt;!-- 用于声明该功能包是一个消息接口功能包，必须包含 --&gt;  &lt;member_of_group&gt;rosidl_interface_packages&lt;/member_of_group&gt;  &lt;export&gt;    &lt;build_type&gt;ament_cmake&lt;/build_type&gt;  &lt;/export&gt;&lt;/package&gt;
+
+5) 编译与环境加载
+在工作空间根目录编译该包，并加载环境：
+cd ~/ros2_wscolcon build --packages-select onboard_msgssource install/setup.bash
+验证接口是否可见：
+ros2 interface list | grep onboard_msgs
+查看具体定义：
+ros2 interface show onboard_msgs/msg/OnboardCommandros2 interface show onboard_msgs/msg/OnboardState
+
+CLI 快速试用（发布/回显）
+使用 ros2 topic pub 和 ros2 topic echo 快速验证消息格式与编解码是否正常。
+发布一条命令到 /uav/cmd：
+ros2 topic pub /uav/cmd onboard_msgs/msg/OnboardCommand \  &#x27;&#123;target_id: 1, name: &quot;Takeoff&quot;, params: &quot;&#123;\&quot;alt\&quot;: 5.0&#125;&quot;&#125;&#x27;
+回显无人机状态（若已有节点发布到 /uav/state）：
+ros2 topic echo /uav/state onboard_msgs/msg/OnboardState
+提示：在 bash 中传 JSON 时，注意对双引号进行转义，或改用 YAML 多行字面量方式避免转义错误。
+
+在其他包中使用该接口（CMake 示例）
+若有消费该消息的 C++ 包，需在其 CMakeLists.txt 中：
+find_package(ament_cmake REQUIRED)find_package(rclcpp REQUIRED)find_package(onboard_msgs REQUIRED)add_executable(my_node src/my_node.cpp)ament_target_dependencies(my_node rclcpp onboard_msgs)install(TARGETS my_node DESTINATION lib/$&#123;PROJECT_NAME&#125;)ament_package()
+并在 package.xml 中添加：
+&lt;depend&gt;onboard_msgs&lt;/depend&gt;
+
+常见错误与排查
+
+忘记在 CMakeLists.txt 的 rosidl_generate_interfaces 中加入新 .msg 文件 → 重新添加后再 colcon build。
+未在 package.xml 中加入 &lt;depend&gt;rosidl_default_runtime&lt;/depend&gt; → 其它包找不到生成的类型。
+构建后未 source install/setup.bash → 终端会找不到接口定义。
+CLI 发布 JSON 参数时引号转义错误 → 建议用单引号包裹、内部双引号转义，或改用 YAML 方式。
+多机/多命名空间未区分 → 为每架 UAV 使用不同命名空间（如 /uav1/..、/uav2/..）。
+
+
+参考
+
+ROS 2 Interface Definition: https://design.ros2.org/articles/interface_definition.html
+Tutorials: https://docs.ros2.org
+
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>ROS2</tag>
+        <tag>集群通信</tag>
+        <tag>自定义消息</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>YOPO-ROS2 运行指南</title>
     <url>/2026/03/31/YOPO-ROS2-RUN/</url>
     <content><![CDATA[YOPO-ROS2 运行指南
@@ -5827,460 +5827,9 @@ cd ~/code/YOPO-ROS2/Controllercolcon build --packages-select so3_quadrotor_simul
         <category>无人机开发</category>
       </categories>
       <tags>
-        <tag>路径规划</tag>
         <tag>ROS2</tag>
+        <tag>路径规划</tag>
         <tag>YOPO</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>微分平坦性怎么判断：从质点、小车到四旋翼无人机</title>
-    <url>/2026/06/09/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7%E4%B8%8E%E5%9B%9B%E6%97%8B%E7%BF%BC%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/</url>
-    <content><![CDATA[前言
-在学习无人机轨迹规划时，经常会看到一句话：四旋翼无人机是微分平坦系统。
-这句话听起来很理论，但它对工程实现非常关键。因为很多规划器并不会直接优化四个电机转速，也不会直接优化滚转角、俯仰角和力矩，而是优先优化三维空间中的位置轨迹。这样做背后的原因，就是四旋翼的状态和控制输入可以由位置、偏航角及其有限阶导数恢复出来。
-这篇文章先整理微分平坦性的判断标准，再通过质点、小车和四旋翼三个例子说明它到底是什么意思，最后结合 EGO-Planner、MINCO、minimum-snap 这类轨迹规划方法理解它的实际意义。
-
-一、微分平坦性到底在判断什么？
-考虑一个一般的动力系统：
-x˙=f(x,u)\dot{x}=f(x,u)
-x˙=f(x,u)
-其中：
-
-xxx 是系统状态，例如位置、速度、姿态和角速度；
-uuu 是控制输入，例如推力、力矩或加速度指令。
-
-如果系统有 mmm 个独立控制输入，要证明它具有微分平坦性，通常需要找到 mmm 个相互独立的输出：
-y=[y1y2⋯ym]Ty =
-\begin{bmatrix}
-y_1 &amp; y_2 &amp; \cdots &amp; y_m
-\end{bmatrix}^{T}
-y=[y1​​y2​​⋯​ym​​]T
-使得系统的所有状态和控制输入都能表示成：
-x=Φ(y,y˙,y¨,⋯ ,y(r))x=\Phi(y,\dot{y},\ddot{y},\cdots,y^{(r)})
-x=Φ(y,y˙​,y¨​,⋯,y(r))
-u=Ψ(y,y˙,y¨,⋯ ,y(s))u=\Psi(y,\dot{y},\ddot{y},\cdots,y^{(s)})
-u=Ψ(y,y˙​,y¨​,⋯,y(s))
-其中 rrr 和 sss 是有限整数。
-这组输出 yyy 就叫做平坦输出。微分平坦理论的核心可以概括成一句话：
-
-如果能用一组平坦输出及其有限阶导数参数化系统的全部状态和控制输入，那么这个系统就是微分平坦系统。
-
-注意这里的关键不是“系统是不是线性的”，也不是“系统是不是完全驱动的”，而是能不能找到这样一组平坦输出。
-二、什么叫由平坦输出直接恢复？
-所谓“直接恢复”，指的是只需要做有限次：
-
-代数运算；
-三角函数运算；
-求导；
-代入动力学方程。
-
-不应该再需要：
-
-对未知变量积分；
-求解新的微分方程；
-依赖系统过去的完整运动历史。
-
-举个反例，如果选择某个变量 y(t)y(t)y(t) 作为候选平坦输出，但恢复状态时出现：
-x(t)=x(0)+∫0ty(τ) dτx(t)=x(0)+\int_0^t y(\tau)\,d\tau
-x(t)=x(0)+∫0t​y(τ)dτ
-那么仅靠当前时刻的 y,y˙,y¨y,\dot{y},\ddot{y}y,y˙​,y¨​ 等有限阶导数，并不能确定 x(t)x(t)x(t)。还必须知道初始值和历史积分。因此，这样的 yyy 通常不能作为平坦输出。
-这一区别很重要。微分平坦性强调的是当前轨迹点附近的有限阶导数信息足够恢复系统状态和输入，而不是“只要知道整条历史轨迹就能算出来”。
-三、最简单的例子：一维质点
-考虑一个一维质点模型：
-x˙=v\dot{x}=v
-x˙=v
-v˙=u\dot{v}=u
-v˙=u
-其中：
-
-xxx 是位置；
-vvv 是速度；
-uuu 是加速度控制输入。
-
-选择位置作为平坦输出：
-y=xy=x
-y=x
-那么：
-x=yx=y
-x=y
-v=y˙v=\dot{y}
-v=y˙​
-u=y¨u=\ddot{y}
-u=y¨​
-只要规划一条足够光滑的位置曲线 y(t)y(t)y(t)，就能直接得到速度和控制输入。因此，这个系统是微分平坦的。
-这也解释了为什么很多轨迹规划算法喜欢用多项式、B 样条或 MINCO 这类参数化曲线描述位置轨迹：位置曲线一旦确定，速度、加速度以及更高阶导数都可以直接算出来。
-四、非完整约束系统也可能微分平坦
-微分平坦性并不要求系统能够直接向任意方向运动。
-例如一辆非完整约束小车只能前进、后退和转向，不能像全向轮机器人一样横向平移。它的简化模型可以写成：
-x˙=vcos⁡θ\dot{x}=v\cos\theta
-x˙=vcosθ
-y˙=vsin⁡θ\dot{y}=v\sin\theta
-y˙​=vsinθ
-θ˙=ω\dot{\theta}=\omega
-θ˙=ω
-其中：
-
-x,yx,yx,y 是车辆位置；
-θ\thetaθ 是车头朝向；
-vvv 是前进速度；
-ω\omegaω 是转向角速度。
-
-虽然车辆不能直接横移，但可以选择平面位置作为平坦输出：
-yf=[xy]Ty_f =
-\begin{bmatrix}
-x &amp; y
-\end{bmatrix}^{T}
-yf​=[x​y​]T
-由位置轨迹的一阶导数可以恢复车头朝向：
-θ=atan2(y˙,x˙)\theta=\mathrm{atan2}(\dot{y},\dot{x})
-θ=atan2(y˙​,x˙)
-速度为：
-v=x˙2+y˙2v=\sqrt{\dot{x}^2+\dot{y}^2}
-v=x˙2+y˙​2​
-角速度可以由轨迹的一阶、二阶导数恢复：
-ω=x˙y¨−y˙x¨x˙2+y˙2\omega=\frac{\dot{x}\ddot{y}-\dot{y}\ddot{x}}{\dot{x}^2+\dot{y}^2}
-ω=x˙2+y˙​2x˙y¨​−y˙​x¨​
-所以，只要给出车辆在平面内的运动轨迹，就可以反推出车头方向和控制输入。
-这个例子说明：系统有运动约束，甚至是欠驱动系统，并不代表它一定不是微分平坦系统。
-五、四旋翼为什么是微分平坦系统？
-理想四旋翼模型通常可以选择：
-yf=[xyzψ]Ty_f =
-\begin{bmatrix}
-x &amp; y &amp; z &amp; \psi
-\end{bmatrix}^{T}
-yf​=[x​y​z​ψ​]T
-作为平坦输出，其中：
-
-x,y,zx,y,zx,y,z 是无人机质心位置；
-ψ\psiψ 是偏航角，也可以理解为机头朝向。
-
-四旋翼看起来很复杂，因为它包含位置、速度、姿态、角速度、总推力、力矩和四个电机转速。但在常见模型下，这些量都可以通过位置、偏航角及其有限阶导数恢复出来。
-1. 四旋翼只有四个独立控制输入
-四旋翼有四个电机。通过调节四个旋翼转速，可以形成：
-u=[fτxτyτz]Tu=
-\begin{bmatrix}
-f &amp; \tau_x &amp; \tau_y &amp; \tau_z
-\end{bmatrix}^{T}
-u=[f​τx​​τy​​τz​​]T
-其中：
-
-fff 是总推力；
-τx\tau_xτx​ 是滚转力矩；
-τy\tau_yτy​ 是俯仰力矩；
-τz\tau_zτz​ 是偏航力矩。
-
-也就是说，虽然四旋翼在三维空间中具有六个自由度：
-x,y,z,ϕ,θ,ψx,y,z,\phi,\theta,\psi
-x,y,z,ϕ,θ,ψ
-但它只有四个独立控制输入，是典型的欠驱动系统。
-微分平坦性的特殊之处就在于：即使四旋翼是欠驱动系统，仍然可以用四个平坦输出描述完整运动。
-2. 由位置轨迹恢复推力方向
-为了简化表达，假设：
-
-世界坐标系的竖直向上方向为 e3=[0,0,1]Te_3=[0,0,1]^Te3​=[0,0,1]T；
-重力方向向下；
-无人机总推力沿机体坐标系的 zzz 轴方向；
-暂时忽略空气阻力和电机动态。
-
-四旋翼的平移动力学方程可以写成：
-mp¨=−mge3+fb3m\ddot{p}=-mg e_3+f b_3
-mp¨​=−mge3​+fb3​
-其中：
-
-p=[x,y,z]Tp=[x,y,z]^Tp=[x,y,z]T 是无人机位置；
-mmm 是无人机质量；
-fff 是总推力；
-b3b_3b3​ 是机体 zzz 轴在世界坐标系下的方向。
-
-整理后得到：
-fb3=m(p¨+ge3)f b_3=m(\ddot{p}+g e_3)
-fb3​=m(p¨​+ge3​)
-这条公式非常关键。只要给定位置轨迹 p(t)p(t)p(t)，就可以计算加速度 p¨(t)\ddot{p}(t)p¨​(t)，进而得到总推力大小：
-f=m∥p¨+ge3∥f=m\left\|\ddot{p}+g e_3\right\|
-f=m∥p¨​+ge3​∥
-以及无人机机体 zzz 轴方向：
-b3=p¨+ge3∥p¨+ge3∥b_3=\frac{\ddot{p}+g e_3}{\left\|\ddot{p}+g e_3\right\|}
-b3​=∥p¨​+ge3​∥p¨​+ge3​​
-因此，位置轨迹的二阶导数决定了无人机需要朝哪个方向倾斜，以及需要产生多大的总推力。
-几个直观例子：
-
-如果无人机悬停，则 p¨=0\ddot{p}=0p¨​=0，机体 zzz 轴竖直向上；
-如果无人机需要向前加速，就必须向前倾斜；
-如果无人机需要快速爬升，总推力必须大于重力。
-
-3. 为什么还需要偏航角？
-由位置加速度只能确定机体 zzz 轴方向 b3b_3b3​，也就是确定无人机应该怎样倾斜。但是，无人机仍然可以绕自身 zzz 轴旋转。
-可以想象一架正在悬停的无人机：它保持高度不变，但机头仍然可以朝东、朝西或缓慢转圈。
-因此，仅使用 x(t),y(t),z(t)x(t),y(t),z(t)x(t),y(t),z(t) 还不足以唯一确定完整姿态，还需要补充偏航角 ψ(t)\psi(t)ψ(t)。
-先根据偏航角定义一个期望水平朝向：
-b1c=[cos⁡ψsin⁡ψ0]b_{1c}=
-\begin{bmatrix}
-\cos\psi \\
-\sin\psi \\
-0
-\end{bmatrix}
-b1c​=​cosψsinψ0​​
-再结合 b3b_3b3​ 构造机体坐标系的另外两个轴：
-b2=b3×b1c∥b3×b1c∥b_2=\frac{b_3\times b_{1c}}{\left\|b_3\times b_{1c}\right\|}
-b2​=∥b3​×b1c​∥b3​×b1c​​
-b1=b2×b3b_1=b_2\times b_3
-b1​=b2​×b3​
-于是姿态矩阵可以写成：
-R=[b1b2b3]R=
-\begin{bmatrix}
-b_1 &amp; b_2 &amp; b_3
-\end{bmatrix}
-R=[b1​​b2​​b3​​]
-也就是说：
-
-位置加速度决定无人机如何倾斜，偏航角决定机头朝向。二者结合后，可以恢复完整姿态。
-
-4. 更高阶导数恢复角速度和力矩
-到目前为止，根据平坦输出 [x,y,z,ψ][x,y,z,\psi][x,y,z,ψ] 以及位置的二阶导数，已经得到了：
-
-位置 ppp；
-速度 p˙\dot{p}p˙​；
-姿态 RRR；
-总推力 fff。
-
-但无人机控制还需要角速度和力矩。
-姿态矩阵与角速度之间满足：
-R˙=Rω^\dot{R}=R\hat{\omega}
-R˙=Rω^
-因此：
-ω^=RTR˙\hat{\omega}=R^T\dot{R}
-ω^=RTR˙
-其中 ω\omegaω 是机体角速度，ω^\hat{\omega}ω^ 是对应的反对称矩阵。
-由于姿态 RRR 是由 p¨\ddot{p}p¨​ 和 ψ\psiψ 构造出来的，所以对姿态继续求导后，角速度可以由位置三阶导数和偏航角一阶导数恢复：
-p(3),ψ˙p^{(3)},\dot{\psi}
-p(3),ψ˙​
-位置的三阶导数称为 jerk。
-继续求导可以得到角加速度 ω˙\dot{\omega}ω˙，它与位置四阶导数和偏航角二阶导数有关：
-p(4),ψ¨p^{(4)},\ddot{\psi}
-p(4),ψ¨​
-位置的四阶导数称为 snap。
-最后，根据转动动力学方程：
-τ=Jω˙+ω×(Jω)\tau=J\dot{\omega}+\omega\times(J\omega)
-τ=Jω˙+ω×(Jω)
-就可以计算出控制力矩：
-τ=[τxτyτz]T\tau=
-\begin{bmatrix}
-\tau_x &amp; \tau_y &amp; \tau_z
-\end{bmatrix}^{T}
-τ=[τx​​τy​​τz​​]T
-其中 JJJ 是无人机的转动惯量矩阵。
-六、四旋翼平坦输出的恢复链条
-从四个平坦输出出发，恢复关系可以概括为：
-
-
-
-平坦输出及其导数
-可以恢复的物理量
-
-
-
-
-ppp
-位置
-
-
-p˙\dot{p}p˙​
-速度
-
-
-p¨\ddot{p}p¨​
-推力大小、推力方向、滚转和俯仰
-
-
-ψ\psiψ
-偏航方向、完整姿态
-
-
-p(3),ψ˙p^{(3)},\dot{\psi}p(3),ψ˙​
-角速度
-
-
-p(4),ψ¨p^{(4)},\ddot{\psi}p(4),ψ¨​
-角加速度、控制力矩
-
-
-
-再通过四旋翼的混控矩阵，可以把总推力和三个力矩转换成四个电机的目标推力：
-[fτxτyτz]=A[f1f2f3f4]\begin{aligned}
-\begin{bmatrix}
-f \\
-\tau_x \\
-\tau_y \\
-\tau_z
-\end{bmatrix}
-&amp;=
-A
-\begin{bmatrix}
-f_1 \\
-f_2 \\
-f_3 \\
-f_4
-\end{bmatrix}
-\end{aligned}
-​fτx​τy​τz​​​​=A​f1​f2​f3​f4​​​​
-只要混控矩阵 AAA 可逆，就可以计算每个旋翼的推力。
-完整链条可以写成：
-[x, y, z, psi]    -&gt; 位置、速度、姿态、角速度    -&gt; 总推力、力矩    -&gt; 四个旋翼的推力
-整个过程中只涉及有限次求导和代数运算，不需要重新求解一组微分方程。这正是微分平坦性的定义。
-七、为什么轨迹规划常常优化 snap？
-这也解释了为什么经典四旋翼轨迹生成方法经常使用 minimum-snap trajectory，也就是最小化位置轨迹四阶导数的平方积分：
-J=∫0T∥p(4)(t)∥2dtJ=\int_0^T \left\|p^{(4)}(t)\right\|^2 dt
-J=∫0T​​p(4)(t)​2dt
-因为 snap 与无人机的角加速度和控制力矩密切相关。限制 snap 可以让：
-
-姿态变化更加平滑；
-控制力矩变化更加平缓；
-电机指令变化更加连续；
-轨迹更容易被真实无人机跟踪。
-
-Mellinger 和 Kumar 的经典四旋翼轨迹规划工作，就是利用这一性质，在三维位置和偏航角空间中生成可跟踪轨迹。
-八、微分平坦不等于任意轨迹都能飞
-理论上，只要给定足够光滑的：
-[x(t),y(t),z(t),ψ(t)][x(t),y(t),z(t),\psi(t)]
-[x(t),y(t),z(t),ψ(t)]
-就可以计算出对应的状态和控制输入。
-但这并不意味着任意轨迹都能被真实无人机执行。因为计算出来的控制量可能超过硬件能力，例如：
-
-总推力超过电机上限；
-需要过大的倾斜角；
-角速度过高；
-控制力矩过大；
-电机转速变化过快；
-轨迹本身穿过障碍物。
-
-因此，轨迹规划仍然需要加入动力学约束和环境约束，例如：
-∥p˙∥≤vmax⁡\left\|\dot{p}\right\|\le v_{\max}
-∥p˙​∥≤vmax​
-∥p¨∥≤amax⁡\left\|\ddot{p}\right\|\le a_{\max}
-∥p¨​∥≤amax​
-以及推力、姿态角、角速度、走廊安全距离等限制。
-微分平坦性解决的是：
-
-如何从容易规划的位置轨迹恢复完整动力学状态和控制指令。
-
-它并不会自动保证轨迹一定满足硬件约束、控制约束和避障约束。
-九、工程上如何判断一个系统是否微分平坦？
-对于一个具体系统，可以按下面的思路判断。
-1. 写出明确的动力学模型
-首先需要明确系统模型到底包含哪些状态和输入。例如四旋翼模型中，要说明是否考虑：
-
-空气阻力；
-电机动态；
-桨叶模型；
-负载；
-机械臂；
-柔性绳索；
-执行器饱和。
-
-微分平坦性是针对特定数学模型而言的。同一架无人机，如果采用不同复杂程度的动力学模型，结论可能不同。
-2. 寻找少量候选输出
-通常优先考虑能直接反映运动目标的变量，例如：
-
-
-
-系统
-常见候选平坦输出
-
-
-
-
-一维质点
-位置
-
-
-非完整约束小车
-平面位置
-
-
-四旋翼
-三维位置 + 偏航角
-
-
-机械臂
-末端位姿或部分关节变量
-
-
-
-平坦输出的数量通常与独立控制输入数量相同。
-3. 逐层求导并代入动力学方程
-观察能否从候选输出的导数逐步恢复：
-
-位置；
-速度；
-姿态；
-角速度；
-推力；
-力矩；
-其他状态和输入。
-
-4. 检查是否引入积分或额外微分方程
-如果所有变量都能通过有限次求导和代数计算得到，则系统在该模型下是微分平坦的。
-如果必须依赖积分、初始条件或完整历史轨迹，说明当前候选输出不满足要求。此时可能需要：
-
-换一组候选平坦输出；
-引入输入的动态扩展；
-或者接受该系统在当前模型下不是微分平坦系统。
-
-十、需要注意奇异状态
-很多系统只在一定范围内具有良好的平坦参数化。
-例如小车模型中：
-θ=atan2(y˙,x˙)\theta=\mathrm{atan2}(\dot{y},\dot{x})
-θ=atan2(y˙​,x˙)
-当车辆速度为零时：
-x˙=y˙=0\dot{x}=\dot{y}=0
-x˙=y˙​=0
-车头朝向无法根据位置轨迹的一阶导数确定，此时就会出现奇异性。
-四旋翼也有类似问题。例如当：
-p¨+ge3=0\ddot{p}+g e_3=0
-p¨​+ge3​=0
-时，推力方向 b3b_3b3​ 无法正常定义；当 b3b_3b3​ 与期望水平朝向 b1cb_{1c}b1c​ 发生退化关系时，姿态构造也可能失效。
-所以，更准确的说法通常是：
-
-系统在避开某些奇异状态的局部区域内具有微分平坦性。
-
-十一、对 EGO-Planner 等无人机规划器的意义
-在 EGO-Planner、Fast-Planner、GCOPTER、MINCO 等无人机轨迹规划框架中，规划器通常不会直接优化：
-
-四个电机转速；
-每个时刻的控制力矩；
-完整姿态曲线；
-飞控底层的混控输入。
-
-它们更常见的做法，是优化三维空间中的位置曲线 p(t)p(t)p(t)，并约束速度、加速度、光滑性和障碍物距离。
-原因就在于四旋翼的微分平坦性。规划器只需要生成一条足够光滑、满足约束的位置轨迹，轨迹跟踪控制器就可以根据期望位置、速度和加速度计算期望推力与姿态。更高性能的控制器还会使用 jerk 和 snap 构造前馈项，从而改善高速飞行时的跟踪效果。
-可以把微分平坦性理解成一座桥：
-容易规划的位置轨迹    -&gt; 平坦输出及其有限阶导数    -&gt; 复杂的无人机动力学状态和控制输入
-这就是为什么在无人机轨迹规划里，很多方法都重点研究“如何生成一条光滑、无碰撞、满足动力学约束的位置轨迹”，而不是从电机转速层面直接做全量优化。
-总结
-一个系统具有微分平坦性的本质条件是：
-
-存在一组平坦输出，使系统的全部状态和控制输入都能够由这些输出及其有限阶导数直接恢复，并且不需要积分或额外求解微分方程。
-
-对于四旋翼无人机，常见平坦输出是：
-[xyzψ]T\begin{bmatrix}
-x &amp; y &amp; z &amp; \psi
-\end{bmatrix}^{T}
-[x​y​z​ψ​]T
-其中最关键的物理关系是：
-fb3=m(p¨+ge3)f b_3=m(\ddot{p}+g e_3)
-fb3​=m(p¨​+ge3​)
-位置加速度决定推力方向和大小，偏航角补足机头朝向，更高阶导数进一步恢复角速度和力矩。
-因此，四旋翼虽然是欠驱动系统，但在常用模型下仍然是微分平坦系统。这一性质正是四旋翼轨迹规划能够主要围绕位置曲线展开的理论基础。
-]]></content>
-      <categories>
-        <category>无人机开发</category>
-      </categories>
-      <tags>
-        <tag>EGO-Planner</tag>
-        <tag>微分平坦性</tag>
-        <tag>轨迹规划</tag>
-        <tag>四旋翼</tag>
-        <tag>控制</tag>
       </tags>
   </entry>
   <entry>
@@ -6912,6 +6461,457 @@ AeroAct 专用代码未确认开源，数据与权重未确认发布 · 论文 �
         <tag>多机</tag>
         <tag>轨迹规划</tag>
         <tag>开源算法</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微分平坦性怎么判断：从质点、小车到四旋翼无人机</title>
+    <url>/2026/06/09/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7%E4%B8%8E%E5%9B%9B%E6%97%8B%E7%BF%BC%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/</url>
+    <content><![CDATA[前言
+在学习无人机轨迹规划时，经常会看到一句话：四旋翼无人机是微分平坦系统。
+这句话听起来很理论，但它对工程实现非常关键。因为很多规划器并不会直接优化四个电机转速，也不会直接优化滚转角、俯仰角和力矩，而是优先优化三维空间中的位置轨迹。这样做背后的原因，就是四旋翼的状态和控制输入可以由位置、偏航角及其有限阶导数恢复出来。
+这篇文章先整理微分平坦性的判断标准，再通过质点、小车和四旋翼三个例子说明它到底是什么意思，最后结合 EGO-Planner、MINCO、minimum-snap 这类轨迹规划方法理解它的实际意义。
+
+一、微分平坦性到底在判断什么？
+考虑一个一般的动力系统：
+x˙=f(x,u)\dot{x}=f(x,u)
+x˙=f(x,u)
+其中：
+
+xxx 是系统状态，例如位置、速度、姿态和角速度；
+uuu 是控制输入，例如推力、力矩或加速度指令。
+
+如果系统有 mmm 个独立控制输入，要证明它具有微分平坦性，通常需要找到 mmm 个相互独立的输出：
+y=[y1y2⋯ym]Ty =
+\begin{bmatrix}
+y_1 &amp; y_2 &amp; \cdots &amp; y_m
+\end{bmatrix}^{T}
+y=[y1​​y2​​⋯​ym​​]T
+使得系统的所有状态和控制输入都能表示成：
+x=Φ(y,y˙,y¨,⋯ ,y(r))x=\Phi(y,\dot{y},\ddot{y},\cdots,y^{(r)})
+x=Φ(y,y˙​,y¨​,⋯,y(r))
+u=Ψ(y,y˙,y¨,⋯ ,y(s))u=\Psi(y,\dot{y},\ddot{y},\cdots,y^{(s)})
+u=Ψ(y,y˙​,y¨​,⋯,y(s))
+其中 rrr 和 sss 是有限整数。
+这组输出 yyy 就叫做平坦输出。微分平坦理论的核心可以概括成一句话：
+
+如果能用一组平坦输出及其有限阶导数参数化系统的全部状态和控制输入，那么这个系统就是微分平坦系统。
+
+注意这里的关键不是“系统是不是线性的”，也不是“系统是不是完全驱动的”，而是能不能找到这样一组平坦输出。
+二、什么叫由平坦输出直接恢复？
+所谓“直接恢复”，指的是只需要做有限次：
+
+代数运算；
+三角函数运算；
+求导；
+代入动力学方程。
+
+不应该再需要：
+
+对未知变量积分；
+求解新的微分方程；
+依赖系统过去的完整运动历史。
+
+举个反例，如果选择某个变量 y(t)y(t)y(t) 作为候选平坦输出，但恢复状态时出现：
+x(t)=x(0)+∫0ty(τ) dτx(t)=x(0)+\int_0^t y(\tau)\,d\tau
+x(t)=x(0)+∫0t​y(τ)dτ
+那么仅靠当前时刻的 y,y˙,y¨y,\dot{y},\ddot{y}y,y˙​,y¨​ 等有限阶导数，并不能确定 x(t)x(t)x(t)。还必须知道初始值和历史积分。因此，这样的 yyy 通常不能作为平坦输出。
+这一区别很重要。微分平坦性强调的是当前轨迹点附近的有限阶导数信息足够恢复系统状态和输入，而不是“只要知道整条历史轨迹就能算出来”。
+三、最简单的例子：一维质点
+考虑一个一维质点模型：
+x˙=v\dot{x}=v
+x˙=v
+v˙=u\dot{v}=u
+v˙=u
+其中：
+
+xxx 是位置；
+vvv 是速度；
+uuu 是加速度控制输入。
+
+选择位置作为平坦输出：
+y=xy=x
+y=x
+那么：
+x=yx=y
+x=y
+v=y˙v=\dot{y}
+v=y˙​
+u=y¨u=\ddot{y}
+u=y¨​
+只要规划一条足够光滑的位置曲线 y(t)y(t)y(t)，就能直接得到速度和控制输入。因此，这个系统是微分平坦的。
+这也解释了为什么很多轨迹规划算法喜欢用多项式、B 样条或 MINCO 这类参数化曲线描述位置轨迹：位置曲线一旦确定，速度、加速度以及更高阶导数都可以直接算出来。
+四、非完整约束系统也可能微分平坦
+微分平坦性并不要求系统能够直接向任意方向运动。
+例如一辆非完整约束小车只能前进、后退和转向，不能像全向轮机器人一样横向平移。它的简化模型可以写成：
+x˙=vcos⁡θ\dot{x}=v\cos\theta
+x˙=vcosθ
+y˙=vsin⁡θ\dot{y}=v\sin\theta
+y˙​=vsinθ
+θ˙=ω\dot{\theta}=\omega
+θ˙=ω
+其中：
+
+x,yx,yx,y 是车辆位置；
+θ\thetaθ 是车头朝向；
+vvv 是前进速度；
+ω\omegaω 是转向角速度。
+
+虽然车辆不能直接横移，但可以选择平面位置作为平坦输出：
+yf=[xy]Ty_f =
+\begin{bmatrix}
+x &amp; y
+\end{bmatrix}^{T}
+yf​=[x​y​]T
+由位置轨迹的一阶导数可以恢复车头朝向：
+θ=atan2(y˙,x˙)\theta=\mathrm{atan2}(\dot{y},\dot{x})
+θ=atan2(y˙​,x˙)
+速度为：
+v=x˙2+y˙2v=\sqrt{\dot{x}^2+\dot{y}^2}
+v=x˙2+y˙​2​
+角速度可以由轨迹的一阶、二阶导数恢复：
+ω=x˙y¨−y˙x¨x˙2+y˙2\omega=\frac{\dot{x}\ddot{y}-\dot{y}\ddot{x}}{\dot{x}^2+\dot{y}^2}
+ω=x˙2+y˙​2x˙y¨​−y˙​x¨​
+所以，只要给出车辆在平面内的运动轨迹，就可以反推出车头方向和控制输入。
+这个例子说明：系统有运动约束，甚至是欠驱动系统，并不代表它一定不是微分平坦系统。
+五、四旋翼为什么是微分平坦系统？
+理想四旋翼模型通常可以选择：
+yf=[xyzψ]Ty_f =
+\begin{bmatrix}
+x &amp; y &amp; z &amp; \psi
+\end{bmatrix}^{T}
+yf​=[x​y​z​ψ​]T
+作为平坦输出，其中：
+
+x,y,zx,y,zx,y,z 是无人机质心位置；
+ψ\psiψ 是偏航角，也可以理解为机头朝向。
+
+四旋翼看起来很复杂，因为它包含位置、速度、姿态、角速度、总推力、力矩和四个电机转速。但在常见模型下，这些量都可以通过位置、偏航角及其有限阶导数恢复出来。
+1. 四旋翼只有四个独立控制输入
+四旋翼有四个电机。通过调节四个旋翼转速，可以形成：
+u=[fτxτyτz]Tu=
+\begin{bmatrix}
+f &amp; \tau_x &amp; \tau_y &amp; \tau_z
+\end{bmatrix}^{T}
+u=[f​τx​​τy​​τz​​]T
+其中：
+
+fff 是总推力；
+τx\tau_xτx​ 是滚转力矩；
+τy\tau_yτy​ 是俯仰力矩；
+τz\tau_zτz​ 是偏航力矩。
+
+也就是说，虽然四旋翼在三维空间中具有六个自由度：
+x,y,z,ϕ,θ,ψx,y,z,\phi,\theta,\psi
+x,y,z,ϕ,θ,ψ
+但它只有四个独立控制输入，是典型的欠驱动系统。
+微分平坦性的特殊之处就在于：即使四旋翼是欠驱动系统，仍然可以用四个平坦输出描述完整运动。
+2. 由位置轨迹恢复推力方向
+为了简化表达，假设：
+
+世界坐标系的竖直向上方向为 e3=[0,0,1]Te_3=[0,0,1]^Te3​=[0,0,1]T；
+重力方向向下；
+无人机总推力沿机体坐标系的 zzz 轴方向；
+暂时忽略空气阻力和电机动态。
+
+四旋翼的平移动力学方程可以写成：
+mp¨=−mge3+fb3m\ddot{p}=-mg e_3+f b_3
+mp¨​=−mge3​+fb3​
+其中：
+
+p=[x,y,z]Tp=[x,y,z]^Tp=[x,y,z]T 是无人机位置；
+mmm 是无人机质量；
+fff 是总推力；
+b3b_3b3​ 是机体 zzz 轴在世界坐标系下的方向。
+
+整理后得到：
+fb3=m(p¨+ge3)f b_3=m(\ddot{p}+g e_3)
+fb3​=m(p¨​+ge3​)
+这条公式非常关键。只要给定位置轨迹 p(t)p(t)p(t)，就可以计算加速度 p¨(t)\ddot{p}(t)p¨​(t)，进而得到总推力大小：
+f=m∥p¨+ge3∥f=m\left\|\ddot{p}+g e_3\right\|
+f=m∥p¨​+ge3​∥
+以及无人机机体 zzz 轴方向：
+b3=p¨+ge3∥p¨+ge3∥b_3=\frac{\ddot{p}+g e_3}{\left\|\ddot{p}+g e_3\right\|}
+b3​=∥p¨​+ge3​∥p¨​+ge3​​
+因此，位置轨迹的二阶导数决定了无人机需要朝哪个方向倾斜，以及需要产生多大的总推力。
+几个直观例子：
+
+如果无人机悬停，则 p¨=0\ddot{p}=0p¨​=0，机体 zzz 轴竖直向上；
+如果无人机需要向前加速，就必须向前倾斜；
+如果无人机需要快速爬升，总推力必须大于重力。
+
+3. 为什么还需要偏航角？
+由位置加速度只能确定机体 zzz 轴方向 b3b_3b3​，也就是确定无人机应该怎样倾斜。但是，无人机仍然可以绕自身 zzz 轴旋转。
+可以想象一架正在悬停的无人机：它保持高度不变，但机头仍然可以朝东、朝西或缓慢转圈。
+因此，仅使用 x(t),y(t),z(t)x(t),y(t),z(t)x(t),y(t),z(t) 还不足以唯一确定完整姿态，还需要补充偏航角 ψ(t)\psi(t)ψ(t)。
+先根据偏航角定义一个期望水平朝向：
+b1c=[cos⁡ψsin⁡ψ0]b_{1c}=
+\begin{bmatrix}
+\cos\psi \\
+\sin\psi \\
+0
+\end{bmatrix}
+b1c​=​cosψsinψ0​​
+再结合 b3b_3b3​ 构造机体坐标系的另外两个轴：
+b2=b3×b1c∥b3×b1c∥b_2=\frac{b_3\times b_{1c}}{\left\|b_3\times b_{1c}\right\|}
+b2​=∥b3​×b1c​∥b3​×b1c​​
+b1=b2×b3b_1=b_2\times b_3
+b1​=b2​×b3​
+于是姿态矩阵可以写成：
+R=[b1b2b3]R=
+\begin{bmatrix}
+b_1 &amp; b_2 &amp; b_3
+\end{bmatrix}
+R=[b1​​b2​​b3​​]
+也就是说：
+
+位置加速度决定无人机如何倾斜，偏航角决定机头朝向。二者结合后，可以恢复完整姿态。
+
+4. 更高阶导数恢复角速度和力矩
+到目前为止，根据平坦输出 [x,y,z,ψ][x,y,z,\psi][x,y,z,ψ] 以及位置的二阶导数，已经得到了：
+
+位置 ppp；
+速度 p˙\dot{p}p˙​；
+姿态 RRR；
+总推力 fff。
+
+但无人机控制还需要角速度和力矩。
+姿态矩阵与角速度之间满足：
+R˙=Rω^\dot{R}=R\hat{\omega}
+R˙=Rω^
+因此：
+ω^=RTR˙\hat{\omega}=R^T\dot{R}
+ω^=RTR˙
+其中 ω\omegaω 是机体角速度，ω^\hat{\omega}ω^ 是对应的反对称矩阵。
+由于姿态 RRR 是由 p¨\ddot{p}p¨​ 和 ψ\psiψ 构造出来的，所以对姿态继续求导后，角速度可以由位置三阶导数和偏航角一阶导数恢复：
+p(3),ψ˙p^{(3)},\dot{\psi}
+p(3),ψ˙​
+位置的三阶导数称为 jerk。
+继续求导可以得到角加速度 ω˙\dot{\omega}ω˙，它与位置四阶导数和偏航角二阶导数有关：
+p(4),ψ¨p^{(4)},\ddot{\psi}
+p(4),ψ¨​
+位置的四阶导数称为 snap。
+最后，根据转动动力学方程：
+τ=Jω˙+ω×(Jω)\tau=J\dot{\omega}+\omega\times(J\omega)
+τ=Jω˙+ω×(Jω)
+就可以计算出控制力矩：
+τ=[τxτyτz]T\tau=
+\begin{bmatrix}
+\tau_x &amp; \tau_y &amp; \tau_z
+\end{bmatrix}^{T}
+τ=[τx​​τy​​τz​​]T
+其中 JJJ 是无人机的转动惯量矩阵。
+六、四旋翼平坦输出的恢复链条
+从四个平坦输出出发，恢复关系可以概括为：
+
+
+
+平坦输出及其导数
+可以恢复的物理量
+
+
+
+
+ppp
+位置
+
+
+p˙\dot{p}p˙​
+速度
+
+
+p¨\ddot{p}p¨​
+推力大小、推力方向、滚转和俯仰
+
+
+ψ\psiψ
+偏航方向、完整姿态
+
+
+p(3),ψ˙p^{(3)},\dot{\psi}p(3),ψ˙​
+角速度
+
+
+p(4),ψ¨p^{(4)},\ddot{\psi}p(4),ψ¨​
+角加速度、控制力矩
+
+
+
+再通过四旋翼的混控矩阵，可以把总推力和三个力矩转换成四个电机的目标推力：
+[fτxτyτz]=A[f1f2f3f4]\begin{aligned}
+\begin{bmatrix}
+f \\
+\tau_x \\
+\tau_y \\
+\tau_z
+\end{bmatrix}
+&amp;=
+A
+\begin{bmatrix}
+f_1 \\
+f_2 \\
+f_3 \\
+f_4
+\end{bmatrix}
+\end{aligned}
+​fτx​τy​τz​​​​=A​f1​f2​f3​f4​​​​
+只要混控矩阵 AAA 可逆，就可以计算每个旋翼的推力。
+完整链条可以写成：
+[x, y, z, psi]    -&gt; 位置、速度、姿态、角速度    -&gt; 总推力、力矩    -&gt; 四个旋翼的推力
+整个过程中只涉及有限次求导和代数运算，不需要重新求解一组微分方程。这正是微分平坦性的定义。
+七、为什么轨迹规划常常优化 snap？
+这也解释了为什么经典四旋翼轨迹生成方法经常使用 minimum-snap trajectory，也就是最小化位置轨迹四阶导数的平方积分：
+J=∫0T∥p(4)(t)∥2dtJ=\int_0^T \left\|p^{(4)}(t)\right\|^2 dt
+J=∫0T​​p(4)(t)​2dt
+因为 snap 与无人机的角加速度和控制力矩密切相关。限制 snap 可以让：
+
+姿态变化更加平滑；
+控制力矩变化更加平缓；
+电机指令变化更加连续；
+轨迹更容易被真实无人机跟踪。
+
+Mellinger 和 Kumar 的经典四旋翼轨迹规划工作，就是利用这一性质，在三维位置和偏航角空间中生成可跟踪轨迹。
+八、微分平坦不等于任意轨迹都能飞
+理论上，只要给定足够光滑的：
+[x(t),y(t),z(t),ψ(t)][x(t),y(t),z(t),\psi(t)]
+[x(t),y(t),z(t),ψ(t)]
+就可以计算出对应的状态和控制输入。
+但这并不意味着任意轨迹都能被真实无人机执行。因为计算出来的控制量可能超过硬件能力，例如：
+
+总推力超过电机上限；
+需要过大的倾斜角；
+角速度过高；
+控制力矩过大；
+电机转速变化过快；
+轨迹本身穿过障碍物。
+
+因此，轨迹规划仍然需要加入动力学约束和环境约束，例如：
+∥p˙∥≤vmax⁡\left\|\dot{p}\right\|\le v_{\max}
+∥p˙​∥≤vmax​
+∥p¨∥≤amax⁡\left\|\ddot{p}\right\|\le a_{\max}
+∥p¨​∥≤amax​
+以及推力、姿态角、角速度、走廊安全距离等限制。
+微分平坦性解决的是：
+
+如何从容易规划的位置轨迹恢复完整动力学状态和控制指令。
+
+它并不会自动保证轨迹一定满足硬件约束、控制约束和避障约束。
+九、工程上如何判断一个系统是否微分平坦？
+对于一个具体系统，可以按下面的思路判断。
+1. 写出明确的动力学模型
+首先需要明确系统模型到底包含哪些状态和输入。例如四旋翼模型中，要说明是否考虑：
+
+空气阻力；
+电机动态；
+桨叶模型；
+负载；
+机械臂；
+柔性绳索；
+执行器饱和。
+
+微分平坦性是针对特定数学模型而言的。同一架无人机，如果采用不同复杂程度的动力学模型，结论可能不同。
+2. 寻找少量候选输出
+通常优先考虑能直接反映运动目标的变量，例如：
+
+
+
+系统
+常见候选平坦输出
+
+
+
+
+一维质点
+位置
+
+
+非完整约束小车
+平面位置
+
+
+四旋翼
+三维位置 + 偏航角
+
+
+机械臂
+末端位姿或部分关节变量
+
+
+
+平坦输出的数量通常与独立控制输入数量相同。
+3. 逐层求导并代入动力学方程
+观察能否从候选输出的导数逐步恢复：
+
+位置；
+速度；
+姿态；
+角速度；
+推力；
+力矩；
+其他状态和输入。
+
+4. 检查是否引入积分或额外微分方程
+如果所有变量都能通过有限次求导和代数计算得到，则系统在该模型下是微分平坦的。
+如果必须依赖积分、初始条件或完整历史轨迹，说明当前候选输出不满足要求。此时可能需要：
+
+换一组候选平坦输出；
+引入输入的动态扩展；
+或者接受该系统在当前模型下不是微分平坦系统。
+
+十、需要注意奇异状态
+很多系统只在一定范围内具有良好的平坦参数化。
+例如小车模型中：
+θ=atan2(y˙,x˙)\theta=\mathrm{atan2}(\dot{y},\dot{x})
+θ=atan2(y˙​,x˙)
+当车辆速度为零时：
+x˙=y˙=0\dot{x}=\dot{y}=0
+x˙=y˙​=0
+车头朝向无法根据位置轨迹的一阶导数确定，此时就会出现奇异性。
+四旋翼也有类似问题。例如当：
+p¨+ge3=0\ddot{p}+g e_3=0
+p¨​+ge3​=0
+时，推力方向 b3b_3b3​ 无法正常定义；当 b3b_3b3​ 与期望水平朝向 b1cb_{1c}b1c​ 发生退化关系时，姿态构造也可能失效。
+所以，更准确的说法通常是：
+
+系统在避开某些奇异状态的局部区域内具有微分平坦性。
+
+十一、对 EGO-Planner 等无人机规划器的意义
+在 EGO-Planner、Fast-Planner、GCOPTER、MINCO 等无人机轨迹规划框架中，规划器通常不会直接优化：
+
+四个电机转速；
+每个时刻的控制力矩；
+完整姿态曲线；
+飞控底层的混控输入。
+
+它们更常见的做法，是优化三维空间中的位置曲线 p(t)p(t)p(t)，并约束速度、加速度、光滑性和障碍物距离。
+原因就在于四旋翼的微分平坦性。规划器只需要生成一条足够光滑、满足约束的位置轨迹，轨迹跟踪控制器就可以根据期望位置、速度和加速度计算期望推力与姿态。更高性能的控制器还会使用 jerk 和 snap 构造前馈项，从而改善高速飞行时的跟踪效果。
+可以把微分平坦性理解成一座桥：
+容易规划的位置轨迹    -&gt; 平坦输出及其有限阶导数    -&gt; 复杂的无人机动力学状态和控制输入
+这就是为什么在无人机轨迹规划里，很多方法都重点研究“如何生成一条光滑、无碰撞、满足动力学约束的位置轨迹”，而不是从电机转速层面直接做全量优化。
+总结
+一个系统具有微分平坦性的本质条件是：
+
+存在一组平坦输出，使系统的全部状态和控制输入都能够由这些输出及其有限阶导数直接恢复，并且不需要积分或额外求解微分方程。
+
+对于四旋翼无人机，常见平坦输出是：
+[xyzψ]T\begin{bmatrix}
+x &amp; y &amp; z &amp; \psi
+\end{bmatrix}^{T}
+[x​y​z​ψ​]T
+其中最关键的物理关系是：
+fb3=m(p¨+ge3)f b_3=m(\ddot{p}+g e_3)
+fb3​=m(p¨​+ge3​)
+位置加速度决定推力方向和大小，偏航角补足机头朝向，更高阶导数进一步恢复角速度和力矩。
+因此，四旋翼虽然是欠驱动系统，但在常用模型下仍然是微分平坦系统。这一性质正是四旋翼轨迹规划能够主要围绕位置曲线展开的理论基础。
+]]></content>
+      <categories>
+        <category>无人机开发</category>
+      </categories>
+      <tags>
+        <tag>EGO-Planner</tag>
+        <tag>轨迹规划</tag>
+        <tag>微分平坦性</tag>
+        <tag>四旋翼</tag>
+        <tag>控制</tag>
       </tags>
   </entry>
 </search>

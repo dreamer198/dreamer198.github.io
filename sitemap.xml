@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://dreamer198.top/visitors/</loc>
+    
+    <lastmod>2026-08-20</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://dreamer198.top/about/</loc>
     
     <lastmod>2026-08-20</lastmod>
@@ -48,15 +57,6 @@
   
   <url>
     <loc>https://dreamer198.top/2026/03/31/YOPO-ROS2-RUN/</loc>
-    
-    <lastmod>2026-08-13</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://dreamer198.top/visitors/</loc>
     
     <lastmod>2026-08-13</lastmod>
     
@@ -128,7 +128,7 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/2026/03/30/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%A7%86%E8%A7%89%E5%AE%9A%E4%BD%8D%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://dreamer198.top/2026/05/13/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
     
     <lastmod>2026-07-08</lastmod>
     
@@ -137,7 +137,7 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/2026/05/13/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</loc>
+    <loc>https://dreamer198.top/2026/03/30/Gazebo%E4%BB%BF%E7%9C%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E7%9A%84%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%A7%86%E8%A7%89%E5%AE%9A%E4%BD%8D%E6%B5%8B%E8%AF%95/</loc>
     
     <lastmod>2026-07-08</lastmod>
     
@@ -173,15 +173,6 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</loc>
-    
-    <lastmod>2026-07-08</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://dreamer198.top/2026/05/06/Mid360s%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/</loc>
     
     <lastmod>2026-07-08</lastmod>
@@ -191,7 +182,7 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/2026/05/06/Mid360-FAST-LIO-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95/</loc>
+    <loc>https://dreamer198.top/2026/03/30/RealSenseD435i%E5%AE%89%E8%A3%85%E6%95%99%E7%A8%8B/</loc>
     
     <lastmod>2026-07-08</lastmod>
     
@@ -201,6 +192,15 @@
   
   <url>
     <loc>https://dreamer198.top/2026/05/06/FAST-LIO2%E6%95%99%E7%A8%8B/</loc>
+    
+    <lastmod>2026-07-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/2026/05/06/Mid360-FAST-LIO-PX4%E7%9C%9F%E6%9C%BA%E9%83%A8%E7%BD%B2%E6%B5%8B%E8%AF%95/</loc>
     
     <lastmod>2026-07-08</lastmod>
     
@@ -354,41 +354,6 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://dreamer198.top/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://dreamer198.top/tags/NavRL/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://dreamer198.top/tags/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://dreamer198.top/tags/%E5%B1%80%E9%83%A8%E5%AF%BC%E8%88%AA/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://dreamer198.top/tags/Jetson/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -424,7 +389,7 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/RealSense/</loc>
+    <loc>https://dreamer198.top/tags/Mid-360S/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -438,20 +403,6 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/IMU/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://dreamer198.top/tags/Mid-360S/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://dreamer198.top/tags/%E6%BF%80%E5%85%89%E9%9B%B7%E8%BE%BE/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -459,14 +410,28 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/PX4/</loc>
+    <loc>https://dreamer198.top/tags/RealSense/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/MAVROS/</loc>
+    <loc>https://dreamer198.top/tags/IMU/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -481,6 +446,41 @@
   
   <url>
     <loc>https://dreamer198.top/tags/SLAM/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/NavRL/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/%E5%B1%80%E9%83%A8%E5%AF%BC%E8%88%AA/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/PX4/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/MAVROS/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -599,13 +599,6 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/EGO-Planner/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://dreamer198.top/tags/Fast-Planner/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
@@ -614,6 +607,13 @@
   
   <url>
     <loc>https://dreamer198.top/tags/RViz/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/EGO-Planner/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -648,14 +648,14 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF/</loc>
+    <loc>https://dreamer198.top/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%87%AA%E4%B8%BB%E9%A3%9E%E8%A1%8C/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/%E6%97%A0%E4%BA%BA%E6%9C%BA%E8%87%AA%E4%B8%BB%E9%A3%9E%E8%A1%8C/</loc>
+    <loc>https://dreamer198.top/tags/%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B6%88%E6%81%AF/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -669,14 +669,21 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7/</loc>
+    <loc>https://dreamer198.top/tags/%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://dreamer198.top/tags/%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/</loc>
+    <loc>https://dreamer198.top/tags/%E5%BC%80%E6%BA%90%E7%AE%97%E6%B3%95/</loc>
+    <lastmod>2026-08-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://dreamer198.top/tags/%E5%BE%AE%E5%88%86%E5%B9%B3%E5%9D%A6%E6%80%A7/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -696,13 +703,6 @@
     <priority>0.2</priority>
   </url>
   
-  <url>
-    <loc>https://dreamer198.top/tags/%E5%BC%80%E6%BA%90%E7%AE%97%E6%B3%95/</loc>
-    <lastmod>2026-08-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
 
   
   <url>
@@ -713,14 +713,14 @@
   </url>
   
   <url>
-    <loc>https://dreamer198.top/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/</loc>
+    <loc>https://dreamer198.top/categories/%E4%BC%A0%E6%84%9F%E5%99%A8%E7%A1%AC%E4%BB%B6/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://dreamer198.top/categories/%E4%BC%A0%E6%84%9F%E5%99%A8%E7%A1%AC%E4%BB%B6/</loc>
+    <loc>https://dreamer198.top/categories/%E8%AE%BA%E6%96%87%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

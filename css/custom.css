@@ -1475,13 +1475,13 @@ input:focus-visible {
 /* 2026-08 unified interface: layout, content and engineering code system */
 :root,
 [data-theme='dark'] {
-  --code-bg: #0f111a;
-  --code-toolbar: #0a0d14;
-  --code-gutter: #090c13;
-  --code-border: #31394a;
-  --code-text: #d8dee9;
-  --code-muted: #8f9bad;
-  --code-scrollbar: #2d6cdf;
+  --code-bg: #182837;
+  --code-toolbar: #142230;
+  --code-gutter: #111e2a;
+  --code-border: #3a5064;
+  --code-text: #e6edf3;
+  --code-muted: #a5b4c5;
+  --code-scrollbar: #4ba3bd;
   --inline-code-bg: rgba(27, 127, 140, 0.11);
   --inline-code-text: #0b6670;
   --content-radius: 8px;
@@ -1680,14 +1680,6 @@ body {
 }
 
 /* Homepage discovery and latest-post grid */
-.layout > #recent-posts {
-  width: 100% !important;
-}
-
-.layout > #recent-posts + #aside-content {
-  display: none;
-}
-
 .home-discovery {
   display: grid;
   margin-bottom: 46px;
@@ -1968,11 +1960,6 @@ body {
   -webkit-line-clamp: 2;
 }
 
-#recent-posts + #aside-content,
-#page-header.full_page + #content-inner > #aside-content {
-  display: none !important;
-}
-
 /* Article reading measure and flat inline code */
 .container {
   color: var(--blog-text);
@@ -2062,11 +2049,11 @@ body {
 }
 
 .container figure.highlight table::-webkit-scrollbar-track {
-  background: #090c13;
+  background: var(--code-gutter);
 }
 
 .container figure.highlight table::-webkit-scrollbar-thumb {
-  border: 2px solid #090c13;
+  border: 2px solid var(--code-gutter);
   border-radius: 0;
   background: var(--code-scrollbar);
 }
@@ -2094,7 +2081,21 @@ body {
   padding-right: 12px;
   padding-left: 12px;
   background: var(--code-gutter) !important;
-  color: #7d8799 !important;
+  color: #93a4b8 !important;
+}
+
+.container figure.highlight ::selection,
+.container > pre ::selection {
+  background: #2a6f97 !important;
+  color: #ffffff !important;
+  text-shadow: none;
+}
+
+.container figure.highlight ::-moz-selection,
+.container > pre ::-moz-selection {
+  background: #2a6f97 !important;
+  color: #ffffff !important;
+  text-shadow: none;
 }
 
 .container figure.highlight .code pre {
@@ -2158,7 +2159,7 @@ body {
 .container .code-expand-btn {
   border: 0 !important;
   border-radius: 0 !important;
-  background: linear-gradient(180deg, rgba(15, 17, 26, 0.18), rgba(9, 12, 19, 0.96)) !important;
+  background: linear-gradient(180deg, rgba(24, 40, 55, 0.18), rgba(17, 30, 42, 0.96)) !important;
   box-shadow: none !important;
 }
 
@@ -2245,18 +2246,10 @@ body {
 }
 
 /* Six category cards */
-#body-wrap.type-categories .layout,
-#body-wrap.type-tags .layout,
-#body-wrap.type-about .layout,
-#body-wrap.type-visitors .layout,
 .layout.hide-aside {
   justify-content: center;
 }
 
-#body-wrap.type-categories #page,
-#body-wrap.type-tags #page,
-#body-wrap.type-about #page,
-#body-wrap.type-visitors #page,
 .layout.hide-aside > #archive {
   width: 100% !important;
   max-width: 1120px;
