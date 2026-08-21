@@ -10,6 +10,7 @@
   var CHINA_COUNTRY = { code: 'CN', name: '中国' }
   var UNKNOWN_COUNTRY = { code: 'XX', name: '未知地区' }
   var CHINA_REGION_CODES = ['CN', 'TW', 'HK', 'MO']
+  var TOP_SOURCE_LIMIT = 5
 
   function $(selector) {
     return document.querySelector(selector)
@@ -265,7 +266,7 @@
     var list = $('#visitor-country-list')
     if (!list) return
 
-    var countries = (summary.countries || []).slice(0, 10)
+    var countries = (summary.countries || []).slice(0, TOP_SOURCE_LIMIT)
     if (!countries.length) {
       list.innerHTML = '<li class="visitor-country-empty">还没有公开统计数据</li>'
       return
