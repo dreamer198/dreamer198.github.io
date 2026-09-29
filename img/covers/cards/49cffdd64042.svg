@@ -14,10 +14,8 @@
   <g transform="translate(1073.8 423.3) rotate(-0.5) scale(1.1)"><g fill="none" stroke="#69d2cb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".7"><path d="M0-210c-108-64-228-68-344-18v420c116-50 236-46 344 18 108-64 228-68 344-18v-420C228-278 108-274 0-210Z"/><path d="M0-210v420"/><path d="M-278-142h168M-278-70h198M-278 2h142M86-142h184M86-70h142M86 2h206"/></g><path d="m-276 110 62-62 60 30 68-98M94 112l58-68 68 30 62-94" fill="none" stroke="#c9a1f4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="-86" cy="-20" r="10" fill="#efb46b"/><circle cx="282" cy="-20" r="10" fill="#efb46b"/></g>
   <path d="M72 76v748" stroke="url(#card-line-49cffdd64042)" stroke-width="4"/>
   <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
-    <text x="112" y="116" fill="#c9a1f4" font-size="18" font-weight="700" letter-spacing="4">RESEARCH NOTES</text>
-    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">RL</text>
-    <text x="112" y="542" fill="#69d2cb" font-size="38" font-weight="650" letter-spacing="4">STUDY NOTES</text>
-    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
-    <text x="112" y="822" fill="#efb46b" font-size="14" font-weight="700" letter-spacing="4">READING NOTE</text>
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">READING NOTE</text>
   </g>
 </svg>

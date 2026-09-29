@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">从 Dijkstra 到 A*：一步一步找到最短路径</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-ef826a405293" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-ef826a405293"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-ef826a405293" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-ef826a405293)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1136" cy="414.8" r="510" fill="url(#card-glow-ef826a405293)"/>
+  <g opacity=".62"><path d="M-120 93.9 Q8 80 120 48.5 Q238 56.1 350 81.6 Q468 157.9 580 68.4 Q698 158.6 810 115.1 Q928 32.7 1040 84.4 Q1158 72.6 1270 48.9 Q1388 112.7 1500 100.2" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 235.7 Q8 188.8 120 277.8 Q238 271.5 350 262.5 Q468 293.6 580 186.8 Q698 158.5 810 229.9 Q928 156.1 1040 215.6 Q1158 271.8 1270 259.6 Q1388 152.8 1500 211.4" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 383.7 Q8 383.2 120 370.2 Q238 305.4 350 358.6 Q468 343 580 409.1 Q698 439.9 810 394 Q928 324 1040 410 Q1158 365.5 1270 344.1 Q1388 315 1500 349.7" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 542.1 Q8 560.1 120 496.8 Q238 466 350 569.5 Q468 581.3 580 586.7 Q698 512.6 810 545.1 Q928 463 1040 522.8 Q1158 513.6 1270 576.9 Q1388 517.6 1500 493.8" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 685.5 Q8 683.7 120 662.6 Q238 621.8 350 637.4 Q468 708.1 580 665.8 Q698 725.2 810 675 Q928 636.4 1040 706 Q1158 608.3 1270 691.7 Q1388 714.8 1500 659.9" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 806.4 Q8 882.7 120 822.2 Q238 750.1 350 822.2 Q468 880.1 580 813.4 Q698 731.9 810 805.8 Q928 827.9 1040 826.4 Q1158 844.1 1270 784.6 Q1388 817.7 1500 773.7" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1144.2 425) rotate(1.1) scale(1.2)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".42"><rect x="-316" y="-60.5" width="116" height="164"/><rect x="-148" y="-28.8" width="116" height="164"/><rect x="28" y="-44.2" width="116" height="164"/><rect x="196" y="-52.7" width="116" height="164"/></g><path d="M-350 83.5C-250 -22.5-176 111.2-90 53.2S8 -22.2 86 37.8S190 83.3 254 29.3S320 -12.7 350 -26.7" fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M-350 83.5 350 -26.7" fill="none" stroke="#f0b86a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".55" stroke-dasharray="12 18"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-ef826a405293)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">RRT*：一棵搜索树怎样一步步改善路径</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-40a92bf9d934" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-40a92bf9d934"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-40a92bf9d934" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-40a92bf9d934)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1077.5" cy="450.9" r="510" fill="url(#card-glow-40a92bf9d934)"/>
+  <g opacity=".62"><path d="M-120 95.7 Q8 84 120 54.9 Q238 106.5 350 129.5 Q468 115.4 580 126.5 Q698 51.5 810 138.3 Q928 103.6 1040 91 Q1158 42 1270 46.8 Q1388 167.9 1500 68.2" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.2"/><path d="M-120 245.1 Q8 236.6 120 215.4 Q238 221 350 213.1 Q468 210.1 580 239.7 Q698 176.7 810 279.2 Q928 212.2 1040 224.1 Q1158 202.7 1270 263.2 Q1388 243.1 1500 231.2" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/><path d="M-120 385.3 Q8 365.3 120 352.1 Q238 386.8 350 380.9 Q468 352.9 580 405.6 Q698 342.8 810 427.4 Q928 410.9 1040 337.4 Q1158 360.8 1270 396.8 Q1388 451.2 1500 413.5" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 537.4 Q8 621.7 120 562.8 Q238 523.5 350 584.6 Q468 540.3 580 583.9 Q698 460.3 810 555.5 Q928 599.6 1040 526.5 Q1158 509.8 1270 558.7 Q1388 475.7 1500 579.8" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/><path d="M-120 672.6 Q8 652.7 120 686.2 Q238 726.2 350 689.7 Q468 722.8 580 689.8 Q698 609.3 810 630.9 Q928 650.6 1040 667 Q1158 621.5 1270 679.7 Q1388 620.1 1500 634.1" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 807.7 Q8 801.1 120 832.3 Q238 753.1 350 801.5 Q468 848.6 580 772.4 Q698 843.4 810 833.2 Q928 789 1040 818.5 Q1158 769.6 1270 834.1 Q1388 857.9 1500 761.3" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1111.9 445.1) rotate(-1) scale(1.1)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".66"><path d="M-320-160-104-42 18-208 142-28 326-154M-320 156-104-42-2 202 142-28 326 160M18-208 326-154M-2 202 326 160"/></g><g fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><circle cx="-104" cy="-42" r="42"/><circle cx="142" cy="-28" r="42"/><circle cx="18" cy="-208" r="24"/><circle cx="-2" cy="202" r="24"/><circle cx="-320" cy="-160" r="18"/><circle cx="-320" cy="156" r="18"/><circle cx="326" cy="-154" r="18"/><circle cx="326" cy="160" r="18"/></g><path d="M-104-42 142-28" fill="none" stroke="#f0b86a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="12 16"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-40a92bf9d934)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    
+  </g>
+</svg>

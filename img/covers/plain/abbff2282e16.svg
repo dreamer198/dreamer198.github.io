@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">PX4与Gazebo Harmonic仿真学习</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-abbff2282e16" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-abbff2282e16"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-abbff2282e16" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-abbff2282e16)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1088.3" cy="390.1" r="510" fill="url(#card-glow-abbff2282e16)"/>
+  <g opacity=".62"><path d="M-120 108.4 Q8 95.7 120 105.7 Q238 177.1 350 83.9 Q468 88.8 580 95.7 Q698 187.7 810 98 Q928 184.3 1040 123.4 Q1158 119.1 1270 100 Q1388 114.6 1500 108.1" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 252.5 Q8 258.6 120 233.5 Q238 261 350 229.4 Q468 325.1 580 207.1 Q698 312.2 810 246.9 Q928 306.3 1040 263.2 Q1158 259.4 1270 282.1 Q1388 283.2 1500 259.9" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.2"/><path d="M-120 390.8 Q8 352.5 120 347.7 Q238 420.6 350 404.9 Q468 381.9 580 375 Q698 320.7 810 394.7 Q928 331.9 1040 375.9 Q1158 344.4 1270 407.4 Q1388 388.8 1500 346.3" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 537.9 Q8 535.5 120 558.5 Q238 539.4 350 542.9 Q468 611.7 580 582.2 Q698 582 810 572.5 Q928 490.9 1040 561.8 Q1158 613.7 1270 513.4 Q1388 562 1500 517.4" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 689.3 Q8 740.8 120 702 Q238 611.9 350 647.7 Q468 605 580 674.1 Q698 622 810 715.1 Q928 681.3 1040 644.8 Q1158 655.6 1270 725.3 Q1388 723.1 1500 730.4" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.2"/><path d="M-120 823.3 Q8 831.6 120 814.5 Q238 812.6 350 812.3 Q468 803.7 580 804.1 Q698 885.9 810 869.3 Q928 843.3 1040 834.4 Q1158 863.1 1270 829.6 Q1388 894.7 1500 857.3" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1077.8 430.7) rotate(0.7) scale(1.1)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".62"><path d="M-370 204-240 86-112 142 34-52 162 6 278-134 370-56"/><path d="M-370 260-238 142-110 198 38 4 166 62 282-78 370 0"/><path d="m146-206 126-74 126 74-126 74Z"/><path d="M146-206v142l126 74 126-74v-142M272-132V10"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="translate(-82 -78) scale(.72)"><path d="M-96 0H96M0-78V78M-56-42 56 42M56-42-56 42"/><rect x="-48" y="-30" width="96" height="60" rx="12"/><circle cx="-108" cy="-94" r="42"/><circle cx="108" cy="-94" r="42"/><circle cx="-108" cy="94" r="42"/><circle cx="108" cy="94" r="42"/></g><path d="M-340 180C-188 34-92 122 20-18S194-202 344-154" fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 16"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-abbff2282e16)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    
+  </g>
+</svg>

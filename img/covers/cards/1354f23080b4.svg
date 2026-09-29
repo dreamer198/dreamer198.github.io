@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">博客搭建过程记录</title>
+  <desc id="card-desc">Dreamer Island WEB SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-1354f23080b4" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d1721"/><stop offset=".62" stop-color="#18333c"/><stop offset="1" stop-color="#27304a"/></linearGradient>
+    <radialGradient id="card-glow-1354f23080b4"><stop stop-color="#69d1ca" stop-opacity=".28"/><stop offset="1" stop-color="#69d1ca" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-1354f23080b4" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#69d1ca"/><stop offset="1" stop-color="#89aaff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-1354f23080b4)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#89aaff" opacity=".055"/>
+  <circle cx="1083" cy="447" r="510" fill="url(#card-glow-1354f23080b4)"/>
+  <g opacity=".62"><path d="M-120 110.1 Q8 139.6 120 79.1 Q238 127.8 350 92.1 Q468 100.3 580 150.1 Q698 71.6 810 103.7 Q928 41.6 1040 157.6 Q1158 143.9 1270 95.4 Q1388 50.2 1500 115.6" fill="none" stroke="#69d1ca" stroke-width="2" opacity="0.1"/><path d="M-120 228.9 Q8 164.4 120 220.6 Q238 260.5 350 238.4 Q468 208.4 580 267.1 Q698 200.5 810 244.9 Q928 214 1040 275 Q1158 190.3 1270 246.6 Q1388 171.7 1500 227.2" fill="none" stroke="#89aaff" stroke-width="2" opacity="0.1"/><path d="M-120 383.8 Q8 382.7 120 370.5 Q238 443 350 385.4 Q468 435 580 420.8 Q698 377.3 810 374.7 Q928 385.7 1040 422.6 Q1158 441.8 1270 416.8 Q1388 314.8 1500 388" fill="none" stroke="#69d1ca" stroke-width="2" opacity="0.1"/><path d="M-120 543.6 Q8 505.2 120 519.8 Q238 606.9 350 572.9 Q468 510.6 580 504.6 Q698 562 810 546.7 Q928 609.9 1040 569.8 Q1158 619.9 1270 543.4 Q1388 566.5 1500 589.4" fill="none" stroke="#89aaff" stroke-width="2" opacity="0.1"/><path d="M-120 667.3 Q8 585.2 120 636.4 Q238 730 350 717.3 Q468 723.3 580 696.8 Q698 631.2 810 640.4 Q928 622.9 1040 665.5 Q1158 648.5 1270 709.4 Q1388 679.7 1500 634.1" fill="none" stroke="#69d1ca" stroke-width="2" opacity="0.1"/><path d="M-120 831.8 Q8 869.7 120 810.6 Q238 842.7 350 875.1 Q468 789.1 580 876.2 Q698 911.4 810 837.7 Q928 820.4 1040 841.4 Q1158 874.8 1270 810.8 Q1388 759.8 1500 877.1" fill="none" stroke="#89aaff" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1142.5 419.1) rotate(0.9) scale(1.1)"><g fill="none" stroke="#89aaff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".7"><rect x="-354" y="-244" width="708" height="488" rx="24"/><path d="M-354-146h708"/><rect x="-278" y="-72" width="210" height="232" rx="8"/><path d="M-18-70h284M-18 6h230M-18 82h256M-18 158h146"/></g><g fill="none" stroke="#69d1ca" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="m-238 74 52-68 52 42 44-54"/><path d="M-286-194h18M-234-194h18M-182-194h18"/></g><path d="M-18-70h196" fill="none" stroke="#e8b765" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-1354f23080b4)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">BUILD LOG</text>
+  </g>
+</svg>

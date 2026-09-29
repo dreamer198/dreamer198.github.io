@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">ROS 2 Humble + PX4 仿真 + MAVROS 环境搭建指南</title>
+  <desc id="card-desc">Dreamer Island FLIGHT SYSTEMS article card</desc>
+  <defs>
+    <linearGradient id="card-bg-ff3ad0bbdde6" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".62" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>
+    <radialGradient id="card-glow-ff3ad0bbdde6"><stop stop-color="#62d7d1" stop-opacity=".28"/><stop offset="1" stop-color="#62d7d1" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-ff3ad0bbdde6" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#62d7d1"/><stop offset="1" stop-color="#7fa9ff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-ff3ad0bbdde6)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#7fa9ff" opacity=".055"/>
+  <circle cx="1141.7" cy="469.8" r="510" fill="url(#card-glow-ff3ad0bbdde6)"/>
+  <g opacity=".62"><path d="M-120 94.2 Q8 26.8 120 59.8 Q238 116 350 94.7 Q468 108.8 580 71.4 Q698 88.9 810 130.2 Q928 153.5 1040 63.1 Q1158 49.5 1270 129.5 Q1388 114.6 1500 62.3" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 254.6 Q8 207.5 120 295.3 Q238 210.6 350 225.8 Q468 208.7 580 281.3 Q698 197.4 810 271 Q928 178.6 1040 264.5 Q1158 188.9 1270 268.7 Q1388 268.7 1500 297" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 392.4 Q8 330 120 406.2 Q238 419.4 350 347.4 Q468 321.2 580 381.4 Q698 328 810 427.9 Q928 432.9 1040 377.9 Q1158 368.5 1270 424.8 Q1388 445.1 1500 343.9" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 522.2 Q8 469.3 120 551 Q238 551.4 350 551 Q468 602.8 580 521.8 Q698 482 810 479.5 Q928 539.9 1040 486.1 Q1158 529.1 1270 555.4 Q1388 557.9 1500 472.2" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.1"/><path d="M-120 685.9 Q8 623.3 120 637.4 Q238 622.3 350 649.7 Q468 719.2 580 648.3 Q698 673.8 810 701.3 Q928 759.8 1040 642.3 Q1158 730.4 1270 646.6 Q1388 638.7 1500 684.4" fill="none" stroke="#62d7d1" stroke-width="2" opacity="0.1"/><path d="M-120 824.8 Q8 878.4 120 807.5 Q238 874.6 350 844.7 Q468 792.4 580 779.9 Q698 843.9 810 855.7 Q928 783.8 1040 821.1 Q1158 747 1270 788.9 Q1388 762.2 1500 805.8" fill="none" stroke="#7fa9ff" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1129.2 420.9) rotate(-0.6) scale(1.1)"><g fill="none" stroke="#7fa9ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M-316 0h116M-80 0H36M156 0h116"/><path d="m-214-18 30 18-30 18M22-18 52 0 22 18M258-18l30 18-30 18"/></g><g fill="none" stroke="#62d7d1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="-366" y="-92" width="166" height="184"/><circle cx="-283" r="36"/><rect x="-80" y="-92" width="236" height="184"/><path d="M-38 42-2 0l34 24 78-86"/><rect x="272" y="-92" width="94" height="184"/><path d="M288 0h62M319-46v92"/></g><g fill="none" stroke="#efb35f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M-350-124h134M-64-124h204M288-124h62"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-ff3ad0bbdde6)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">SYSTEM GUIDE</text>
+  </g>
+</svg>

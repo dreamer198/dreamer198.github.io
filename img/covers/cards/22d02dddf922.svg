@@ -14,10 +14,8 @@
   <g transform="translate(1096.1 429.2) rotate(0.3) scale(1.1)"><g fill="none" stroke="#69d3c8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".42"><ellipse cy="-26" rx="334" ry="194"/><ellipse cy="-26" rx="256" ry="142"/><path d="M0-26-306-164M0-26 324-126M0-26-294 132M0-26 310 150"/></g><g fill="none" stroke="#e7b969" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M-92-20h184v142H-92Z"/><ellipse cy="-20" rx="92" ry="42"/><ellipse cy="122" rx="92" ry="34"/><path d="M-54-20v-96h108v96"/></g><g fill="#8fa9ff" opacity=".9"><circle cx="209.5" cy="-26" r="5.8"/><circle cx="190.5" cy="26.5" r="5.6"/><circle cx="239.5" cy="29.3" r="6.2"/><circle cx="193.7" cy="68.8" r="5.6"/><circle cx="86.8" cy="148.9" r="4.2"/><circle cx="29" cy="147.9" r="5.1"/><circle cx="-27.7" cy="120.5" r="4.3"/><circle cx="-132.6" cy="125.2" r="6.7"/><circle cx="-149.1" cy="62.9" r="4.4"/><circle cx="-167.8" cy="66.2" r="6.3"/><circle cx="-193.8" cy="27.7" r="5"/><circle cx="-195.9" cy="-26" r="8.3"/><circle cx="-223.3" cy="-68" r="6.9"/><circle cx="-175" cy="-79.5" r="8.3"/><circle cx="-168.8" cy="-144.8" r="5.6"/><circle cx="-100" cy="-172.1" r="5.8"/><circle cx="-37.8" cy="-174.6" r="6.7"/><circle cx="31" cy="-121" r="4.5"/><circle cx="82.8" cy="-181.3" r="6.2"/><circle cx="162.1" cy="-143.1" r="8.6"/><circle cx="246.3" cy="-126.6" r="5.8"/><circle cx="300.6" cy="-77.2" r="5.9"/></g></g>
   <path d="M72 76v748" stroke="url(#card-line-22d02dddf922)" stroke-width="4"/>
   <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
-    <text x="112" y="116" fill="#e7b969" font-size="18" font-weight="700" letter-spacing="4">EMBEDDED HARDWARE</text>
-    <text x="112" y="472" fill="#f4f8fb" font-size="58" font-weight="760" letter-spacing="2">LIDAR</text>
-    <text x="112" y="542" fill="#69d3c8" font-size="38" font-weight="650" letter-spacing="4">POINT CLOUD</text>
-    <text x="112" y="782" fill="#dbe7ee" font-size="17" font-weight="650" letter-spacing="5">DREAMER ISLAND</text>
-    <text x="112" y="822" fill="#8fa9ff" font-size="14" font-weight="700" letter-spacing="4">SENSOR GUIDE</text>
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">SENSOR GUIDE</text>
   </g>
 </svg>

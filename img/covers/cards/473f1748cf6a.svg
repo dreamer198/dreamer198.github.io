@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">从路径到轨迹：一步一步安排无人机的运动</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-473f1748cf6a" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-473f1748cf6a"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-473f1748cf6a" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-473f1748cf6a)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1072.4" cy="407.6" r="510" fill="url(#card-glow-473f1748cf6a)"/>
+  <g opacity=".62"><path d="M-120 92 Q8 7.7 120 108.4 Q238 7.6 350 104.5 Q468 88.5 580 128.3 Q698 30.3 810 74.3 Q928 47.7 1040 91.1 Q1158 49.2 1270 141 Q1388 96.5 1500 135.2" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 252.3 Q8 179 120 273.5 Q238 315 350 275.6 Q468 250.8 580 220.1 Q698 292 810 283 Q928 335.1 1040 237.5 Q1158 264.2 1270 295.6 Q1388 263 1500 253.5" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 372.3 Q8 406.1 120 349.5 Q238 381.2 350 411.5 Q468 440.6 580 403.1 Q698 443.9 810 406.2 Q928 378.9 1040 371.3 Q1158 443.3 1270 407.9 Q1388 326.9 1500 351.1" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 543.1 Q8 471.7 120 565 Q238 612.3 350 513.8 Q468 615.5 580 579.9 Q698 525.4 810 500.7 Q928 486.7 1040 561.5 Q1158 543.4 1270 558.3 Q1388 495.6 1500 559.2" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/><path d="M-120 668.5 Q8 686.2 120 668.7 Q238 720 350 659.6 Q468 643.3 580 640.3 Q698 587.1 810 639.9 Q928 753.2 1040 623.2 Q1158 600.1 1270 650.9 Q1388 703.3 1500 703.2" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.2"/><path d="M-120 817.3 Q8 760.5 120 846 Q238 819.1 350 862.9 Q468 752.1 580 813.7 Q698 811 810 789.7 Q928 754.2 1040 770.4 Q1158 744.1 1270 861.6 Q1388 860.7 1500 783.9" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1122 431.8) rotate(0.5) scale(1.2)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".5"><path d="M-316 0h116M-80 0H36M156 0h116"/><path d="m-214-18 30 18-30 18M22-18 52 0 22 18M258-18l30 18-30 18"/></g><g fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><rect x="-366" y="-92" width="166" height="184"/><circle cx="-283" r="36"/><rect x="-80" y="-92" width="236" height="184"/><path d="M-38 42-2 0l34 24 78-86"/><rect x="272" y="-92" width="94" height="184"/><path d="M288 0h62M319-46v92"/></g><g fill="none" stroke="#f0b86a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M-350-124h134M-64-124h204M288-124h62"/></g></g>
+  <path d="M72 76v748" stroke="url(#card-line-473f1748cf6a)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">TRAJECTORY GENERATION</text>
+  </g>
+</svg>

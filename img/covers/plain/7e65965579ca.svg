@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">从轨迹到推力与姿态：一步一步算出无人机怎样倾斜</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-7e65965579ca" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-7e65965579ca"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-7e65965579ca" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-7e65965579ca)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1119.7" cy="396.2" r="510" fill="url(#card-glow-7e65965579ca)"/>
+  <g opacity=".62"><path d="M-120 87.2 Q8 101.6 120 51.5 Q238 132.8 350 121.8 Q468 143.8 580 73 Q698 35.1 810 126.2 Q928 154.5 1040 61.2 Q1158 115.9 1270 57.7 Q1388 144.3 1500 87.3" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 248.2 Q8 253 120 254.7 Q238 173 350 216.6 Q468 266.9 580 293.3 Q698 266.5 810 256.9 Q928 240.1 1040 225.6 Q1158 217.6 1270 274.7 Q1388 219 1500 237.6" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 390.4 Q8 413.3 120 420.9 Q238 317.6 350 374.8 Q468 444.2 580 345.2 Q698 332 810 366.3 Q928 397.4 1040 375.6 Q1158 459.3 1270 407.3 Q1388 367.3 1500 414.9" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 525.4 Q8 596 120 514.9 Q238 587 350 563.3 Q468 508.6 580 498.5 Q698 528 810 561.5 Q928 451.5 1040 517 Q1158 556.2 1270 524 Q1388 445.3 1500 477" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 666.4 Q8 733.4 120 678.5 Q238 714.7 350 660.9 Q468 670.3 580 654.1 Q698 611.6 810 692.7 Q928 634.5 1040 705.4 Q1158 692 1270 716.4 Q1388 644.2 1500 681.6" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 812.4 Q8 793.2 120 778.3 Q238 758.3 350 806.5 Q468 786.8 580 827.6 Q698 867.7 810 842.4 Q928 735.1 1040 783.8 Q1158 753.6 1270 778.2 Q1388 847.2 1500 834.7" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1103.5 398.1) rotate(-1.2) scale(1.1)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".62"><circle r="270" stroke-dasharray="10 20"/><path d="M-360 188C-210 10-124 126-18-28S176-210 356-128"/></g><g fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M-112 0H112M0-94V94M-62-52 62 52M62-52-62 52"/><rect x="-54" y="-34" width="108" height="68" rx="14"/><circle cx="-132" cy="-116" r="54"/><circle cx="132" cy="-116" r="54"/><circle cx="-132" cy="116" r="54"/><circle cx="132" cy="116" r="54"/></g><path d="M-360 188C-210 10-124 126-18-28S176-210 356-128" fill="none" stroke="#f0b86a" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 18"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-7e65965579ca)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    
+  </g>
+</svg>

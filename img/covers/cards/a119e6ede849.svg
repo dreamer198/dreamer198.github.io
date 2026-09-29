@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">微分平坦性怎么判断：从质点、小车到四旋翼无人机</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-a119e6ede849" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-a119e6ede849"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-a119e6ede849" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-a119e6ede849)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1152.8" cy="462.4" r="510" fill="url(#card-glow-a119e6ede849)"/>
+  <g opacity=".62"><path d="M-120 87 Q8 30.5 120 116 Q238 11.3 350 71.1 Q468 35.1 580 119.5 Q698 67.7 810 79.4 Q928 114.5 1040 102.7 Q1158 63.2 1270 130.9 Q1388 126.3 1500 44.2" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.2"/><path d="M-120 255.2 Q8 284.1 120 250.3 Q238 271.1 350 241.5 Q468 281.2 580 274.2 Q698 292.7 810 224.1 Q928 172.6 1040 288.5 Q1158 279.4 1270 237.7 Q1388 302.8 1500 223.2" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 397.9 Q8 388.8 120 435.4 Q238 442.9 350 354.3 Q468 395.4 580 411 Q698 370.4 810 413.5 Q928 319.3 1040 411.2 Q1158 383.3 1270 393 Q1388 421.5 1500 384.8" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.2"/><path d="M-120 525.2 Q8 461.9 120 526.2 Q238 578.9 350 506.6 Q468 471.7 580 572.9 Q698 569.8 810 527.2 Q928 499 1040 551.2 Q1158 585.9 1270 564.6 Q1388 564.3 1500 489.5" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 678.4 Q8 669.7 120 699.9 Q238 614.8 350 681.3 Q468 612.9 580 654.3 Q698 622 810 656.9 Q928 717.6 1040 696.4 Q1158 724.4 1270 634.8 Q1388 664.1 1500 634.8" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 819.9 Q8 737.5 120 790.2 Q238 784 350 771.8 Q468 876.4 580 813.4 Q698 884.6 810 833.8 Q928 860.1 1040 830.2 Q1158 797.8 1270 821.4 Q1388 886.6 1500 811.2" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1134.7 419.1) rotate(0) scale(1.1)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".68"><path d="M-324 214H338M-282 258v-516"/><path d="m338 214-34-20v40M-282-258l-20 34h40"/><path d="M-282 104C-172-88-94 176 22-26S210-174 326-112"/></g><g fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="translate(96 -62)"><path d="M-96 0H96M0-78V78M-56-42 56 42M56-42-56 42"/><rect x="-48" y="-30" width="96" height="60" rx="12"/><circle cx="-108" cy="-94" r="42"/><circle cx="108" cy="-94" r="42"/><circle cx="-108" cy="94" r="42"/><circle cx="108" cy="94" r="42"/></g><circle cx="-282" cy="104" r="12" fill="#f0b86a"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-a119e6ede849)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">DYNAMICS AND CONTROL</text>
+  </g>
+</svg>

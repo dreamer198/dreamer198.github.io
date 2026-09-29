@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">路径规划数学基础（一）：线性代数核心知识</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-6aa71c9a5292" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-6aa71c9a5292"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-6aa71c9a5292" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-6aa71c9a5292)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1068.9" cy="415.1" r="510" fill="url(#card-glow-6aa71c9a5292)"/>
+  <g opacity=".62"><path d="M-120 93.8 Q8 25.6 120 94.2 Q238 24.7 350 48.4 Q468 98.8 580 138 Q698 61.3 810 80.5 Q928 92.3 1040 46.3 Q1158 70 1270 79.5 Q1388 16.9 1500 88.2" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 240.1 Q8 243.8 120 253.2 Q238 244.1 350 199.2 Q468 290.3 580 283.9 Q698 321.4 810 206.6 Q928 252.3 1040 269.4 Q1158 267.9 1270 240.6 Q1388 255.8 1500 219.7" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 397.4 Q8 368.6 120 442.9 Q238 441.1 350 440.5 Q468 366.6 580 421.9 Q698 362.9 810 411.6 Q928 337.4 1040 364.6 Q1158 404.4 1270 417.9 Q1388 431.8 1500 407.8" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 535.1 Q8 468.4 120 559.5 Q238 560.5 350 568.5 Q468 576.2 580 524.8 Q698 464.3 810 501.8 Q928 612.4 1040 513.8 Q1158 551.4 1270 568.8 Q1388 455.8 1500 545.1" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 680.3 Q8 748.1 120 634.1 Q238 688.2 350 641.5 Q468 666.7 580 697.7 Q698 736.7 810 678.2 Q928 629 1040 648.5 Q1158 750.8 1270 685.5 Q1388 754.6 1500 639.7" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 826.3 Q8 760.9 120 820.1 Q238 760 350 862.8 Q468 895.7 580 790.8 Q698 794 810 790.7 Q928 784.2 1040 853.3 Q1158 860.7 1270 804.8 Q1388 910.3 1500 823.6" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/></g>
+  <g transform="translate(1067.4 418.6) rotate(0) scale(1.1)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".68"><path d="M-324 214H338M-282 258v-516"/><path d="m338 214-34-20v40M-282-258l-20 34h40"/><path d="M-282 104C-172-88-94 176 22-26S210-174 326-112"/></g><g fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="translate(96 -62)"><path d="M-96 0H96M0-78V78M-56-42 56 42M56-42-56 42"/><rect x="-48" y="-30" width="96" height="60" rx="12"/><circle cx="-108" cy="-94" r="42"/><circle cx="108" cy="-94" r="42"/><circle cx="-108" cy="94" r="42"/><circle cx="108" cy="94" r="42"/></g><circle cx="-282" cy="104" r="12" fill="#f0b86a"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-6aa71c9a5292)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    <text x="112" y="812" fill="#dbe7ee" font-size="44" font-weight="700" letter-spacing="6">MATH FOUNDATION</text>
+  </g>
+</svg>

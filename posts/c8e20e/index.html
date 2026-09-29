@@ -1,0 +1,573 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>从 Dijkstra 到 A*：一步一步找到最短路径 | Dreamer Island</title><meta name="author" content="Dreamer"><meta name="copyright" content="Dreamer"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f6f8fb"><meta name="description" content="用六个位置的路线图逐步执行 Dijkstra 与 A*，比较两者的扩展顺序，理解启发函数怎样减少搜索。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从 Dijkstra 到 A*：一步一步找到最短路径">
+<meta property="og:url" content="https://dreamer198.top/posts/c8e20e/">
+<meta property="og:site_name" content="Dreamer Island">
+<meta property="og:description" content="用六个位置的路线图逐步执行 Dijkstra 与 A*，比较两者的扩展顺序，理解启发函数怎样减少搜索。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://dreamer198.top/img/covers/share/ef826a405293.jpg">
+<meta property="article:published_time" content="2026-09-22T03:00:00.000Z">
+<meta property="article:modified_time" content="2026-09-29T07:36:01.000Z">
+<meta property="article:author" content="Dreamer">
+<meta property="article:tag" content="图搜索">
+<meta property="article:tag" content="路径规划">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://dreamer198.top/img/covers/share/ef826a405293.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "从 Dijkstra 到 A*：一步一步找到最短路径",
+  "url": "https://dreamer198.top/posts/c8e20e/",
+  "image": "https://dreamer198.top/img/covers/share/ef826a405293.jpg",
+  "datePublished": "2026-09-22T03:00:00.000Z",
+  "dateModified": "2026-09-29T07:36:01.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Dreamer",
+      "url": "https://github.com/dreamer198"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://dreamer198.top/posts/c8e20e/"><link rel="stylesheet" href="/css/index.css?v=5.5.1"><link rel="stylesheet" href="/lib/fontawesome-subset/fontawesome.min.css?v=ebf9f6246f"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0f141a')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f6f8fb')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const mediaQueryDark = window.matchMedia('(prefers-color-scheme: dark)')
+          const mediaQueryLight = window.matchMedia('(prefers-color-scheme: light)')
+
+          if (theme === undefined) {
+            if (mediaQueryLight.matches) activateLightMode()
+            else if (mediaQueryDark.matches) activateDarkMode()
+            else {
+              const hour = new Date().getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            mediaQueryDark.addEventListener('change', () => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else {
+            theme === 'light' ? activateLightMode() : activateDarkMode()
+          }
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":650,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: '/lib/@egjs/infinitegrid@4.12.0/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '从 Dijkstra 到 A*：一步一步找到最短路径',
+  isHighlightShrink: undefined,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css?v=20260930-tables"><link rel="apple-touch-icon" href="/img/apple-touch-icon.png"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="/atom.xml" title="Dreamer Island" type="application/atom+xml">
+</head><body><a class="skip-link" href="#content-inner">跳到正文</a><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img decoding="async" loading="lazy" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" width="460" height="460"></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">52</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">37</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-compass"></i><span> 浏览</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg fixed" id="page-header" style="background-image: url(/img/covers/posts/ef826a405293.svg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Dreamer Island</span></a><a class="nav-page-title" href="/"><span class="site-name">从 Dijkstra 到 A*：一步一步找到最短路径</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-compass"></i><span> 浏览</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/visitors/"><i class="fa-fw fas fa-map-location-dot"></i><span> 访客地图</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-user"></i><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">从 Dijkstra 到 A*：一步一步找到最短路径</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-09-22T03:00:00.000Z" title="发表于 2026-09-22 11:00:00">2026-09-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-09-29T07:36:01.000Z" title="更新于 2026-09-29 15:36:01">2026-09-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/">路径规划理论</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/%E7%8E%AF%E5%A2%83%E4%B8%8E%E6%90%9C%E7%B4%A2/">环境与搜索</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">3.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div id="post-outdate-notice" data="{&quot;limitDay&quot;:365,&quot;messagePrev&quot;:&quot;距离上次更新已经&quot;,&quot;messageNext&quot;:&quot;天，文中的软件版本或操作步骤可能已经发生变化，请结合当前环境核对。&quot;,&quot;postUpdate&quot;:&quot;2026-09-29 15:36:01&quot;}" hidden=""></div><p>无人机要从仓库入口 S 飞到目标 G。地图已经给出了可以经过的位置，碰撞检测也筛出了可通行的连接，每条连接都有长度。沿不同路线到达目标，累计长度不同，图搜索要找出最短的那条。</p>
+<p>本文用一张六个位置的路线图，逐轮手算 Dijkstra 和 A*，看两者怎样记录路线、选择下一个位置，以及启发函数为什么能减少搜索。</p>
+<span id="more"></span>
+<h2 id="一、路线图">一、路线图</h2>
+<p>S 是起点，G 是终点，A、B、C、D 是中间位置。箭头表示允许通过的方向，数字是通道长度（米）：</p>
+<p><img decoding="async" loading="lazy" src="/img/learning/uav_path_planning_dijkstra_astar/graph.webp" alt="六个位置的有向路线图：S 到 A 为 1，A 到 C 为 5，C 到 G 为 3，S 到 B 为 4，A 到 B 为 2，B 到 C 为 1，B 到 D 为 3，D 到 G 为 5；最短路径 S→A→B→C→G 共 7 米" width="1280" height="672"></p>
+<p>先比较两条到达 B 的路线：直接 S → B 长 4 米；S → A → B 长 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">1+2=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span> 米。多经过一个位置的路线反而更短。</p>
+<p>搜索过程中，算法为 B 保存当前找到的最佳路线：先发现 4 米的就记 4 米，后来发现 3 米的就改成 3 米。<strong>记录一条路线，遇到更短的就更新</strong>，这是 Dijkstra 和 A* 共同的基本操作。</p>
+<h2 id="二、跟着-Dijkstra-算一遍">二、跟着 Dijkstra 算一遍</h2>
+<h3 id="1-记录表和候选清单">1. 记录表和候选清单</h3>
+<p>每个位置保存两项信息：目前找到的最短到达距离，以及这条路线最后从哪个位置接过来。另外维护一份候选清单，放入已经找到到达路线、还没检查后续连接的位置。</p>
+<p>开始时只知道自己在 S：到达 S 的距离为 0 米，其他位置尚未找到路线；候选清单里只有 S（0 米）。</p>
+<p>接下来反复执行同一个规则：</p>
+<blockquote>
+<p>从候选清单中取出累计距离最小的位置，检查它的每条后续连接，更新能够改善的路线。</p>
+</blockquote>
+<p>检查一个位置的后续连接，称为<strong>扩展</strong>。这些操作都发生在计算机中的地图上，搜索完成后才得到交给无人机执行的路线。</p>
+<h3 id="2-第一轮：扩展-S">2. 第一轮：扩展 S</h3>
+<p>S 有两条出边：到 A 的距离 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">0+1=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>，到 B 的距离 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>+</mo><mn>4</mn><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">0+4=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">0</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span>。候选清单变成：</p>
+<table>
+<thead>
+<tr>
+<th>候选位置</th>
+<th>当前最佳路线</th>
+<th>累计距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>S → A</td>
+<td>1 米</td>
+</tr>
+<tr>
+<td>B</td>
+<td>S → B</td>
+<td>4 米</td>
+</tr>
+</tbody>
+</table>
+<p>下一轮选择 A，因为 1 米更小。B 的 4 米只表示已经找到一条 4 米的路线，之后仍可能被更好的路线更新。</p>
+<h3 id="3-第二轮：扩展-A，改善到-B-的路线">3. 第二轮：扩展 A，改善到 B 的路线</h3>
+<p>经过 A 到 B 的距离为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">1+2=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span>，比原来记录的 4 米短，所以把 B 的距离从 4 改成 3，B 的上一个位置从 S 改成 A。</p>
+<p>经过 A 到 C 的距离为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>5</mn><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">1+5=6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>，这是第一次找到到 C 的路线，记录下来。</p>
+<table>
+<thead>
+<tr>
+<th>候选位置</th>
+<th>当前最佳路线</th>
+<th>累计距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B</td>
+<td>S → A → B</td>
+<td>3 米</td>
+</tr>
+<tr>
+<td>C</td>
+<td>S → A → C</td>
+<td>6 米</td>
+</tr>
+</tbody>
+</table>
+<p>下一轮选择 B。注意这里比较的始终是从 S 出发的累计距离，到 A 的 1 米已经包含在里面。</p>
+<h3 id="4-第三轮：扩展-B，改善到-C-的路线">4. 第三轮：扩展 B，改善到 C 的路线</h3>
+<p>经过 B 到 C 的距离为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">3+1=4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">4</span></span></span></span>，比原来经过 A 的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>5</mn><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">1+5=6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span> 米短，把 C 的距离从 6 改成 4，上一个位置从 A 改成 B。经过 B 到 D 的距离为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>+</mo><mn>3</mn><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">3+3=6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>。</p>
+<table>
+<thead>
+<tr>
+<th>候选位置</th>
+<th>当前最佳路线</th>
+<th>累计距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C</td>
+<td>S → A → B → C</td>
+<td>4 米</td>
+</tr>
+<tr>
+<td>D</td>
+<td>S → A → B → D</td>
+<td>6 米</td>
+</tr>
+</tbody>
+</table>
+<p>下一轮选择 C。</p>
+<h3 id="5-第四轮：扩展-C，第一次发现目标">5. 第四轮：扩展 C，第一次发现目标</h3>
+<p>C 到 G 长 3 米，于是找到一条完整路线 S → A → B → C → G，总长 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>2</mn><mo>+</mo><mn>1</mn><mo>+</mo><mn>3</mn><mo>=</mo><mn>7</mn></mrow><annotation encoding="application/x-tex">1+2+1+3=7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">7</span></span></span></span> 米。</p>
+<table>
+<thead>
+<tr>
+<th>候选位置</th>
+<th>当前最佳路线</th>
+<th>累计距离</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D</td>
+<td>S → A → B → D</td>
+<td>6 米</td>
+</tr>
+<tr>
+<td>G</td>
+<td>S → A → B → C → G</td>
+<td>7 米</td>
+</tr>
+</tbody>
+</table>
+<p>Dijkstra 只按累计距离排序，所以下一轮选的是 D，而不是 G。</p>
+<p>发现一条到达目标的路线，只是把目标加入候选清单；<strong>只有当目标成为累计距离最小的候选并被取出时，搜索才结束。</strong></p>
+<h3 id="6-第五轮：扩展-D">6. 第五轮：扩展 D</h3>
+<p>经过 D 到 G 的距离为 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>6</mn><mo>+</mo><mn>5</mn><mo>=</mo><mn>11</mn></mrow><annotation encoding="application/x-tex">6+5=11</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">11</span></span></span></span> 米，比已有的 7 米长，保留原记录，G 的上一个位置仍是 C。候选清单只剩 G（7 米），下一轮取出 G，搜索结束。</p>
+<h3 id="7-从记录中还原路径">7. 从记录中还原路径</h3>
+<p>每次改善到达距离时，都同时记录“最后从哪里接过来”，这个位置称为<strong>前驱</strong>。最终的前驱记录是：</p>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>G</th>
+<th>C</th>
+<th>B</th>
+<th>A</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前驱</td>
+<td>C</td>
+<td>B</td>
+<td>A</td>
+<td>S</td>
+</tr>
+</tbody>
+</table>
+<p>从 G 开始往回查：G 来自 C，C 来自 B，B 来自 A，A 来自 S。反过来就是最短路径：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>S</mi><mo>→</mo><mi>A</mi><mo>→</mo><mi>B</mi><mo>→</mo><mi>C</mi><mo>→</mo><mi>G</mi><mo separator="true">,</mo><mspace width="1em"/><mtext>总长 7 米</mtext><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">S\rightarrow A\rightarrow B\rightarrow C\rightarrow G,\quad \text{总长 7 米}.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0576em;">S</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0502em;">B</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.0715em;">C</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">G</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord text"><span class="mord cjk_fallback">总长</span><span class="mord"> 7 </span><span class="mord cjk_fallback">米</span></span><span class="mord">.</span></span></span></span></span></p>
+<p>算法检查过 D，但最终路线并不经过 D。搜索顺序决定了计算机怎样比较方案，最后选出哪条路线由前驱记录决定。</p>
+<h2 id="三、为什么-Dijkstra-能确定最短距离">三、为什么 Dijkstra 能确定最短距离</h2>
+<h3 id="1-把累计距离看成信号到达时间">1. 把累计距离看成信号到达时间</h3>
+<p>想象从 S 同时沿各条通道发出信号，每走 1 米需要 1 秒。直接通往 B 的信号需要 4 秒；另一束信号先用 1 秒到 A，再用 2 秒到 B，只要 3 秒。所以 B 第一次收到信号是在第 3 秒。</p>
+<p>Dijkstra 的处理顺序与这种传播一致：先处理累计距离小的位置，短路线的信息就能更早传给后面的位置。在例子里，A 的 1 米记录先被处理，从而在 B 以 4 米被取出之前，就把 B 更新成了 3 米。</p>
+<p>更一般地，如果还存在一条小于 3 米的路线到 B，这条路线上每个位置的累计距离也都小于 3 米，按距离从小到大处理，就一定会先沿它传播并更新 B。因此：<strong>在边代价非负的图中，一个位置以最小累计距离被取出时，它的最短到达距离就已经确定。</strong></p>
+<h3 id="2-为什么要等到“取出目标”才结束">2. 为什么要等到“取出目标”才结束</h3>
+<p>再看一个三个位置的例子：S → G 长 10 米，S → A → G 长 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>1</mn><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">1+1=2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span> 米。扩展 S 时，会同时得到 A 的 1 米和 G 的 10 米；只有继续取出 A，才能把 G 改善为 2 米。所以第一次发现目标时，得到的只是一个候选方案，必须让它参与后续比较。</p>
+<p>如果候选清单已经空了，目标仍没有被取出，说明图中不存在连接起终点的路径。</p>
+<h2 id="四、A-怎样利用目标的位置">四、A* 怎样利用目标的位置</h2>
+<h3 id="1-回到-Dijkstra-的一个选择">1. 回到 Dijkstra 的一个选择</h3>
+<p>扩展完 C 后，Dijkstra 面对两个候选：D（累计 6 米）和 G（累计 7 米），它选了 D，因为只看已经走过的距离。</p>
+<p>但目标的位置还能提供一项信息：从候选位置继续走到 G，至少还需要多远？</p>
+<h3 id="2-估计“还要走多远”">2. 估计“还要走多远”</h3>
+<p>给各位置设置横向坐标（米）：</p>
+<table>
+<thead>
+<tr>
+<th>位置</th>
+<th>S</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>G</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>横向坐标</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>2</td>
+<td>6</td>
+</tr>
+<tr>
+<td>到 G 的横向差距</td>
+<td>6</td>
+<td>5</td>
+<td>4</td>
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>B 和 D 在不同通道，但横向坐标相同。以 D 为例：D 的横向坐标是 2，要到横向坐标为 6 的 G，至少要完成 4 米的横向位移，纵向移动和绕行只会让路程更长。所以 4 米是从 D 到 G 剩余距离的下界。这样的估计称为<strong>启发值</strong>，计算它的方法称为<strong>启发函数</strong>。</p>
+<p>用启发值重新比较 D 和 G：</p>
+<table>
+<thead>
+<tr>
+<th>候选位置</th>
+<th>已走距离</th>
+<th>剩余距离估计</th>
+<th>两者相加</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D</td>
+<td>6 米</td>
+<td>4 米</td>
+<td>10 米</td>
+</tr>
+<tr>
+<td>G</td>
+<td>7 米</td>
+<td>0 米</td>
+<td>7 米</td>
+</tr>
+</tbody>
+</table>
+<p>沿当前路线经过 D 继续走，总长至少 10 米；经过 C 到 G 的完整路线只有 7 米。加入剩余距离估计后，G 的优先级高于 D，这就是 A* 与 Dijkstra 在这个例子中的区别。</p>
+<h3 id="3-公式-f-g-h">3. 公式 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mi>g</mi><mo>+</mo><mi>h</mi></mrow><annotation encoding="application/x-tex">f=g+h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span></h3>
+<p>把这三个量写成：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>=</mo><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>+</mo><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">f(n)=g(n)+h(n).
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mord">.</span></span></span></span></span></p>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+<th>D 的例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">g(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></td>
+<td>目前找到的从 S 到该位置的最小累计距离</td>
+<td>6</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">h(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></td>
+<td>从该位置到 G 的剩余距离估计</td>
+<td>4</td>
+</tr>
+<tr>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">f(n)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span></span></span></span></td>
+<td>沿当前路线继续前往 G 的总距离估计</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>Dijkstra 选择 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span> 最小的候选，A* 选择 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span></span></span></span> 最小的候选。发现更短路线时，两者都更新 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span> 和前驱；A* 再用新的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span> 加上 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span>，重新安排优先级。</p>
+<h3 id="4-用-A-重新算一遍">4. 用 A* 重新算一遍</h3>
+<table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>扩展</th>
+<th>更新后的候选（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span> + <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> = <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span></span></span></span>）</th>
+<th>下一轮选择</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>S</td>
+<td>A：1 + 5 = 6；B：4 + 4 = 8</td>
+<td>A</td>
+</tr>
+<tr>
+<td>2</td>
+<td>A</td>
+<td>B：3 + 4 = 7（由 4 改善为 3）；C：6 + 3 = 9</td>
+<td>B</td>
+</tr>
+<tr>
+<td>3</td>
+<td>B</td>
+<td>C：4 + 3 = 7（由 6 改善为 4）；D：6 + 4 = 10</td>
+<td>C</td>
+</tr>
+<tr>
+<td>4</td>
+<td>C</td>
+<td>G：7 + 0 = 7；D：6 + 4 = 10</td>
+<td>G，搜索结束</td>
+</tr>
+</tbody>
+</table>
+<p>沿前驱同样得到 S → A → B → C → G，总长 7 米。两种算法的取出顺序：</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>取出顺序</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dijkstra</td>
+<td>S → A → B → C → D → G</td>
+</tr>
+<tr>
+<td>A*</td>
+<td>S → A → B → C → G</td>
+</tr>
+</tbody>
+</table>
+<p>A* 少扩展了 D，得到的最短路线相同。如果所有位置都取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">h=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>，则 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo>=</mo><mi>g</mi></mrow><annotation encoding="application/x-tex">f=g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span>，A* 就退化成 Dijkstra。</p>
+<h2 id="五、在栅格地图上估计剩余距离">五、在栅格地图上估计剩余距离</h2>
+<h3 id="1-曼哈顿距离">1. 曼哈顿距离</h3>
+<p>二维栅格中，如果每次只能上、下、左、右移动，可以先忽略障碍，数一数横向和纵向分别还差几格。例如横向差 3 格、纵向差 2 格，每格 1 米，那么至少还要走 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>3</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>5</mn></mrow><annotation encoding="application/x-tex">3+2=5</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">5</span></span></span></span> 米。这就是<strong>曼哈顿距离</strong>：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo>=</mo><mi mathvariant="normal">∣</mi><mi>x</mi><mo>−</mo><msub><mi>x</mi><mi>G</mi></msub><mi mathvariant="normal">∣</mi><mo>+</mo><mi mathvariant="normal">∣</mi><mi>y</mi><mo>−</mo><msub><mi>y</mi><mi>G</mi></msub><mi mathvariant="normal">∣</mi><mi mathvariant="normal">.</mi></mrow><annotation encoding="application/x-tex">h=|x-x_G|+|y-y_G|.
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0359em;">y</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord">∣.</span></span></span></span></span></p>
+<h3 id="2-加一堵墙">2. 加一堵墙</h3>
+<p>下图每格边长 1 米，深色格是墙（机体尺寸已经通过障碍物膨胀计入）。S 在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1,3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span>，G 在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>7</mn><mo separator="true">,</mo><mn>3</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(7,3)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">7</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mclose">)</span></span></span></span>，墙上只在 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>4</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(4,1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">4</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span> 留了通道：</p>
+<p><img decoding="async" loading="lazy" src="/img/learning/uav_path_planning_dijkstra_astar/grid.webp" alt="栅格地图：x=4 处是一堵墙，只在 (4,1) 留有通道；从 S(1,3) 出发先向右再向下，穿过通道后向上到 G(7,3)，共 10 米；虚线为忽略墙时的启发值 6 米" width="1152" height="864"></p>
+<p>忽略墙时，横向差 6 格、纵向差 0 格，起点的启发值 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>S</mi><mo stretchy="false">)</mo><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">h(S)=6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.0576em;">S</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span>。实际路线要先向下走 2 格、穿过通道、再向上走 2 格，横向仍累计 6 格，所以最短路径长 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>+</mo><mn>6</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">2+6+2=10</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">6</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">10</span></span></span></span> 米。</p>
+<p>估计值 6 米比实际的 10 米小。启发值给出一个偏乐观的下界，具体怎样绕行由搜索过程逐步确定。</p>
+<h3 id="3-启发函数应满足的条件">3. 启发函数应满足的条件</h3>
+<p><strong>可采纳性</strong>：启发值不超过真实的最小剩余代价。上面估计 6 米、实际 10 米，满足这个要求。</p>
+<p><strong>一致性</strong>：相邻位置的估计要能衔接，沿一条边前进，剩余估计的下降量不超过这条边的代价：</p>
+<p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>h</mi><mo stretchy="false">(</mo><mi>n</mi><mo stretchy="false">)</mo><mo>≤</mo><mi>c</mi><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><mi>m</mi><mo stretchy="false">)</mo><mo>+</mo><mi>h</mi><mo stretchy="false">(</mo><mi>m</mi><mo stretchy="false">)</mo><mo separator="true">,</mo></mrow><annotation encoding="application/x-tex">h(n)\le c(n,m)+h(m),
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">h</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mclose">)</span><span class="mpunct">,</span></span></span></span></span></p>
+<p>其中 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>c</mi><mo stretchy="false">(</mo><mi>n</mi><mo separator="true">,</mo><mi>m</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">c(n,m)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">c</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">m</span><span class="mclose">)</span></span></span></span> 是从 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span> 到 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span> 的边代价。例如在单位四邻域栅格中朝目标横向走一格，曼哈顿距离恰好减少 1 米。</p>
+<p>本文的横向距离估计和单位四邻域中的曼哈顿距离都是一致的。在有限、搜索期间不变、边代价非负的图中，使用一致的启发函数，并在目标以最小 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi></mrow><annotation encoding="application/x-tex">f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.1076em;">f</span></span></span></span> 被取出时结束，A* 能得到最短路径。</p>
+<p>允许斜向移动时，估计要相应调整：对角相邻的两格可以直接走 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msqrt><mn>2</mn></msqrt></mrow><annotation encoding="application/x-tex">\sqrt{2}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.04em;vertical-align:-0.1328em;"></span><span class="mord sqrt"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9072em;"><span class="svg-align" style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord" style="padding-left:0.833em;"><span class="mord">2</span></span></span><span style="top:-2.8672em;"><span class="pstrut" style="height:3em;"></span><span class="hide-tail" style="min-width:0.853em;height:1.08em;"><svg xmlns="http://www.w3.org/2000/svg" width="400em" height="1.08em" viewBox="0 0 400000 1080" preserveAspectRatio="xMinYMin slice"><path d="M95,702
+c-2.7,0,-7.17,-2.7,-13.5,-8c-5.8,-5.3,-9.5,-10,-9.5,-14
+c0,-2,0.3,-3.3,1,-4c1.3,-2.7,23.83,-20.7,67.5,-54
+c44.2,-33.3,65.8,-50.3,66.5,-51c1.3,-1.3,3,-2,5,-2c4.7,0,8.7,3.3,12,10
+s173,378,173,378c0.7,0,35.3,-71,104,-213c68.7,-142,137.5,-285,206.5,-429
+c69,-144,104.5,-217.7,106.5,-221
+l0 -0
+c5.3,-9.3,12,-14,20,-14
+H400000v40H845.2724
+s-225.272,467,-225.272,467s-235,486,-235,486c-2.7,4.7,-9,7,-19,7
+c-6,0,-10,-1,-12,-3s-194,-422,-194,-422s-65,47,-65,47z
+M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.1328em;"><span></span></span></span></span></span></span></span></span> 米，而横纵相加是 2 米，会高于实际距离。这时可以用直线距离，或按斜向与直向的组合计算下界。</p>
+<h2 id="六、整理成算法">六、整理成算法</h2>
+<p>手算中的记录与常见代码中的名称一一对应：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>对应的记录或操作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>g</code></td>
+<td>每个位置目前找到的最小到达代价</td>
+</tr>
+<tr>
+<td><code>parent</code></td>
+<td>当前最佳路线中的前驱</td>
+</tr>
+<tr>
+<td><code>OPEN</code></td>
+<td>等待处理的候选清单</td>
+</tr>
+<tr>
+<td>扩展</td>
+<td>检查一个位置的后续连接</td>
+</tr>
+<tr>
+<td>松弛</td>
+<td>计算经过当前位置的新路线，若更短就更新</td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">把每个位置的 g 设为“尚未找到”，用 ∞ 表示</span><br><span class="line">设 g[S] = 0，将 S 放入 OPEN</span><br><span class="line"></span><br><span class="line">只要 OPEN 中还有候选：</span><br><span class="line">    选择优先级最小的位置 n，并从 OPEN 中取出</span><br><span class="line"></span><br><span class="line">    如果 n 是目标 G：</span><br><span class="line">        沿 parent 回溯到 S，返回路径</span><br><span class="line"></span><br><span class="line">    对于从 n 可以到达的每个邻居 m：</span><br><span class="line">        新距离 = g[n] + 从 n 到 m 的边长</span><br><span class="line"></span><br><span class="line">        如果新距离 &lt; g[m]：</span><br><span class="line">            g[m] = 新距离</span><br><span class="line">            parent[m] = n</span><br><span class="line">            将 m 加入或更新到 OPEN</span><br><span class="line">            设置优先级 = g[m] + h(m)</span><br><span class="line"></span><br><span class="line">返回：没有找到可行路径</span><br></pre></td></tr></table></figure>
+<p>Dijkstra 取 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">h=0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0</span></span></span></span>；A* 使用与地图运动规则相符的启发函数。</p>
+<p>每个候选位置只保留一条当前有效记录：找到更小的 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.0359em;">g</span></span></span></span> 时同步更新优先级，即使该位置之前处理过，也允许重新加入。使用一致启发函数时，被正式取出的位置已经具有最短到达代价，不会再被严格更小的值更新。</p>
+<p>实际代码常用优先队列维护 OPEN。如果采用“更新时再放入一条新记录”的写法，取出时要跳过已经过期的旧记录。</p>
+<h2 id="七、改一个数字再算一遍">七、改一个数字再算一遍</h2>
+<p>把 S 到 B 的长度从 4 米改成 2 米，其他连接不变。</p>
+<p>第一轮扩展 S 后，记录 A 为 1 米、B 为 2 米。第二轮扩展 A 时，经 A 到 B 的长度是 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>+</mo><mn>2</mn><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">1+2=3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span></span></span></span> 米，比已有的 2 米长，所以保留 B 的原记录和前驱 S。继续算下去，最短路线变为 S → B → C → G，总长 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>+</mo><mn>1</mn><mo>+</mo><mn>3</mn><mo>=</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">2+1+3=6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">3</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">6</span></span></span></span> 米。</p>
+<p>每次都比较新旧累计距离，只有新路线更短时，才修改距离、前驱和优先级。</p>
+<h2 id="小结">小结</h2>
+<p>Dijkstra 为每个位置记录当前最短的到达路线，每次扩展累计距离最小的候选。A* 使用同样的记录和更新机制，只是在排序时加上剩余距离的估计，让搜索朝目标方向集中。</p>
+<p>手算任何一次搜索，都只需要追踪三件事：候选清单里有哪些位置，每个数字对应哪条路线，下一轮为什么选这个位置。最终路径再由前驱记录还原。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/dreamer198">Dreamer</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://dreamer198.top/posts/c8e20e/">https://dreamer198.top/posts/c8e20e/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://dreamer198.top" target="_blank" rel="noopener">Dreamer Island</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/">路径规划</a><a class="post-meta__tags" href="/tags/%E5%9B%BE%E6%90%9C%E7%B4%A2/">图搜索</a></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/posts/df0a5c/" title="RRT：一棵搜索树怎样一步步找到路径"><img decoding="async" loading="lazy" class="cover" src="/img/covers/plain/adb640389acb.svg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post" width="1600" height="900"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">RRT：一棵搜索树怎样一步步找到路径</div></div><div class="info-2"><div class="info-item-1">在一张带墙的二维地图上逐轮计算 RRT 的采样、最近节点、延伸与碰撞检查，看搜索树怎样找到第一条路径。</div></div></div></a><a class="pagination-related" href="/posts/a37cad/" title="无人机规划算法眼中的世界：构型空间、地图与碰撞检测"><img decoding="async" loading="lazy" class="cover" src="/img/covers/plain/0c10454096d8.svg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post" width="1600" height="900"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">无人机规划算法眼中的世界：构型空间、地图与碰撞检测</div></div><div class="info-2"><div class="info-item-1">介绍构型空间、地图表示与碰撞检测，说明规划器怎样把机体形状、障碍物和候选运动转化为可计算的可行性判断。</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/posts/1113d1/" title="Kinodynamic A*：一步一步把速度放进搜索"><img decoding="async" loading="lazy" class="cover" src="/img/covers/plain/a2734cf49e9c.svg" alt="cover" width="1600" height="900"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-27</div><div class="info-item-2">Kinodynamic A*：一步一步把速度放进搜索</div></div><div class="info-2"><div class="info-item-1">把速度放进搜索状态、用运动基元生成连接，逐轮计算 Kinodynamic A* 怎样找到满足速度与加速度限制的最快运动。</div></div></div></a><a class="pagination-related" href="/posts/c7ad34/" title="从路径到轨迹：一步一步安排无人机的运动"><img decoding="async" loading="lazy" class="cover" src="/img/covers/plain/473f1748cf6a.svg" alt="cover" width="1600" height="900"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-23</div><div class="info-item-2">从路径到轨迹：一步一步安排无人机的运动</div></div><div class="info-2"><div class="info-item-1">以沿通道前进 10 米为例，在速度与加速度限制下逐步算出加速、匀速、减速的时间与位置，理解路径和轨迹的区别。</div></div></div></a><a class="pagination-related" href="/posts/5c6005/" title="RRT*：一棵搜索树怎样一步步改善路径"><img decoding="async" loading="lazy" class="cover" src="/img/covers/plain/40a92bf9d934.svg" alt="cover" width="1600" height="900"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-23</div><div class="info-item-2">RRT*：一棵搜索树怎样一步步改善路径</div></div><div class="info-2"><div class="info-item-1">从一棵已可行的搜索树出发，逐轮演示 RRT* 的选择父节点与重连，把目标路径从 10 米缩短到约 7.76 米。</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img decoding="async" loading="lazy" src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" width="460" height="460"></div><div class="author-info-name">Dreamer</div><div class="author-info-description">Dreamer 的技术博客，记录无人机自主飞行、PX4、ROS、SLAM、Jetson 与强化学习的实践教程和研究笔记。</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">52</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">37</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">12</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/dreamer198"><i class="fab fa-github"></i><span>GitHub 主页</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/dreamer198" target="_blank" title="Github" rel="noopener"><i class="fab fa-github" style="color: #909090;"></i></a><span class="qr-social-wrap qq-qr-icon"><button type="button" class="social-icon qr-social-button" title="QQ" aria-label="显示QQ二维码" aria-haspopup="dialog" aria-expanded="false" aria-controls="qr-social-popover-1"><i class="fab fa-qq" style="color: #12B7F5;"></i></button><span id="qr-social-popover-1" class="qr-social-popover" role="dialog" aria-label="QQ二维码" hidden=""><button type="button" class="qr-social-close" aria-label="关闭QQ二维码"><i class="fas fa-times" aria-hidden="true"></i></button><img src="/img/qq_qr.webp" alt="QQ二维码" loading="lazy" decoding="async" width="384" height="384"><span>扫描二维码添加 QQ</span></span></span><span class="qr-social-wrap wechat-qr-icon"><button type="button" class="social-icon qr-social-button" title="WeChat" aria-label="显示微信二维码" aria-haspopup="dialog" aria-expanded="false" aria-controls="qr-social-popover-2"><i class="fab fa-weixin" style="color: #07C160;"></i></button><span id="qr-social-popover-2" class="qr-social-popover" role="dialog" aria-label="微信二维码" hidden=""><button type="button" class="qr-social-close" aria-label="关闭微信二维码"><i class="fas fa-times" aria-hidden="true"></i></button><img src="/img/wechat_qr.webp" alt="微信二维码" loading="lazy" decoding="async" width="384" height="383"><span>扫描二维码添加微信</span></span></span><a class="social-icon" href="mailto:huangziqian@whu.edu.cn" target="_blank" title="Email" rel="noopener"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E8%B7%AF%E7%BA%BF%E5%9B%BE"><span class="toc-text">一、路线图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%B7%9F%E7%9D%80-Dijkstra-%E7%AE%97%E4%B8%80%E9%81%8D"><span class="toc-text">二、跟着 Dijkstra 算一遍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%AE%B0%E5%BD%95%E8%A1%A8%E5%92%8C%E5%80%99%E9%80%89%E6%B8%85%E5%8D%95"><span class="toc-text">1. 记录表和候选清单</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%AC%AC%E4%B8%80%E8%BD%AE%EF%BC%9A%E6%89%A9%E5%B1%95-S"><span class="toc-text">2. 第一轮：扩展 S</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E7%AC%AC%E4%BA%8C%E8%BD%AE%EF%BC%9A%E6%89%A9%E5%B1%95-A%EF%BC%8C%E6%94%B9%E5%96%84%E5%88%B0-B-%E7%9A%84%E8%B7%AF%E7%BA%BF"><span class="toc-text">3. 第二轮：扩展 A，改善到 B 的路线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%AC%AC%E4%B8%89%E8%BD%AE%EF%BC%9A%E6%89%A9%E5%B1%95-B%EF%BC%8C%E6%94%B9%E5%96%84%E5%88%B0-C-%E7%9A%84%E8%B7%AF%E7%BA%BF"><span class="toc-text">4. 第三轮：扩展 B，改善到 C 的路线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E7%AC%AC%E5%9B%9B%E8%BD%AE%EF%BC%9A%E6%89%A9%E5%B1%95-C%EF%BC%8C%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%8F%91%E7%8E%B0%E7%9B%AE%E6%A0%87"><span class="toc-text">5. 第四轮：扩展 C，第一次发现目标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-%E7%AC%AC%E4%BA%94%E8%BD%AE%EF%BC%9A%E6%89%A9%E5%B1%95-D"><span class="toc-text">6. 第五轮：扩展 D</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E4%BB%8E%E8%AE%B0%E5%BD%95%E4%B8%AD%E8%BF%98%E5%8E%9F%E8%B7%AF%E5%BE%84"><span class="toc-text">7. 从记录中还原路径</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88-Dijkstra-%E8%83%BD%E7%A1%AE%E5%AE%9A%E6%9C%80%E7%9F%AD%E8%B7%9D%E7%A6%BB"><span class="toc-text">三、为什么 Dijkstra 能确定最短距离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%8A%8A%E7%B4%AF%E8%AE%A1%E8%B7%9D%E7%A6%BB%E7%9C%8B%E6%88%90%E4%BF%A1%E5%8F%B7%E5%88%B0%E8%BE%BE%E6%97%B6%E9%97%B4"><span class="toc-text">1. 把累计距离看成信号到达时间</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%AD%89%E5%88%B0%E2%80%9C%E5%8F%96%E5%87%BA%E7%9B%AE%E6%A0%87%E2%80%9D%E6%89%8D%E7%BB%93%E6%9D%9F"><span class="toc-text">2. 为什么要等到“取出目标”才结束</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81A-%E6%80%8E%E6%A0%B7%E5%88%A9%E7%94%A8%E7%9B%AE%E6%A0%87%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="toc-text">四、A* 怎样利用目标的位置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E5%9B%9E%E5%88%B0-Dijkstra-%E7%9A%84%E4%B8%80%E4%B8%AA%E9%80%89%E6%8B%A9"><span class="toc-text">1. 回到 Dijkstra 的一个选择</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E4%BC%B0%E8%AE%A1%E2%80%9C%E8%BF%98%E8%A6%81%E8%B5%B0%E5%A4%9A%E8%BF%9C%E2%80%9D"><span class="toc-text">2. 估计“还要走多远”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%85%AC%E5%BC%8F-f-g-h"><span class="toc-text">3. 公式 f&#x3D;g+hf&#x3D;g+hf&#x3D;g+h</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E7%94%A8-A-%E9%87%8D%E6%96%B0%E7%AE%97%E4%B8%80%E9%81%8D"><span class="toc-text">4. 用 A* 重新算一遍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%9C%A8%E6%A0%85%E6%A0%BC%E5%9C%B0%E5%9B%BE%E4%B8%8A%E4%BC%B0%E8%AE%A1%E5%89%A9%E4%BD%99%E8%B7%9D%E7%A6%BB"><span class="toc-text">五、在栅格地图上估计剩余距离</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%9B%BC%E5%93%88%E9%A1%BF%E8%B7%9D%E7%A6%BB"><span class="toc-text">1. 曼哈顿距离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E5%8A%A0%E4%B8%80%E5%A0%B5%E5%A2%99"><span class="toc-text">2. 加一堵墙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%90%AF%E5%8F%91%E5%87%BD%E6%95%B0%E5%BA%94%E6%BB%A1%E8%B6%B3%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-text">3. 启发函数应满足的条件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E6%95%B4%E7%90%86%E6%88%90%E7%AE%97%E6%B3%95"><span class="toc-text">六、整理成算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%94%B9%E4%B8%80%E4%B8%AA%E6%95%B0%E5%AD%97%E5%86%8D%E7%AE%97%E4%B8%80%E9%81%8D"><span class="toc-text">七、改一个数字再算一遍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-text">小结</span></a></li></ol></div></div><div class="card-widget card-post-series"><div class="item-headline"><i class="fa-solid fa-layer-group"></i><span>系列文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/067a84/" title="无人机路径规划入门：领域全景与学习路线"><img decoding="async" loading="lazy" src="/img/covers/cards/0ecadfbfb718.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无人机路径规划入门：领域全景与学习路线" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/067a84/" title="无人机路径规划入门：领域全景与学习路线">无人机路径规划入门：领域全景与学习路线</a><time datetime="2026-09-22T01:00:00.000Z" title="发表于 2026-09-22 09:00:00">2026-09-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/e750f4/" title="多旋翼无人机路径规划：理论学习路线"><img decoding="async" loading="lazy" src="/img/covers/cards/feadd4553062.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多旋翼无人机路径规划：理论学习路线" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/e750f4/" title="多旋翼无人机路径规划：理论学习路线">多旋翼无人机路径规划：理论学习路线</a><time datetime="2026-09-07T09:42:09.000Z" title="发表于 2026-09-07 17:42:09">2026-09-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c1a1f3/" title="路径规划数学基础（一）：线性代数核心知识"><img decoding="async" loading="lazy" src="/img/covers/cards/6aa71c9a5292.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="路径规划数学基础（一）：线性代数核心知识" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/c1a1f3/" title="路径规划数学基础（一）：线性代数核心知识">路径规划数学基础（一）：线性代数核心知识</a><time datetime="2026-09-08T16:00:00.000Z" title="发表于 2026-09-09 00:00:00">2026-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/648851/" title="矩阵分解与线性系统求解：从高斯消元到 SVD"><img decoding="async" loading="lazy" src="/img/covers/cards/d08b15f2b5ae.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="矩阵分解与线性系统求解：从高斯消元到 SVD" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/648851/" title="矩阵分解与线性系统求解：从高斯消元到 SVD">矩阵分解与线性系统求解：从高斯消元到 SVD</a><time datetime="2026-09-10T01:00:00.000Z" title="发表于 2026-09-10 09:00:00">2026-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/8f52bb/" title="多元微积分：梯度、Jacobian、Hessian 与链式求导"><img decoding="async" loading="lazy" src="/img/covers/cards/8f9d3268ea44.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多元微积分：梯度、Jacobian、Hessian 与链式求导" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/8f52bb/" title="多元微积分：梯度、Jacobian、Hessian 与链式求导">多元微积分：梯度、Jacobian、Hessian 与链式求导</a><time datetime="2026-09-10T02:00:00.000Z" title="发表于 2026-09-10 10:00:00">2026-09-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/0e4644/" title="微分方程与状态空间入门：从运动规律到状态传播"><img decoding="async" loading="lazy" src="/img/covers/cards/e1f1d4c3575e.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="微分方程与状态空间入门：从运动规律到状态传播" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/0e4644/" title="微分方程与状态空间入门：从运动规律到状态传播">微分方程与状态空间入门：从运动规律到状态传播</a><time datetime="2026-09-18T01:00:00.000Z" title="发表于 2026-09-18 09:00:00">2026-09-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ce67dd/" title="概率基础：从随机变量到无人机路径规划中的随机采样"><img decoding="async" loading="lazy" src="/img/covers/cards/1415ef50ac7b.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="概率基础：从随机变量到无人机路径规划中的随机采样" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/ce67dd/" title="概率基础：从随机变量到无人机路径规划中的随机采样">概率基础：从随机变量到无人机路径规划中的随机采样</a><time datetime="2026-09-18T02:00:00.000Z" title="发表于 2026-09-18 10:00:00">2026-09-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a37cad/" title="无人机规划算法眼中的世界：构型空间、地图与碰撞检测"><img decoding="async" loading="lazy" src="/img/covers/cards/0c10454096d8.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无人机规划算法眼中的世界：构型空间、地图与碰撞检测" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/a37cad/" title="无人机规划算法眼中的世界：构型空间、地图与碰撞检测">无人机规划算法眼中的世界：构型空间、地图与碰撞检测</a><time datetime="2026-09-22T02:00:00.000Z" title="发表于 2026-09-22 10:00:00">2026-09-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c8e20e/" title="从 Dijkstra 到 A*：一步一步找到最短路径"><img decoding="async" loading="lazy" src="/img/covers/cards/ef826a405293.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从 Dijkstra 到 A*：一步一步找到最短路径" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/c8e20e/" title="从 Dijkstra 到 A*：一步一步找到最短路径">从 Dijkstra 到 A*：一步一步找到最短路径</a><time datetime="2026-09-22T03:00:00.000Z" title="发表于 2026-09-22 11:00:00">2026-09-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/df0a5c/" title="RRT：一棵搜索树怎样一步步找到路径"><img decoding="async" loading="lazy" src="/img/covers/cards/adb640389acb.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RRT：一棵搜索树怎样一步步找到路径" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/df0a5c/" title="RRT：一棵搜索树怎样一步步找到路径">RRT：一棵搜索树怎样一步步找到路径</a><time datetime="2026-09-23T01:00:00.000Z" title="发表于 2026-09-23 09:00:00">2026-09-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/5c6005/" title="RRT*：一棵搜索树怎样一步步改善路径"><img decoding="async" loading="lazy" src="/img/covers/cards/40a92bf9d934.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="RRT*：一棵搜索树怎样一步步改善路径" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/5c6005/" title="RRT*：一棵搜索树怎样一步步改善路径">RRT*：一棵搜索树怎样一步步改善路径</a><time datetime="2026-09-23T02:00:00.000Z" title="发表于 2026-09-23 10:00:00">2026-09-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c7ad34/" title="从路径到轨迹：一步一步安排无人机的运动"><img decoding="async" loading="lazy" src="/img/covers/cards/473f1748cf6a.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从路径到轨迹：一步一步安排无人机的运动" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/c7ad34/" title="从路径到轨迹：一步一步安排无人机的运动">从路径到轨迹：一步一步安排无人机的运动</a><time datetime="2026-09-23T03:00:00.000Z" title="发表于 2026-09-23 11:00:00">2026-09-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/4dd4be/" title="多项式轨迹：从起终条件一步一步算出平滑运动"><img decoding="async" loading="lazy" src="/img/covers/cards/72f255483fa2.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="多项式轨迹：从起终条件一步一步算出平滑运动" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/4dd4be/" title="多项式轨迹：从起终条件一步一步算出平滑运动">多项式轨迹：从起终条件一步一步算出平滑运动</a><time datetime="2026-09-23T04:00:00.000Z" title="发表于 2026-09-23 12:00:00">2026-09-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/7f1436/" title="分段多项式轨迹：一步一步把多段运动接起来"><img decoding="async" loading="lazy" src="/img/covers/cards/b3cec1c7ac72.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="分段多项式轨迹：一步一步把多段运动接起来" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/7f1436/" title="分段多项式轨迹：一步一步把多段运动接起来">分段多项式轨迹：一步一步把多段运动接起来</a><time datetime="2026-09-24T01:00:00.000Z" title="发表于 2026-09-24 09:00:00">2026-09-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c96d3c/" title="Minimum Jerk：一步一步算出航点速度与加速度"><img decoding="async" loading="lazy" src="/img/covers/cards/4a874b77ffd4.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Minimum Jerk：一步一步算出航点速度与加速度" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/c96d3c/" title="Minimum Jerk：一步一步算出航点速度与加速度">Minimum Jerk：一步一步算出航点速度与加速度</a><time datetime="2026-09-24T02:00:00.000Z" title="发表于 2026-09-24 10:00:00">2026-09-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/5e4bfd/" title="Minimum Snap：一步一步求出航点 Jerk"><img decoding="async" loading="lazy" src="/img/covers/cards/375bb0805741.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Minimum Snap：一步一步求出航点 Jerk" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/5e4bfd/" title="Minimum Snap：一步一步求出航点 Jerk">Minimum Snap：一步一步求出航点 Jerk</a><time datetime="2026-09-24T03:00:00.000Z" title="发表于 2026-09-24 11:00:00">2026-09-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/61f2c0/" title="Bézier 曲线：一步一步用控制点生成和检查轨迹"><img decoding="async" loading="lazy" src="/img/covers/cards/586a58bc0082.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Bézier 曲线：一步一步用控制点生成和检查轨迹" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/61f2c0/" title="Bézier 曲线：一步一步用控制点生成和检查轨迹">Bézier 曲线：一步一步用控制点生成和检查轨迹</a><time datetime="2026-09-27T01:00:00.000Z" title="发表于 2026-09-27 09:00:00">2026-09-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a86672/" title="B 样条：一步一步看懂控制点的局部作用"><img decoding="async" loading="lazy" src="/img/covers/cards/bdcfccc1c2b0.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B 样条：一步一步看懂控制点的局部作用" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/a86672/" title="B 样条：一步一步看懂控制点的局部作用">B 样条：一步一步看懂控制点的局部作用</a><time datetime="2026-09-28T01:00:00.000Z" title="发表于 2026-09-28 09:00:00">2026-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/15287d/" title="B 样条轨迹优化：一步一步计算控制点的移动"><img decoding="async" loading="lazy" src="/img/covers/cards/da3c8b0bc243.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B 样条轨迹优化：一步一步计算控制点的移动" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/15287d/" title="B 样条轨迹优化：一步一步计算控制点的移动">B 样条轨迹优化：一步一步计算控制点的移动</a><time datetime="2026-09-28T02:00:00.000Z" title="发表于 2026-09-28 10:00:00">2026-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/03360d/" title="从轨迹到推力与姿态：一步一步算出无人机怎样倾斜"><img decoding="async" loading="lazy" src="/img/covers/cards/7e65965579ca.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从轨迹到推力与姿态：一步一步算出无人机怎样倾斜" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/03360d/" title="从轨迹到推力与姿态：一步一步算出无人机怎样倾斜">从轨迹到推力与姿态：一步一步算出无人机怎样倾斜</a><time datetime="2026-09-24T04:00:00.000Z" title="发表于 2026-09-24 12:00:00">2026-09-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/40f716/" title="微分平坦性怎么判断：从质点、小车到四旋翼无人机"><img decoding="async" loading="lazy" src="/img/covers/cards/a119e6ede849.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="微分平坦性怎么判断：从质点、小车到四旋翼无人机" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/40f716/" title="微分平坦性怎么判断：从质点、小车到四旋翼无人机">微分平坦性怎么判断：从质点、小车到四旋翼无人机</a><time datetime="2026-06-09T14:30:00.000Z" title="发表于 2026-06-09 22:30:00">2026-06-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1113d1/" title="Kinodynamic A*：一步一步把速度放进搜索"><img decoding="async" loading="lazy" src="/img/covers/cards/a2734cf49e9c.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kinodynamic A*：一步一步把速度放进搜索" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/1113d1/" title="Kinodynamic A*：一步一步把速度放进搜索">Kinodynamic A*：一步一步把速度放进搜索</a><time datetime="2026-09-27T02:00:00.000Z" title="发表于 2026-09-27 10:00:00">2026-09-27</time></div></div></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/15287d/" title="B 样条轨迹优化：一步一步计算控制点的移动"><img decoding="async" loading="lazy" src="/img/covers/cards/da3c8b0bc243.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B 样条轨迹优化：一步一步计算控制点的移动" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/15287d/" title="B 样条轨迹优化：一步一步计算控制点的移动">B 样条轨迹优化：一步一步计算控制点的移动</a><time datetime="2026-09-28T02:00:00.000Z" title="发表于 2026-09-28 10:00:00">2026-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/a86672/" title="B 样条：一步一步看懂控制点的局部作用"><img decoding="async" loading="lazy" src="/img/covers/cards/bdcfccc1c2b0.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="B 样条：一步一步看懂控制点的局部作用" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/a86672/" title="B 样条：一步一步看懂控制点的局部作用">B 样条：一步一步看懂控制点的局部作用</a><time datetime="2026-09-28T01:00:00.000Z" title="发表于 2026-09-28 09:00:00">2026-09-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/1113d1/" title="Kinodynamic A*：一步一步把速度放进搜索"><img decoding="async" loading="lazy" src="/img/covers/cards/a2734cf49e9c.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Kinodynamic A*：一步一步把速度放进搜索" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/1113d1/" title="Kinodynamic A*：一步一步把速度放进搜索">Kinodynamic A*：一步一步把速度放进搜索</a><time datetime="2026-09-27T02:00:00.000Z" title="发表于 2026-09-27 10:00:00">2026-09-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/61f2c0/" title="Bézier 曲线：一步一步用控制点生成和检查轨迹"><img decoding="async" loading="lazy" src="/img/covers/cards/586a58bc0082.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Bézier 曲线：一步一步用控制点生成和检查轨迹" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/61f2c0/" title="Bézier 曲线：一步一步用控制点生成和检查轨迹">Bézier 曲线：一步一步用控制点生成和检查轨迹</a><time datetime="2026-09-27T01:00:00.000Z" title="发表于 2026-09-27 09:00:00">2026-09-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/03360d/" title="从轨迹到推力与姿态：一步一步算出无人机怎样倾斜"><img decoding="async" loading="lazy" src="/img/covers/cards/7e65965579ca.svg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从轨迹到推力与姿态：一步一步算出无人机怎样倾斜" data-cover-variant="card" width="1600" height="900"></a><div class="content"><a class="title" href="/posts/03360d/" title="从轨迹到推力与姿态：一步一步算出无人机怎样倾斜">从轨迹到推力与姿态：一步一步算出无人机怎样倾斜</a><time datetime="2026-09-24T04:00:00.000Z" title="发表于 2026-09-24 12:00:00">2026-09-24</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Dreamer</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.1"></script><script src="/js/main.js?v=5.5.1"></script><script src="/lib/medium-zoom@1.1.0/medium-zoom.min.js"></script><div class="js-pjax"><script>(async () => {
+  const showKatex = () => {
+    document.querySelectorAll('#article-container .katex').forEach(el => el.classList.add('katex-show'))
+  }
+
+  if (!window.katex_js_css) {
+    window.katex_js_css = true
+    await btf.getCSS('/lib/katex@0.17.0/katex.min.css')
+    if (false) {
+      await btf.getScript('/lib/katex@0.17.0/copy-tex.min.js')
+    }
+  }
+
+  showKatex()
+})()</script></div><script src="/js/visitor-config.js"></script><script src="/js/visitor-tracker.js"></script><script src="/js/accessibility.js"></script><script src="/js/image-fade.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search-ranked.js?v=5.5.1-ranked"></script></div></div></body></html>

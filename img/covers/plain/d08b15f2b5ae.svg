@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="card-title card-desc">
+  <title id="card-title">矩阵分解与线性系统求解：从高斯消元到 SVD</title>
+  <desc id="card-desc">Dreamer Island PLANNING THEORY article card</desc>
+  <defs>
+    <linearGradient id="card-bg-d08b15f2b5ae" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0b1224"/><stop offset=".62" stop-color="#15294a"/><stop offset="1" stop-color="#1f3a4f"/></linearGradient>
+    <radialGradient id="card-glow-d08b15f2b5ae"><stop stop-color="#8fc1ff" stop-opacity=".28"/><stop offset="1" stop-color="#8fc1ff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="card-line-d08b15f2b5ae" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#8fc1ff"/><stop offset="1" stop-color="#6fd6c2"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#card-bg-d08b15f2b5ae)"/>
+  <path d="M0 0h690l250 900H0Z" fill="#020b12" opacity=".34"/>
+  <path d="M720-90 1660 250v740L910 900Z" fill="#6fd6c2" opacity=".055"/>
+  <circle cx="1113.3" cy="374.8" r="510" fill="url(#card-glow-d08b15f2b5ae)"/>
+  <g opacity=".62"><path d="M-120 101.3 Q8 66.4 120 117.7 Q238 182.5 350 99.3 Q468 143.4 580 70.9 Q698 122.7 810 69.2 Q928 16.9 1040 53.6 Q1158 157.4 1270 123.2 Q1388 67.3 1500 71.1" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 242.4 Q8 231.8 120 248.5 Q238 282.5 350 254 Q468 194.1 580 227.9 Q698 267.8 810 252 Q928 230.2 1040 207.2 Q1158 227.9 1270 229.3 Q1388 288.6 1500 266.9" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.2"/><path d="M-120 377.8 Q8 325 120 394.6 Q238 323.1 350 419.3 Q468 368.2 580 362.9 Q698 364.1 810 330.8 Q928 339.5 1040 409 Q1158 302.1 1270 367.8 Q1388 427.6 1500 353.3" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.1"/><path d="M-120 545.1 Q8 576.8 120 563.2 Q238 549.3 350 516.4 Q468 479.6 580 514.6 Q698 492.1 810 536.3 Q928 492.2 1040 537.2 Q1158 527.2 1270 497.1 Q1388 594.9 1500 515.4" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/><path d="M-120 676.4 Q8 701.3 120 672 Q238 633.4 350 677.1 Q468 623.1 580 676 Q698 659.4 810 670 Q928 746.1 1040 667.8 Q1158 617.6 1270 656.5 Q1388 601.7 1500 685.4" fill="none" stroke="#8fc1ff" stroke-width="2" opacity="0.2"/><path d="M-120 833.2 Q8 914.2 120 874.5 Q238 798.5 350 783.4 Q468 826.7 580 824.4 Q698 852.9 810 879.5 Q928 790.5 1040 789.8 Q1158 829.4 1270 837.5 Q1388 757.6 1500 852.7" fill="none" stroke="#6fd6c2" stroke-width="2" opacity="0.1"/></g>
+  <g transform="translate(1122.3 405.6) rotate(1.3) scale(1.1)"><g fill="none" stroke="#6fd6c2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity=".68"><path d="M-324 214H338M-282 258v-516"/><path d="m338 214-34-20v40M-282-258l-20 34h40"/><path d="M-282 104C-172-88-94 176 22-26S210-174 326-112"/></g><g fill="none" stroke="#8fc1ff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" transform="translate(96 -62)"><path d="M-96 0H96M0-78V78M-56-42 56 42M56-42-56 42"/><rect x="-48" y="-30" width="96" height="60" rx="12"/><circle cx="-108" cy="-94" r="42"/><circle cx="108" cy="-94" r="42"/><circle cx="-108" cy="94" r="42"/><circle cx="108" cy="94" r="42"/></g><circle cx="-282" cy="104" r="12" fill="#f0b86a"/></g>
+  <path d="M72 76v748" stroke="url(#card-line-d08b15f2b5ae)" stroke-width="4"/>
+  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">
+    <!-- One label, sized to stay legible at card width (~400px); the post
+         title is shown next to the card, so the card does not repeat it. -->
+    
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="cover-title cover-desc">
-  <title id="cover-title">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航到底做了什么</title>
+  <title id="cover-title">NavRL 阅读笔记：动态环境下的无人机强化学习局部导航</title>
   <desc id="cover-desc">Dreamer Island RESEARCH NOTES article cover</desc>
   <defs>
     <linearGradient id="bg-1e5cceb64425" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#111522"/><stop offset=".54" stop-color="#29213e"/><stop offset="1" stop-color="#163542"/></linearGradient>
