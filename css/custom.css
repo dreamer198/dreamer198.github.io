@@ -1,3 +1,21 @@
+/* Code font, self-hosted by scripts/vendor_assets.js (Latin subset;
+   Chinese in comments falls back to the text font). */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/lib/@fontsource/jetbrains-mono@5.3.0/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/lib/@fontsource/jetbrains-mono@5.3.0/jetbrains-mono-latin-400-italic.woff2') format('woff2');
+}
+
 /* Dreamer Island visual layer */
 :root {
   --blog-bg-top: #f6f8fb;
@@ -824,7 +842,7 @@ input:focus-visible {
   border: 1px solid rgba(27, 127, 140, 0.18);
   border-radius: 999px;
   background: rgba(27, 127, 140, 0.08);
-  color: var(--blog-accent);
+  color: var(--blog-accent-2);
   font-weight: 760;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44), 0 10px 28px rgba(27, 127, 140, 0.12);
 }
@@ -1306,25 +1324,39 @@ input:focus-visible {
   }
 }
 
-/* 2026-08 unified interface: layout, content and engineering code system */
+/* 2026-08 unified interface: layout, content and code system.
+   Code blocks follow the page: light in light mode, dark in dark mode. */
+:root {
+  --code-bg: #f6f8fa;
+  --code-toolbar: #eef2f6;
+  --code-gutter: #f6f8fa;
+  --code-border: #dfe5ea;
+  --code-text: #1f2328;
+  --code-muted: #5f6b77;
+  --code-lineno: #a3adb7;
+  --code-scrollbar: #b7c3cd;
+  --cover-navy: #182837;
+}
+
 :root,
 [data-theme='dark'] {
-  --code-bg: #182837;
-  --code-toolbar: #142230;
-  --code-gutter: #111e2a;
-  --code-border: #3a5064;
-  --code-text: #e6edf3;
-  --code-muted: #a5b4c5;
-  --code-scrollbar: #4ba3bd;
   --inline-code-bg: rgba(27, 127, 140, 0.11);
   --inline-code-text: #0b6670;
   --content-radius: 6px;
   --control-size: 44px;
   --content-measure: 780px;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Noto Sans Mono CJK SC', monospace;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', 'Noto Sans Mono CJK SC', monospace;
 }
 
 [data-theme='dark'] {
+  --code-bg: #0f161d;
+  --code-toolbar: #141c24;
+  --code-gutter: #0f161d;
+  --code-border: #26313b;
+  --code-text: #d6dee6;
+  --code-muted: #8b98a5;
+  --code-lineno: #56636f;
+  --code-scrollbar: #3b4b59;
   --inline-code-bg: rgba(53, 182, 188, 0.14);
   --inline-code-text: #8de2df;
 }
@@ -1647,7 +1679,7 @@ body {
   overflow: hidden;
   margin: 0;
   aspect-ratio: 16 / 8.5;
-  background: var(--code-bg);
+  background: var(--cover-navy);
 }
 
 .home-featured-card figure::after {
@@ -1716,9 +1748,10 @@ body {
   margin-left: 5px;
 }
 
+/* The flagship topic spans the row; the other four sit in a 2 x 2 grid. */
 .home-topic-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
@@ -1729,7 +1762,7 @@ body {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.13);
   border-radius: var(--content-radius);
-  background: var(--code-bg);
+  background: var(--cover-navy);
   color: #ffffff;
   grid-template-columns: auto 1fr;
   isolation: isolate;
@@ -1794,7 +1827,7 @@ body {
   line-height: 1.55;
 }
 
-/* A flagship topic spans the whole row so seven cards still fill the grid. */
+/* The flagship topic spans the whole row. */
 .home-topic-card.is-wide {
   grid-column: 1 / -1;
   min-height: 170px;
@@ -1913,30 +1946,19 @@ body {
   box-decoration-break: clone;
 }
 
-/* Deep engineering code blocks; identical in light and dark mode */
+/* Code blocks: a quiet panel in the page's own colour scheme */
 .container figure.highlight,
 .container > pre {
   position: relative;
   overflow: hidden;
   border: 1px solid var(--code-border) !important;
-  border-radius: 2px !important;
+  border-radius: var(--content-radius) !important;
   background: var(--code-bg) !important;
-  box-shadow: 0 10px 22px rgba(5, 12, 22, 0.14) !important;
+  box-shadow: none !important;
   color: var(--code-text) !important;
   font-family: var(--font-mono) !important;
-  font-size: 14px !important;
-  line-height: 1.65 !important;
-}
-
-.container figure.highlight::after {
-  position: absolute;
-  top: 44px;
-  right: 0;
-  bottom: 0;
-  width: 18px;
-  background: linear-gradient(90deg, transparent, rgba(27, 127, 140, 0.18));
-  content: '';
-  pointer-events: none;
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
 }
 
 .container figure.highlight:focus-visible,
@@ -1985,8 +2007,9 @@ body {
 .container > pre code {
   color: var(--code-text) !important;
   font-family: var(--font-mono) !important;
-  font-size: 14px !important;
-  line-height: 1.65 !important;
+  font-size: 13.5px !important;
+  line-height: 1.7 !important;
+  font-variant-ligatures: none;
   white-space: pre !important;
   word-break: normal !important;
   overflow-wrap: normal !important;
@@ -2002,7 +2025,7 @@ body {
   padding-right: 12px;
   padding-left: 12px;
   background: var(--code-gutter) !important;
-  color: #93a4b8 !important;
+  color: var(--code-lineno) !important;
 }
 
 /* Images carry width/height attributes (to reserve space while loading);
@@ -2074,37 +2097,6 @@ img.img-loading {
   display: none;
 }
 
-/* Plain-text blocks (command output, data) read as a quieter panel than
-   commands in light mode; dark mode keeps the regular code palette. */
-:root:not([data-theme='dark']) .container figure.highlight.text,
-:root:not([data-theme='dark']) .container figure.highlight.plaintext {
-  --code-bg: #f4f7fa;
-  --code-gutter: #eaf0f5;
-  --code-toolbar: #eaf0f5;
-  --code-border: #d6e0e8;
-  --code-text: #243447;
-  box-shadow: none !important;
-}
-
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext) .gutter pre,
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext) .highlight-tools,
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext) .highlight-tools .code-lang,
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext) .highlight-tools .copy-button {
-  color: #5b6b7f !important;
-}
-
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext)::after {
-  content: none;
-}
-
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext) .code-expand-btn {
-  background: linear-gradient(180deg, rgba(244, 247, 250, 0.2), rgba(234, 240, 245, 0.96)) !important;
-}
-
-:root:not([data-theme='dark']) .container figure.highlight:is(.text, .plaintext) .code-expand-btn i {
-  color: #5b6b7f;
-}
-
 .container figure.highlight ::selection,
 .container > pre ::selection {
   background: #2a6f97 !important;
@@ -2125,15 +2117,15 @@ img.img-loading {
 }
 
 .container .highlight-tools {
-  height: 44px;
-  min-height: 44px;
+  height: 38px;
+  min-height: 38px;
   padding: 0 8px 0 14px;
   border: 0 !important;
   border-bottom: 1px solid var(--code-border) !important;
   border-radius: 0 !important;
   background: var(--code-toolbar) !important;
   box-shadow: none !important;
-  color: #a9b4c6;
+  color: var(--code-muted);
   font-family: var(--font-mono);
   font-size: 12px;
 }
@@ -2146,29 +2138,29 @@ img.img-loading {
 
 .container .highlight-tools .code-lang {
   padding: 0;
-  color: #b6c2d3;
+  color: var(--code-muted);
   font-size: 11px;
-  font-weight: 760;
-  letter-spacing: 0.12em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 .container .highlight-tools .copy-notice {
   padding: 0 8px;
-  color: #8de2df;
+  color: var(--blog-accent);
   font-size: 11px;
 }
 
 .container .highlight-tools .copy-button {
   display: inline-grid;
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   padding: 0;
-  color: #b6c2d3;
+  color: var(--code-muted);
   place-items: center;
 }
 
 .container .highlight-tools .copy-button:hover {
-  color: #8de2df;
+  color: var(--blog-accent);
 }
 
 .container .highlight-tools .copy-button:focus-visible,
@@ -2180,60 +2172,128 @@ img.img-loading {
 .container .code-expand-btn {
   border: 0 !important;
   border-radius: 0 !important;
-  background: linear-gradient(180deg, rgba(24, 40, 55, 0.18), rgba(17, 30, 42, 0.96)) !important;
+  background: linear-gradient(180deg, transparent, var(--code-bg) 70%) !important;
   box-shadow: none !important;
 }
 
 .container .code-expand-btn i {
   padding: 12px 0;
-  color: #a9b4c6;
+  color: var(--code-muted);
   animation: none;
 }
 
-.container figure.highlight pre .comment,
-.container figure.highlight pre .quote {
-  color: #8f9bad !important;
+/* Tokens without a colour below read as plain code text (the theme's
+   ocean colours assume a dark panel). */
+#article-container figure.highlight .code span {
+  color: var(--code-text) !important;
+}
+
+/* Syntax colours: GitHub's light and dark palettes. The id selector keeps
+   them in read mode, where the theme greys out everything inside code. */
+#article-container figure.highlight .code .comment,
+#article-container figure.highlight .code .quote {
+  color: #59636e !important;
   font-style: italic;
 }
 
-.container figure.highlight pre .variable,
-.container figure.highlight pre .attribute,
-.container figure.highlight pre .regexp,
-.container figure.highlight pre .tag .name {
-  color: #ff7b94 !important;
+#article-container figure.highlight .code .keyword,
+#article-container figure.highlight .code .selector-tag,
+#article-container figure.highlight .code .deletion {
+  color: #cf222e !important;
 }
 
-.container figure.highlight pre .number,
-.container figure.highlight pre .literal,
-.container figure.highlight pre .params,
-.container figure.highlight pre .constant,
-.container figure.highlight pre .command {
-  color: #ffad8a !important;
+#article-container figure.highlight .code .string,
+#article-container figure.highlight .code .regexp {
+  color: #0a3069 !important;
 }
 
-.container figure.highlight pre .built_in {
-  color: #ffd580 !important;
+#article-container figure.highlight .code .number,
+#article-container figure.highlight .code .literal,
+#article-container figure.highlight .code .variable,
+#article-container figure.highlight .code .attr,
+#article-container figure.highlight .code .attribute,
+#article-container figure.highlight .code .template-variable {
+  color: #0550ae !important;
 }
 
-.container figure.highlight pre .string,
-.container figure.highlight pre .value,
-.container figure.highlight pre .addition {
-  color: #b7e38d !important;
+#article-container figure.highlight .code .built_in,
+#article-container figure.highlight .code .type,
+#article-container figure.highlight .code .params {
+  color: #953800 !important;
 }
 
-.container figure.highlight pre .keyword,
-.container figure.highlight pre .tag {
-  color: #89ddff !important;
+#article-container figure.highlight .code .title,
+#article-container figure.highlight .code .function,
+#article-container figure.highlight .code .meta,
+#article-container figure.highlight .code .section {
+  color: #8250df !important;
 }
 
-.container figure.highlight pre .function,
-.container figure.highlight pre .title {
-  color: #93b4ff !important;
+#article-container figure.highlight .code .name,
+#article-container figure.highlight .code .addition {
+  color: #116329 !important;
 }
 
-.container figure.highlight pre .meta,
-.container figure.highlight pre .tag .attr {
-  color: #d2a1f0 !important;
+[data-theme='dark'] #article-container figure.highlight .code .comment,
+[data-theme='dark'] #article-container figure.highlight .code .quote {
+  color: #8b949e !important;
+}
+
+[data-theme='dark'] #article-container figure.highlight .code .keyword,
+[data-theme='dark'] #article-container figure.highlight .code .selector-tag,
+[data-theme='dark'] #article-container figure.highlight .code .deletion {
+  color: #ff7b72 !important;
+}
+
+[data-theme='dark'] #article-container figure.highlight .code .string,
+[data-theme='dark'] #article-container figure.highlight .code .regexp {
+  color: #a5d6ff !important;
+}
+
+[data-theme='dark'] #article-container figure.highlight .code .number,
+[data-theme='dark'] #article-container figure.highlight .code .literal,
+[data-theme='dark'] #article-container figure.highlight .code .variable,
+[data-theme='dark'] #article-container figure.highlight .code .attr,
+[data-theme='dark'] #article-container figure.highlight .code .attribute,
+[data-theme='dark'] #article-container figure.highlight .code .template-variable {
+  color: #79c0ff !important;
+}
+
+[data-theme='dark'] #article-container figure.highlight .code .built_in,
+[data-theme='dark'] #article-container figure.highlight .code .type,
+[data-theme='dark'] #article-container figure.highlight .code .params {
+  color: #ffa657 !important;
+}
+
+[data-theme='dark'] #article-container figure.highlight .code .title,
+[data-theme='dark'] #article-container figure.highlight .code .function,
+[data-theme='dark'] #article-container figure.highlight .code .meta,
+[data-theme='dark'] #article-container figure.highlight .code .section {
+  color: #d2a8ff !important;
+}
+
+[data-theme='dark'] #article-container figure.highlight .code .name,
+[data-theme='dark'] #article-container figure.highlight .code .addition {
+  color: #7ee787 !important;
+}
+
+/* Read mode: keep the code panel's own colours (the theme sets grey text
+   and its own background, which clashed with the code background). */
+.read-mode #article-container figure.highlight,
+.read-mode #article-container figure.highlight table,
+.read-mode #article-container figure.highlight .gutter,
+.read-mode #article-container figure.highlight .gutter pre {
+  background: var(--code-bg) !important;
+}
+
+.read-mode #article-container figure.highlight .code pre,
+.read-mode #article-container figure.highlight .code .line {
+  color: var(--code-text) !important;
+}
+
+.read-mode #article-container figure.highlight .gutter pre,
+.read-mode #article-container figure.highlight .gutter .line {
+  color: var(--code-lineno) !important;
 }
 
 /* Wide tables scroll sideways; the thin scrollbar is the only affordance
@@ -2863,9 +2923,22 @@ img.img-loading {
   color: var(--blog-text);
 }
 
-[data-theme='light'] .home-topic-card::before,
-[data-theme='light'] .home-topic-card img {
+[data-theme='light'] .home-topic-card::before {
   display: none;
+}
+
+/* Keep the topic line art in light mode too: the navy cover inverted to a
+   pale wash, so both themes show the same motif. */
+[data-theme='light'] .home-topic-card img {
+  filter: invert(1) hue-rotate(180deg) saturate(0.4);
+  opacity: 0.32;
+  mix-blend-mode: multiply;
+}
+
+@media (max-width: 768px) {
+  [data-theme='light'] .home-topic-card img {
+    opacity: 0.2;
+  }
 }
 
 [data-theme='light'] .home-topic-card:hover {
@@ -2938,4 +3011,460 @@ img.img-loading {
 #recent-posts .article-meta__categories,
 #recent-posts .post-meta-date time {
   white-space: nowrap;
+}
+
+/* Option 2 beyond the homepage: shorter banners, a plain list instead of the
+   timeline, and no leftover shadows or filled badges. */
+#page-header.not-home-page {
+  height: 220px !important;
+}
+
+#page-header.not-home-page #page-site-info {
+  top: calc(50% + 24px);
+  transform: translateY(-50%);
+}
+
+#page-header.post-bg {
+  height: 280px !important;
+  min-height: 280px;
+}
+
+@media (max-width: 768px) {
+  #page-header.not-home-page {
+    height: 180px !important;
+  }
+
+  #page-header.post-bg {
+    height: 260px !important;
+    min-height: 260px;
+  }
+}
+
+/* Archive, category and tag lists: no rail or dots; years and months are
+   plain headings, each post one row. */
+.article-sort {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.article-sort-title {
+  margin-left: 0;
+  padding-bottom: 12px;
+  padding-left: 0;
+  font-size: 1.4em;
+}
+
+.article-sort-title::before,
+.article-sort-title::after,
+.article-sort-item::before,
+.article-sort-item.month::before {
+  display: none;
+}
+
+.article-sort-item {
+  margin-left: 0;
+}
+
+.article-sort-item.year {
+  margin: 18px 0 0;
+  padding: 10px 0 4px;
+  border-bottom: 1px solid var(--blog-border);
+  font-size: 1.2em;
+  font-weight: 750;
+}
+
+.article-sort-item.month {
+  margin-top: 6px;
+}
+
+.article-sort-item-title:hover {
+  transform: none;
+}
+
+/* Sidebar: listing pages drop the thumbnail "latest posts" card (as the
+   homepage does); on posts it stays as a text list. */
+#body-wrap.page #aside-content .card-recent-post {
+  display: none;
+}
+
+#body-wrap.post #aside-content .card-recent-post .thumbnail {
+  display: none;
+}
+
+#body-wrap.post #aside-content .card-recent-post .content {
+  padding-left: 0;
+}
+
+/* Remaining shadows and filled badges */
+#aside-content .card-info #card-info-btn {
+  background: var(--blog-accent-2);
+  box-shadow: none;
+}
+
+.container figure.highlight,
+.container > pre {
+  box-shadow: none !important;
+}
+
+#body-wrap.type-categories .category-list-item {
+  background: var(--blog-card-solid);
+  box-shadow: none;
+}
+
+#body-wrap.type-categories .category-list > .category-list-item > .category-list-count {
+  min-width: 0;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  color: var(--blog-muted);
+  font-weight: 650;
+}
+
+#body-wrap.type-categories .category-list > .category-list-item > .category-list-count::after {
+  content: ' 篇';
+}
+
+.article-sort-item:not(.year):not(.month) .article-sort-item-info,
+.article-sort-item:not(.year):not(.month) .article-sort-item-time time {
+  padding: 0;
+}
+
+#body-wrap.type-categories .category-list > .category-list-item > .category-list-count {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Dark mode: the accent is a light mint there, so the button text goes dark. */
+[data-theme='dark'] #aside-content .card-info #card-info-btn {
+  color: #0d1a1d;
+}
+
+/* Visitor page: same flat surfaces and column width as every other page. */
+#body-wrap.type-visitors .layout {
+  max-width: 1200px;
+}
+
+#body-wrap.type-visitors .layout::before,
+.visitor-hero-panel::before,
+.visitor-map-panel::before,
+.visitor-rank-panel::before,
+.visitor-stat-card::before {
+  display: none;
+}
+
+.visitor-hero-panel,
+.visitor-stat-card,
+.visitor-map-panel,
+.visitor-rank-panel {
+  border-radius: var(--content-radius);
+  background: var(--blog-card-solid);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.visitor-privacy-badge {
+  box-shadow: none;
+}
+
+[data-theme='dark'] .visitor-stat-card,
+[data-theme='dark'] .visitor-map-panel,
+[data-theme='dark'] .visitor-rank-panel {
+  background: var(--blog-card-solid);
+}
+
+/* Archive (built by scripts/html_fixes.js): overview with counts and a
+   posts-per-month chart, then year and month groups of one-line rows. */
+.archive-overview {
+  display: grid;
+  gap: 22px;
+  margin-bottom: 34px;
+  padding: 22px 24px 18px;
+  border: 1px solid var(--blog-border);
+  border-radius: var(--content-radius);
+  background:
+    linear-gradient(180deg, rgba(27, 127, 140, 0.06), transparent 70%),
+    var(--blog-card-solid);
+}
+
+.archive-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.archive-stats > div {
+  display: grid;
+  gap: 2px;
+}
+
+.archive-stats > div + div {
+  padding-left: 14px;
+  border-left: 1px solid var(--blog-border);
+}
+
+.archive-stats strong {
+  color: var(--text-highlight-color);
+  font-size: 1.6rem;
+  font-weight: 780;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.archive-stats span {
+  color: var(--blog-muted);
+  font-size: 0.82rem;
+}
+
+.archive-chart {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  height: 128px;
+  padding-top: 4px;
+}
+
+.archive-bar {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 0;
+  padding-bottom: 34px;
+  border: 0;
+  color: var(--blog-muted);
+  text-decoration: none;
+}
+
+.archive-bar-fill {
+  width: min(100%, 34px);
+  height: max(var(--h), 3px);
+  border-radius: 3px 3px 0 0;
+  background: var(--blog-accent-2);
+  opacity: 0.78;
+  transition: opacity 0.18s ease;
+}
+
+.archive-bar.is-empty .archive-bar-fill {
+  background: var(--blog-border);
+  opacity: 1;
+}
+
+.archive-bar-count {
+  margin-bottom: 4px;
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.archive-bar-month,
+.archive-bar-year {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.archive-bar-month {
+  bottom: 18px;
+}
+
+.archive-bar-year {
+  bottom: 2px;
+  color: var(--text-highlight-color);
+  font-weight: 700;
+}
+
+a.archive-bar:hover .archive-bar-fill,
+a.archive-bar:focus-visible .archive-bar-fill {
+  opacity: 1;
+}
+
+a.archive-bar:hover,
+a.archive-bar:focus-visible {
+  color: var(--blog-accent);
+}
+
+.archive-year + .archive-year {
+  margin-top: 30px;
+}
+
+.archive-year-title {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 6px !important;
+  padding: 0 0 10px !important;
+  border-bottom: 1px solid var(--blog-border);
+  color: var(--blog-accent-2) !important;
+  font-size: 2rem !important;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.archive-year-title::before,
+.archive-month-title::before {
+  display: none !important;
+}
+
+.archive-year-title span,
+.archive-month-title span {
+  color: var(--blog-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.archive-month {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 0 12px;
+  padding: 14px 0;
+  scroll-margin-top: 80px;
+}
+
+.archive-month + .archive-month {
+  border-top: 1px dashed var(--blog-border);
+}
+
+.archive-month-title {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  margin: 6px 0 0 !important;
+  padding: 0 !important;
+  color: var(--text-highlight-color) !important;
+  font-size: 1.05rem !important;
+  font-weight: 750;
+}
+
+.archive-list {
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none;
+}
+
+#article-container .archive-list li::before,
+.archive-list li::before {
+  display: none;
+}
+
+.archive-row {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: baseline;
+  margin: 0 !important;
+  padding: 8px 10px;
+  border-radius: var(--content-radius);
+  transition: background-color 0.16s ease;
+}
+
+.archive-row:hover {
+  background: rgba(27, 127, 140, 0.07);
+}
+
+.archive-row time {
+  color: var(--blog-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.archive-row .archive-title {
+  color: var(--text-highlight-color);
+  font-weight: 650;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.archive-row:hover .archive-title {
+  color: var(--blog-accent);
+}
+
+.archive-topic {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px;
+  border: 1px solid var(--blog-border);
+  border-radius: 999px;
+  color: var(--blog-muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.archive-topic i {
+  color: var(--blog-accent);
+  font-size: 0.7rem;
+}
+
+.archive-topic:hover {
+  border-color: var(--blog-accent);
+  color: var(--blog-accent);
+}
+
+@media (max-width: 768px) {
+  .archive-overview {
+    padding: 16px;
+  }
+
+  .archive-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 14px;
+  }
+
+  .archive-stats > div:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .archive-stats strong {
+    font-size: 1.3rem;
+  }
+
+  .archive-chart {
+    gap: 3px;
+    height: 110px;
+  }
+
+  .archive-month {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-month-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0 0 4px !important;
+  }
+
+  .archive-row {
+    grid-template-columns: 3em minmax(0, 1fr);
+    padding: 7px 4px;
+  }
+
+  .archive-row {
+    row-gap: 0;
+  }
+
+  .archive-topic {
+    grid-column: 2;
+    justify-self: start;
+    padding: 0;
+    border: 0;
+  }
+}
+
+/* Phones: the typed subtitle wraps to two lines partway through a sentence
+   and back to one while deleting, which bounced the social icons below
+   every cycle. Reserve both lines. */
+@media (max-width: 768px) {
+  #site-subtitle {
+    min-height: 3em;
+    min-height: 2lh;
+  }
 }

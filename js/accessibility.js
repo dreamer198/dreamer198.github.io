@@ -235,24 +235,26 @@
   }
 
   function enhanceScrollableRegions() {
-    document.querySelectorAll('.table-wrap').forEach(function (wrapper) {
+    // Numbered labels: screen readers list regions by name, and several
+    // identical names on one page cannot be told apart.
+    document.querySelectorAll('.table-wrap').forEach(function (wrapper, index) {
       if (wrapper.dataset.scrollA11yReady === 'true') return
       wrapper.dataset.scrollA11yReady = 'true'
       wrapper.setAttribute('tabindex', '0')
       wrapper.setAttribute('role', 'region')
-      wrapper.setAttribute('aria-label', '可横向滚动的数据表格')
+      wrapper.setAttribute('aria-label', '数据表格 ' + (index + 1) + '，可横向滚动')
       wrapper.addEventListener('scroll', function () { updateScrollEdges(wrapper) }, { passive: true })
       updateScrollEdges(wrapper)
     })
 
-    document.querySelectorAll('figure.highlight').forEach(function (block) {
+    document.querySelectorAll('figure.highlight').forEach(function (block, index) {
       var language = Array.from(block.classList).find(function (name) { return name !== 'highlight' }) || 'text'
       var scroller = block.querySelector('table') || block
       if (scroller.dataset.codeScrollA11yReady !== 'true') {
         scroller.dataset.codeScrollA11yReady = 'true'
         scroller.setAttribute('tabindex', '0')
         scroller.setAttribute('role', 'region')
-        scroller.setAttribute('aria-label', language + ' 代码，可横向滚动')
+        scroller.setAttribute('aria-label', '代码块 ' + (index + 1) + '（' + language + '），可横向滚动')
         scroller.addEventListener('scroll', function () { updateScrollEdges(scroller) }, { passive: true })
         updateScrollEdges(scroller)
       }

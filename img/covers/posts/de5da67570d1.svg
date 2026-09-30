@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="cover-title cover-desc">
-  <title id="cover-title">PX4+Gazebo+MAVROS+Onboard 多机仿真与实测启动指南</title>
+  <title id="cover-title">PX4 + Gazebo + MAVROS + Onboard 多机仿真与实测启动指南</title>
   <desc id="cover-desc">Dreamer Island FLIGHT SYSTEMS article cover</desc>
   <defs>
     <linearGradient id="bg-de5da67570d1" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".54" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>

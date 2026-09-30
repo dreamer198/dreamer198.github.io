@@ -6,7 +6,7 @@
   <link href="https://dreamer198.top/atom.xml" rel="self"/>
   
   <link href="https://dreamer198.top/"/>
-  <updated>2026-09-29T07:36:01.000Z</updated>
+  <updated>2026-09-28T17:25:06.000Z</updated>
   <id>https://dreamer198.top/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://dreamer198.top/posts/15287d/"/>
     <id>https://dreamer198.top/posts/15287d/</id>
     <published>2026-09-28T02:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">以平滑代价和避障代价为目标，逐步计算梯度并迭代移动 B 样条控制点，完整演示一次轨迹优化。</summary>
@@ -48,7 +48,7 @@
     <link href="https://dreamer198.top/posts/a86672/"/>
     <id>https://dreamer198.top/posts/a86672/</id>
     <published>2026-09-28T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">用九个控制点、六段曲线的算例，逐步说明 B 样条如何分段拼接，以及移动一个控制点为什么只影响局部曲线。</summary>
@@ -71,7 +71,7 @@
     <link href="https://dreamer198.top/posts/1113d1/"/>
     <id>https://dreamer198.top/posts/1113d1/</id>
     <published>2026-09-27T02:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">把速度放进搜索状态、用运动基元生成连接，逐轮计算 Kinodynamic A* 怎样找到满足速度与加速度限制的最快运动。</summary>
@@ -94,7 +94,7 @@
     <link href="https://dreamer198.top/posts/61f2c0/"/>
     <id>https://dreamer198.top/posts/61f2c0/</id>
     <published>2026-09-27T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">用一个绕障算例逐步计算 Bézier 曲线的位置、控制点调整、时间轨迹与速度加速度，并用控制点检查整段避障。</summary>
@@ -117,7 +117,7 @@
     <link href="https://dreamer198.top/posts/03360d/"/>
     <id>https://dreamer198.top/posts/03360d/</id>
     <published>2026-09-24T04:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">从悬停到水平加减速，逐步把轨迹中的加速度换算成多旋翼所需的推力大小和机体倾斜角度。</summary>
@@ -142,7 +142,7 @@
     <link href="https://dreamer198.top/posts/5e4bfd/"/>
     <id>https://dreamer198.top/posts/5e4bfd/</id>
     <published>2026-09-24T03:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">在 Minimum Jerk 的基础上再进一阶，用两段七次多项式逐步求出使 Snap 代价最小的航点 Jerk。</summary>
@@ -167,7 +167,7 @@
     <link href="https://dreamer198.top/posts/c96d3c/"/>
     <id>https://dreamer198.top/posts/c96d3c/</id>
     <published>2026-09-24T02:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">以 Jerk 平方积分为代价，逐步求出两段五次多项式在航点处的最优速度与加速度，并检查整段运动约束。</summary>
@@ -192,7 +192,7 @@
     <link href="https://dreamer198.top/posts/7f1436/"/>
     <id>https://dreamer198.top/posts/7f1436/</id>
     <published>2026-09-24T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">用两段五次多项式经过中间航点，逐步求解系数并检查航点处位置、速度、加速度的连续衔接。</summary>
@@ -215,7 +215,7 @@
     <link href="https://dreamer198.top/posts/4dd4be/"/>
     <id>https://dreamer198.top/posts/4dd4be/</id>
     <published>2026-09-23T04:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">把起终点的位置、速度与加速度要求写成方程，逐步求出三次与五次多项式轨迹，并比较两者的平顺性。</summary>
@@ -238,7 +238,7 @@
     <link href="https://dreamer198.top/posts/c7ad34/"/>
     <id>https://dreamer198.top/posts/c7ad34/</id>
     <published>2026-09-23T03:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T14:34:57.000Z</updated>
     
     
     <summary type="html">以沿通道前进 10 米为例，在速度与加速度限制下逐步算出加速、匀速、减速的时间与位置，理解路径和轨迹的区别。</summary>
@@ -261,7 +261,7 @@
     <link href="https://dreamer198.top/posts/5c6005/"/>
     <id>https://dreamer198.top/posts/5c6005/</id>
     <published>2026-09-23T02:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:10:52.000Z</updated>
     
     
     <summary type="html">从一棵已可行的搜索树出发，逐轮演示 RRT* 的选择父节点与重连，把目标路径从 10 米缩短到约 7.76 米。</summary>
@@ -284,7 +284,7 @@
     <link href="https://dreamer198.top/posts/df0a5c/"/>
     <id>https://dreamer198.top/posts/df0a5c/</id>
     <published>2026-09-23T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:10:52.000Z</updated>
     
     
     <summary type="html">在一张带墙的二维地图上逐轮计算 RRT 的采样、最近节点、延伸与碰撞检查，看搜索树怎样找到第一条路径。</summary>
@@ -307,7 +307,7 @@
     <link href="https://dreamer198.top/posts/c8e20e/"/>
     <id>https://dreamer198.top/posts/c8e20e/</id>
     <published>2026-09-22T03:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:10:52.000Z</updated>
     
     
     <summary type="html">用六个位置的路线图逐步执行 Dijkstra 与 A*，比较两者的扩展顺序，理解启发函数怎样减少搜索。</summary>
@@ -330,7 +330,7 @@
     <link href="https://dreamer198.top/posts/a37cad/"/>
     <id>https://dreamer198.top/posts/a37cad/</id>
     <published>2026-09-22T02:00:00.000Z</published>
-    <updated>2026-09-29T07:57:12.000Z</updated>
+    <updated>2026-09-28T17:14:32.000Z</updated>
     
     
     <summary type="html">介绍构型空间、地图表示与碰撞检测，说明规划器怎样把机体形状、障碍物和候选运动转化为可计算的可行性判断。</summary>
@@ -353,7 +353,7 @@
     <link href="https://dreamer198.top/posts/067a84/"/>
     <id>https://dreamer198.top/posts/067a84/</id>
     <published>2026-09-22T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:14:32.000Z</updated>
     
     
     <summary type="html">从路径、轨迹与控制的区别出发，概览无人机路径规划的核心问题、主要研究方向和学习路线。</summary>
@@ -376,7 +376,7 @@
     <link href="https://dreamer198.top/posts/ce67dd/"/>
     <id>https://dreamer198.top/posts/ce67dd/</id>
     <published>2026-09-18T02:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">从随机事件、随机变量到高斯分布与协方差，整理路径规划中不确定性建模与随机采样所需的概率基础。</summary>
@@ -399,7 +399,7 @@
     <link href="https://dreamer198.top/posts/0e4644/"/>
     <id>https://dreamer198.top/posts/0e4644/</id>
     <published>2026-09-18T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:25:06.000Z</updated>
     
     
     <summary type="html">从一维运动出发理解微分方程与状态空间，学会用当前状态和加速度预测之后的位置与速度。</summary>
@@ -422,7 +422,7 @@
     <link href="https://dreamer198.top/posts/8f52bb/"/>
     <id>https://dreamer198.top/posts/8f52bb/</id>
     <published>2026-09-10T02:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:27:18.000Z</updated>
     
     
     <summary type="html">围绕偏导数、梯度、Jacobian、链式法则与 Hessian，说明代价怎样随变量变化，为轨迹优化中的求导打基础。</summary>
@@ -445,7 +445,7 @@
     <link href="https://dreamer198.top/posts/648851/"/>
     <id>https://dreamer198.top/posts/648851/</id>
     <published>2026-09-10T01:00:00.000Z</published>
-    <updated>2026-09-29T07:36:01.000Z</updated>
+    <updated>2026-09-28T17:27:18.000Z</updated>
     
     
     <summary type="html">比较 LU、Cholesky、QR 与 SVD 的用途，理解残差与条件数，判断线性方程组和最小二乘的解是否可信。</summary>
@@ -462,11 +462,11 @@
   </entry>
   
   <entry>
-    <title>路径规划数学基础（一）：线性代数核心知识</title>
+    <title>线性代数：从 Ax=b 到二次型</title>
     <link href="https://dreamer198.top/posts/c1a1f3/"/>
     <id>https://dreamer198.top/posts/c1a1f3/</id>
     <published>2026-09-08T16:00:00.000Z</published>
-    <updated>2026-09-29T07:31:58.000Z</updated>
+    <updated>2026-09-28T17:27:18.000Z</updated>
     
     
     <summary type="html">围绕 Ax=b 的解与自由度、二次型的形状，整理路径规划中约束表达与优化建模所需的线性代数知识。</summary>

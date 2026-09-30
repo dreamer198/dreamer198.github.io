@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="cover-title cover-desc">
-  <title id="cover-title">ROS2 自定义消息接口</title>
+  <title id="cover-title">ROS 2 自定义消息接口</title>
   <desc id="cover-desc">Dreamer Island FLIGHT SYSTEMS article cover</desc>
   <defs>
     <linearGradient id="bg-680fe0b5c22e" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07141f"/><stop offset=".54" stop-color="#0a313d"/><stop offset="1" stop-color="#142846"/></linearGradient>

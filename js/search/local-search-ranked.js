@@ -37,10 +37,12 @@ class LocalSearch {
       if (!caseSensitive) {
         word = word.toLowerCase()
       }
-      while ((position = text.indexOf(word, startPosition)) > -1) {
-        index.push({ position, word })
+      const pattern = new RegExp(word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        .replace(/[a-z0-9](?=[\u3400-\u9fff])|[\u3400-\u9fff](?=[a-z0-9])/gi, '$&\\s?'), 'g')
+      let match
+      while ((match = pattern.exec(text))) {
+        index.push({ position: match.index, word: match[0] })
         included.add(word)
-        startPosition = position + wordLen
       }
     })
     // Sort index by position of keyword
