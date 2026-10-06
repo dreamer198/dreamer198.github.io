@@ -146,8 +146,8 @@
         <category>轨迹生成</category>
       </categories>
       <tags>
-        <tag>轨迹规划</tag>
         <tag>路径规划</tag>
+        <tag>轨迹规划</tag>
       </tags>
   </entry>
   <entry>
@@ -198,8 +198,8 @@
         <category>环境与搜索</category>
       </categories>
       <tags>
-        <tag>碰撞检测</tag>
         <tag>路径规划</tag>
+        <tag>碰撞检测</tag>
       </tags>
   </entry>
   <entry>
@@ -211,8 +211,8 @@
         <category>学习路线</category>
       </categories>
       <tags>
-        <tag>轨迹规划</tag>
         <tag>路径规划</tag>
+        <tag>轨迹规划</tag>
       </tags>
   </entry>
   <entry>
@@ -288,8 +288,8 @@
         <category>学习路线</category>
       </categories>
       <tags>
-        <tag>轨迹规划</tag>
         <tag>路径规划</tag>
+        <tag>轨迹规划</tag>
         <tag>多旋翼动力学</tag>
         <tag>微分平坦性</tag>
       </tags>
@@ -303,8 +303,8 @@
       </categories>
       <tags>
         <tag>Jetson</tag>
-        <tag>激光雷达</tag>
         <tag>网络配置</tag>
+        <tag>激光雷达</tag>
       </tags>
   </entry>
   <entry>
@@ -359,8 +359,8 @@
         <category>规划算法实践</category>
       </categories>
       <tags>
-        <tag>路径规划</tag>
         <tag>强化学习</tag>
+        <tag>路径规划</tag>
       </tags>
   </entry>
   <entry>
@@ -416,8 +416,8 @@
         <category>规划算法实践</category>
       </categories>
       <tags>
-        <tag>轨迹规划</tag>
         <tag>路径规划</tag>
+        <tag>轨迹规划</tag>
         <tag>多机</tag>
       </tags>
   </entry>
@@ -540,8 +540,8 @@
         <category>开发工具</category>
       </categories>
       <tags>
-        <tag>Linux</tag>
         <tag>Docker</tag>
+        <tag>Linux</tag>
         <tag>ROS1</tag>
       </tags>
   </entry>
