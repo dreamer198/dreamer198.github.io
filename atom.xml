@@ -6,7 +6,7 @@
   <link href="https://dreamer198.top/atom.xml" rel="self"/>
   
   <link href="https://dreamer198.top/"/>
-  <updated>2026-09-28T17:25:06.000Z</updated>
+  <updated>2026-09-30T10:10:36.000Z</updated>
   <id>https://dreamer198.top/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>安全飞行走廊：一步一步把避障区域写进轨迹优化</title>
+    <link href="https://dreamer198.top/posts/e7e1a8/"/>
+    <id>https://dreamer198.top/posts/e7e1a8/</id>
+    <published>2026-09-30T02:00:00.000Z</published>
+    <updated>2026-09-30T10:10:36.000Z</updated>
+    
+    
+    <summary type="html">用三块矩形走廊约束九个 B 样条控制点，逐步把区域边界写成线性不等式，手算求出最小 Jerk 轨迹并核验整段避障与运动限制。</summary>
+    
+    
+    
+    <category term="路径规划理论" scheme="https://dreamer198.top/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/"/>
+    
+    <category term="轨迹生成" scheme="https://dreamer198.top/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/%E8%BD%A8%E8%BF%B9%E7%94%9F%E6%88%90/"/>
+    
+    
+    <category term="轨迹规划" scheme="https://dreamer198.top/tags/%E8%BD%A8%E8%BF%B9%E8%A7%84%E5%88%92/"/>
+    
+    <category term="样条曲线" scheme="https://dreamer198.top/tags/%E6%A0%B7%E6%9D%A1%E6%9B%B2%E7%BA%BF/"/>
+    
+    <category term="轨迹优化" scheme="https://dreamer198.top/tags/%E8%BD%A8%E8%BF%B9%E4%BC%98%E5%8C%96/"/>
+    
+    <category term="碰撞检测" scheme="https://dreamer198.top/tags/%E7%A2%B0%E6%92%9E%E6%A3%80%E6%B5%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>B 样条轨迹优化：一步一步计算控制点的移动</title>
@@ -456,29 +483,6 @@
     
     <category term="数学基础" scheme="https://dreamer198.top/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/"/>
     
-    
-    <category term="线性代数" scheme="https://dreamer198.top/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>线性代数：从 Ax=b 到二次型</title>
-    <link href="https://dreamer198.top/posts/c1a1f3/"/>
-    <id>https://dreamer198.top/posts/c1a1f3/</id>
-    <published>2026-09-08T16:00:00.000Z</published>
-    <updated>2026-09-28T17:27:18.000Z</updated>
-    
-    
-    <summary type="html">围绕 Ax=b 的解与自由度、二次型的形状，整理路径规划中约束表达与优化建模所需的线性代数知识。</summary>
-    
-    
-    
-    <category term="路径规划理论" scheme="https://dreamer198.top/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/"/>
-    
-    <category term="数学基础" scheme="https://dreamer198.top/categories/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92%E7%90%86%E8%AE%BA/%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="路径规划" scheme="https://dreamer198.top/tags/%E8%B7%AF%E5%BE%84%E8%A7%84%E5%88%92/"/>
     
     <category term="线性代数" scheme="https://dreamer198.top/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/"/>
     

@@ -1608,6 +1608,26 @@ body {
 }
 
 /* Homepage discovery and latest-post grid */
+#content-inner:has(> #recent-posts) {
+  display: block;
+  width: 92%;
+  max-width: 1440px;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+#content-inner > #recent-posts {
+  width: 100% !important;
+}
+
+/* Keep the author and contact links below the list instead of reserving an
+   empty sidebar for the full height of the homepage. */
+#content-inner:has(> #recent-posts) > #aside-content {
+  width: 100%;
+  max-width: 680px;
+  margin: 40px auto 0;
+}
+
 .home-discovery {
   display: grid;
   margin-bottom: 40px;
@@ -2634,6 +2654,12 @@ img.img-loading {
 }
 
 @media (max-width: 900px) {
+  #content-inner:has(> #recent-posts) {
+    width: 100%;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
   .home-featured-grid {
     grid-template-columns: 1fr;
   }
